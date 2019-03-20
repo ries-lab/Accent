@@ -18,6 +18,6 @@ public class AcquisitionSettings {
 	
 	public Datastore.SaveMode saveMode_ = Datastore.SaveMode.MULTIPAGE_TIFF;
 	
-	public boolean sequential_ = false;
+	public boolean simultaneousAcq = false;
 	
 }

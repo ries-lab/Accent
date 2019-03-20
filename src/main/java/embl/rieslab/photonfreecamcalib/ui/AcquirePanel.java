@@ -59,8 +59,8 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 	private JProgressBar acquisitionProgress;
 	private final ButtonGroup saveModeButtonGroup = new ButtonGroup();
 	private final ButtonGroup acquisitionButtonGroup = new ButtonGroup();
-	private JRadioButton rdbtnMultistacks;
-	private JRadioButton saveModeRadioButton;
+	private JRadioButton saveSingleImg;
+	private JRadioButton saveStacks;
 
 	/**
 	 * Create the panel.
@@ -306,18 +306,16 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_acquireSimultaneously.gridy = 0;
 		optionsPanel.add(acquireSimultaneously, gbc_acquireSimultaneously);
 		
-		saveModeRadioButton = new JRadioButton("Save tiff-stacks");
-		saveModeRadioButton.setSelected(true);
-		saveModeButtonGroup.add(saveModeRadioButton);
+		saveStacks = new JRadioButton("Save tiff-stacks");
+		saveStacks.setSelected(true);
+		saveModeButtonGroup.add(saveStacks);
 		GridBagConstraints saveTiffStack = new GridBagConstraints();
 		saveTiffStack.fill = GridBagConstraints.HORIZONTAL;
 		saveTiffStack.insets = new Insets(0, 0, 5, 5);
 		saveTiffStack.gridx = 1;
 		saveTiffStack.gridy = 0;
-		optionsPanel.add(saveModeRadioButton, saveTiffStack);
+		optionsPanel.add(saveStacks, saveTiffStack);
 		GridBagConstraints gbc_btnStart = new GridBagConstraints();
-		gbc_btnStart.ipady = 5;
-		gbc_btnStart.ipadx = 5;
 		gbc_btnStart.gridheight = 3;
 		gbc_btnStart.fill = GridBagConstraints.BOTH;
 		gbc_btnStart.gridwidth = 4;
@@ -334,14 +332,14 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_acquireSequentially.gridy = 1;
 		optionsPanel.add(acquireSequentially, gbc_acquireSequentially);
 		
-		rdbtnMultistacks = new JRadioButton("Save single-tiffs");
-		saveModeButtonGroup.add(rdbtnMultistacks);
+		saveSingleImg = new JRadioButton("Save single-tiffs");
+		saveModeButtonGroup.add(saveSingleImg);
 		GridBagConstraints saveSingleTiffs = new GridBagConstraints();
 		saveSingleTiffs.fill = GridBagConstraints.HORIZONTAL;
 		saveSingleTiffs.insets = new Insets(0, 0, 5, 5);
 		saveSingleTiffs.gridx = 1;
 		saveSingleTiffs.gridy = 1;
-		optionsPanel.add(rdbtnMultistacks, saveSingleTiffs);
+		optionsPanel.add(saveSingleImg, saveSingleTiffs);
 		
 		acquisitionProgress = new JProgressBar();
 		GridBagConstraints gbc_acquisitionProgress = new GridBagConstraints();
@@ -450,7 +448,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 	}
 	
 	protected boolean acquireStacks() {
-		return rdbtnMultistacks.isSelected();
+		return saveStacks.isSelected();
 	}
 		
 	private void runAcquisition() {
@@ -464,16 +462,18 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		settings.roi_ = getRoi();
 		
 		if(acquireStacks()) {
-			settings.saveMode_ = Datastore.SaveMode.SINGLEPLANE_TIFF_SERIES;
-		} else {
 			settings.saveMode_ = Datastore.SaveMode.MULTIPAGE_TIFF;
+		} else {
+			settings.saveMode_ = Datastore.SaveMode.SINGLEPLANE_TIFF_SERIES;
 		}
 		
-		settings.sequential_ = acquireSimultaneoulsy();
+		settings.simultaneousAcq = acquireSimultaneoulsy();
 		
 		acq_ = AcquisitionFactory.getFactory().getAcquisition(studio_, settings, this);
 				
-		acq_.start();
+		if(settings.path_ != null || !settings.path_.equals("")) {
+			acq_.start();
+		}
 	}
 	
 	private void stopAcquisition() {
@@ -487,14 +487,15 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 	}
 
 	protected JRadioButton getRdbtnMultistacks() {
-		return rdbtnMultistacks;
+		return saveSingleImg;
 	}
 	protected JRadioButton getSaveModeRadioButton() {
-		return saveModeRadioButton;
+		return saveStacks;
 	}
 
 	@Override
 	public void setProgress(int progress) {
+		System.out.println("Progress is "+progress);
 		if(progress>=0 && progress<=100) {
 			acquisitionProgress.setValue(progress);
 		}
@@ -508,12 +509,16 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 
 	@Override
 	public void acqHasStopped() {
+		System.out.println("Acq has stopped");
 		btnStart.setText("Start");
+		btnStart.setSelected(false);
 	}
 
 	@Override
 	public void acqHasEnded() {
+		System.out.println("Acq has ended");
 		acquisitionProgress.setValue(100);
-		btnStart.setText("Start");		
+		btnStart.setText("Start");	
+		btnStart.setSelected(false);	
 	}
 }

@@ -16,7 +16,7 @@ public class AcquisitionFactory {
 	}
 	
 	public Acquisition getAcquisition(Studio studio, AcquisitionSettings settings, AcquisitionPanelInterface panel) {
-		if(settings.sequential_) {
+		if(!settings.simultaneousAcq) {
 			return new SequentialAcquisition(studio, settings, panel);
 		} else {
 			return new MultiplexedAcquisition(studio, settings, panel);

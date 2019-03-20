@@ -1,5 +1,6 @@
 package main.java.embl.rieslab.photonfreecamcalib.acquisition;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -65,7 +66,13 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 			
 			// create data store
 			Datastore currAcqStore = null;
-			String exppath = settings.path_+settings.name_+"_"+exposure+"ms";
+			String exppath = settings.path_+"/"+settings.name_+"_"+exposure+"ms";
+			
+			if(new File(exppath).exists()) {
+				int n = getLastFileNumber(exppath);
+				exppath = exppath+"_"+n;
+			}
+			
 			if(settings.saveMode_ == SaveMode.MULTIPAGE_TIFF){
 				try {
 					currAcqStore = studio.data().createMultipageTIFFDatastore(exppath, true, true);
@@ -116,12 +123,22 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 		}
 		
 		if(stop) {
-			publish(-1);
-		} else {
 			publish(-2);
+		} else {
+			publish(-1);
 		}
 		
 		return 0;
+	}
+
+	private int getLastFileNumber(String exppath) {
+		int num = 0;
+		String base = exppath;
+		while(new File(base).exists()) {
+			num++;
+			base = exppath+"_"+num;
+		}
+		return num;
 	}
 
 	@Override
@@ -131,10 +148,10 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 				panel.acqHasStarted();
 			} else if(i == -1) {
 				panel.acqHasEnded();
-			} else if(i == -1) {
+			} else if(i == -2) {
 				panel.acqHasStopped();
 			} else {
-				int progress = i / getMaxNumberFrames();
+				int progress = 100*i / getMaxNumberFrames();
 				panel.setProgress(progress);
 			}
 		}

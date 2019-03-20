@@ -1,5 +1,6 @@
 package main.java.embl.rieslab.photonfreecamcalib.acquisition;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -53,6 +54,12 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 		Datastore[] stores = new Datastore[settings.exposures_.length];
 		for(int i=0;i<settings.exposures_.length;i++) {
 			String exppath = settings.path_ + "/" + settings.name_ + "_" + settings.exposures_[i] + "ms";
+			
+			if(new File(exppath).exists()) {
+				int n = getLastFileNumber(exppath);
+				exppath = exppath+"_"+n;
+			}
+			
 			if (settings.saveMode_ == SaveMode.MULTIPAGE_TIFF) {
 				try {
 					stores[i] = studio.data().createMultipageTIFFDatastore(exppath, true, true);
@@ -128,12 +135,23 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 			} else if(i == -1) {
 				panel.acqHasEnded();
 			} else {
-				int progress = i / getMaxNumberFrames(); 
+				int progress = 100*i / getMaxNumberFrames(); 
 				panel.setProgress(progress);
 			}
 		}
 	}
 
+
+	private int getLastFileNumber(String exppath) {
+		int num = 0;
+		String base = exppath;
+		while(new File(base).exists()) {
+			num++;
+			base = exppath+"_"+num;
+		}
+		return num;
+	}
+	
 	@Override
 	public int getMaxNumberFrames() {
 		return settings.numFrames_;

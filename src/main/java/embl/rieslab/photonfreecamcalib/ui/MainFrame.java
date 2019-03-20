@@ -22,6 +22,7 @@ public class MainFrame extends JFrame {
 		
 		this.add(new AcquirePanel(studio));
 		//this.pack();
+		this.setLocationRelativeTo(null);
 		this.setPreferredSize(new Dimension(360,265));
 		this.setSize(new Dimension(360,265));
 		this.setResizable(false);
