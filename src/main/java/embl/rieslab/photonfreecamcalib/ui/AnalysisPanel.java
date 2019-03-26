@@ -1,46 +1,45 @@
 package main.java.embl.rieslab.photonfreecamcalib.ui;
 
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
-
-import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
-import main.java.embl.rieslab.photonfreecamcalib.processing.ProcessingPanelInterface;
-
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.border.TitledBorder;
 
-public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
-	
+import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
+import main.java.embl.rieslab.photonfreecamcalib.analysis.AnalysisPanelInterface;
+
+
+public class AnalysisPanel extends JPanel  implements AnalysisPanelInterface {
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5981823617164261234L;
+	private static final long serialVersionUID = 8617197911429586911L;
 	private JTextField textField;
 	private JProgressBar progressBar;
-	private JToggleButton btnProcess;
+	private JToggleButton btnAnalyze;
 	private PipelineController controller;
 
 	/**
 	 * Create the panel.
 	 */
-	public ProcessPanel(PipelineController controller) {
+	public AnalysisPanel(PipelineController controller) {
 		this.controller = controller;
 		
-		setBorder(new TitledBorder(null, "Process", TitledBorder.LEFT, TitledBorder.TOP, null, null));
+		setBorder(new TitledBorder(null, "Analyze", TitledBorder.LEFT, TitledBorder.TOP, null, null));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] {0, 0, 0};
 		gridBagLayout.rowHeights = new int[] {30, 40};
@@ -86,13 +85,13 @@ public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
 		gbc_progressBar.gridy = 1;
 		add(progressBar, gbc_progressBar);
 		
-		btnProcess = new JToggleButton("Start");
-		btnProcess.addItemListener(new ItemListener() {
+		btnAnalyze = new JToggleButton("Start");
+		btnAnalyze.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent state) {
 				if (state.getStateChange() == ItemEvent.SELECTED) {
-					startProcessing();
+					startAnalysis();
 				} else {
-					stopProcessing();
+					stopAnalysis();
 				}
 			}
 		});
@@ -101,18 +100,18 @@ public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
 		gbc_btnProcess.fill = GridBagConstraints.BOTH;
 		gbc_btnProcess.gridx = 2;
 		gbc_btnProcess.gridy = 1;
-		add(btnProcess, gbc_btnProcess);
+		add(btnAnalyze, gbc_btnProcess);
 
 	}
 
 	
-	protected void stopProcessing() {
-		controller.stopProcessor();
+	protected void stopAnalysis() {
+		controller.stopAnalyzer();
 	}
 
 
-	protected void startProcessing() {
-		controller.startProcessor(textField.getText());
+	protected void startAnalysis() {
+		controller.startAnalyzer(textField.getText());
 	}
 
 
@@ -135,24 +134,24 @@ public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
 
 
 	@Override
-	public void processingHasStarted() {
+	public void analysisHasStarted() {
 		progressBar.setValue(0);
-		btnProcess.setText("Stop");
+		btnAnalyze.setText("Stop");
 	}
 
 
 	@Override
-	public void processingHasStopped() {
-		btnProcess.setText("Start");
-		btnProcess.setSelected(false);
+	public void analysisHasStopped() {
+		btnAnalyze.setText("Start");
+		btnAnalyze.setSelected(false);
 	}
 
 
 	@Override
-	public void processingHasEnded() {
+	public void analysisHasEnded() {
 		progressBar.setValue(100);
-		btnProcess.setText("Start");
-		btnProcess.setSelected(false);
+		btnAnalyze.setText("Start");
+		btnAnalyze.setSelected(false);
 	}
 
 

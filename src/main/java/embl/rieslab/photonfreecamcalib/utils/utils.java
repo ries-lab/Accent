@@ -26,15 +26,38 @@ public class utils {
 	    return true;
 	}
 	
-    public static boolean isNumeric(String s) {
-    	if(s != null){
-	    	if(s.matches("[-+]?\\d*\\.?\\d+")){
-	    		return true;
-	    	} else if(s.matches("[-+]?\\d*\\,?\\d+")){
-	    		return true;
-	    	}
-    	}
-        return false;  
-    }  
+	public static int extractExposurefromFolderName(String dataFolder) {
+		
+		if(dataFolder.substring(dataFolder.length()-2).equals("ms")) {
+			int length = 0;
+			int index  = dataFolder.length()-3;
+
+			while(Character.isDigit(dataFolder.charAt(index))) {
+				length ++;
+				index --;
+			}
+
+			return Integer.parseInt(dataFolder.substring(index+1, index+1+length));
+		}
+		
+		return 0;
+	}  	
+	
+	public static int extractExposurefromTiff(String tiffImage) {
+		
+		if(tiffImage.substring(tiffImage.length()-7).equals("ms.tiff")) {
+			int length = 0;
+			int index  = tiffImage.length()-8;
+
+			while(Character.isDigit(tiffImage.charAt(index))) {
+				length ++;
+				index --;
+			}
+
+			return Integer.parseInt(tiffImage.substring(index+1, index+1+length));
+		}
+		
+		return 0;
+	}  
     
 }

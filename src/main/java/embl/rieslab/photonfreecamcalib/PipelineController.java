@@ -9,20 +9,23 @@ import main.java.embl.rieslab.photonfreecamcalib.acquisition.Acquisition;
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionFactory;
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionPanelInterface;
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionSettings;
+import main.java.embl.rieslab.photonfreecamcalib.analysis.AnalysisPanelInterface;
+import main.java.embl.rieslab.photonfreecamcalib.analysis.Analyzer;
+import main.java.embl.rieslab.photonfreecamcalib.analysis.AnalyzerFactory;
 import main.java.embl.rieslab.photonfreecamcalib.processing.ProcessingPanelInterface;
 import main.java.embl.rieslab.photonfreecamcalib.processing.Processor;
 import main.java.embl.rieslab.photonfreecamcalib.processing.ProcessorFactory;
-import main.java.embl.rieslab.photonfreecamcalib.ui.AcquirePanel;
-import main.java.embl.rieslab.photonfreecamcalib.ui.ProcessPanel;
 
 public class PipelineController {
 
 	private Studio studio;
-	private AcquisitionPanelInterface acqpane;
+	private AcquisitionPanelInterface acqPanel;
 	private Acquisition acq;
 	private AcquisitionSettings acqSettings;
-	private ProcessingPanelInterface procpane;
+	private ProcessingPanelInterface procPanel;
 	private Processor proc;
+	private AnalysisPanelInterface analysisPanel;
+	private Analyzer analyzer;
 		
 	
 	public PipelineController(Studio studio) {
@@ -33,6 +36,8 @@ public class PipelineController {
 		
 		this.studio = studio;
 	}
+	
+	/////////////// Acquisition
 	
 	public void startAcquisition(AcquisitionSettings settings) {
 		if(isReady() && (acq == null || !acq.isRunning())) {
@@ -49,33 +54,28 @@ public class PipelineController {
 	}
 	
 	public void updateAcquisitionProgress(int progress) {
-		acqpane.setProgress(progress);
+		acqPanel.setProgress(progress);
 	}
 	
 	public void acquisitionHasStarted() {
-		acqpane.acqHasStarted();
+		acqPanel.acqHasStarted();
 	}
 	
 	public void acquisitionHasStopped() {
-		acqpane.acqHasStopped();
+		acqPanel.acqHasStopped();
 		setProcessorParameters(acqSettings.folder_);
 	}
 	
 	public void acquisitionHasEnded() {
-		acqpane.acqHasEnded();
+		acqPanel.acqHasEnded();
 		setProcessorParameters(acqSettings.folder_);
 	}	
 	
-	private boolean isAcqPathKnown(String path) {
-		if(acqSettings != null && acqSettings.folder_ != null) {
-			return acqSettings.folder_.equals(path);
-		}
-		return false;
-	}
+	//////// Processing
 	
 	private void setProcessorParameters(String folder) {		
 		if(new File(folder).exists()) {
-			procpane.setDataPath(folder);
+			procPanel.setDataPath(folder);
 		}
 	}
 	
@@ -91,6 +91,93 @@ public class PipelineController {
 			}
 		}
 	}
+
+	public void stopProcessor() {
+		if(proc != null) {
+			proc.stop();
+		}
+	}
+	
+	public void updateProcessorProgress(int progress) {
+		procPanel.setProgress(progress);
+	}
+
+	public void processingHasStopped() {
+		procPanel.processingHasStopped();
+	}
+
+	public void processingHasStarted() {
+		procPanel.processingHasStarted();
+	}
+	
+	public void processingHasEnded() {
+		procPanel.processingHasEnded();
+		setAnalyzerParameters(proc.getCurrentParentPath());
+	}
+	
+	//////////// Analysis
+	
+	private void setAnalyzerParameters(String folder) {		
+		if(new File(folder).exists()) {
+			analysisPanel.setDataPath(folder);
+		}
+	}
+	
+	public void startAnalyzer(String path) {	
+		if(isReady() && path != null &&
+				(isAcqPathKnown(path) || new File(path).exists()) && (analyzer == null || !analyzer.isRunning())) {
+
+			String[] avgs = getAverageImages(path);
+			String[] vars = getVarianceImages(path);
+
+			if(avgs.length > 0 && avgs.length == vars.length) {
+				analyzer = AnalyzerFactory.getFactory().getProcessor(avgs, vars, this);
+				analyzer.start();
+			}
+		}
+	}
+	
+	public void stopAnalyzer() {
+		if(analyzer != null) {
+			analyzer.stop();
+		}
+	}
+	
+	public void updateAnalyzerProgress(int progress) {
+		analysisPanel.setProgress(progress);
+	}
+
+	public void analysisHasStopped() {
+		analysisPanel.analysisHasStopped();
+	}
+
+	public void analysisHasStarted() {
+		analysisPanel.analysisHasStarted();
+	}
+	
+	public void analysisHasEnded() {
+		analysisPanel.analysisHasEnded();
+	}
+
+	//////////////////////// Other methods
+	
+	public void setAcquisitionPanel(AcquisitionPanelInterface acqpane) {
+		this.acqPanel = acqpane;
+	}
+
+	public void setProcessingPanel(ProcessingPanelInterface procpane) {
+		this.procPanel = procpane;
+	}
+	
+	public void setAnalysisPanel(AnalysisPanelInterface analysisPanel) {
+		this.analysisPanel = analysisPanel;
+	}
+	
+	public boolean isReady() {
+		return (acqPanel != null && procPanel != null && analysisPanel != null);
+	}
+	
+	/////////////////////// Private methods
 	
 	private String[] getExposureFolders(String path) {
 		ArrayList<String> fullpaths = new ArrayList<String>();
@@ -104,37 +191,36 @@ public class PipelineController {
 		return fullpaths.toArray(new String[0]);
 	}
 
-	public void stopProcessor() {
-		if(proc != null) {
-			proc.stop();
+	private String[] getAverageImages(String path) {
+		ArrayList<String> fullpaths = new ArrayList<String>();
+		File[] files = new File(path).listFiles();
+		for (File file : files) {
+			if (!file.isDirectory() && file.getName().substring(0,3).equals("Avg") 
+				&& file.getName().substring(file.getName().length() - 7).equals("ms.tiff")) {
+				fullpaths.add(file.getAbsolutePath());
+			}
 		}
+
+		return fullpaths.toArray(new String[0]);
 	}
 	
-	public void updateProcessorProgress(int progress) {
-		procpane.setProgress(progress);
-	}
+	private String[] getVarianceImages(String path) {
+		ArrayList<String> fullpaths = new ArrayList<String>();
+		File[] files = new File(path).listFiles();
+		for (File file : files) {
+			if (!file.isDirectory() && file.getName().substring(0,3).equals("Var") 
+				&& file.getName().substring(file.getName().length() - 7).equals("ms.tiff")) {
+				fullpaths.add(file.getAbsolutePath());
+			}
+		}
 
-	public void processingHasStopped() {
-		procpane.procHasStopped();
-	}
-
-	public void processingHasStarted() {
-		procpane.procHasStarted();
+		return fullpaths.toArray(new String[0]);
 	}
 	
-	public void processingHasEnded() {
-		procpane.procHasEnded();
-	}
-
-	public void addAcquisitionPanel(AcquirePanel acqpane) {
-		this.acqpane = acqpane;
-	}
-
-	public void addProcessingPanel(ProcessPanel procpane) {
-		this.procpane = procpane;
-	}
-	
-	public boolean isReady() {
-		return (acqpane != null && procpane != null);
+	private boolean isAcqPathKnown(String path) {
+		if(acqSettings != null && acqSettings.folder_ != null) {
+			return acqSettings.folder_.equals(path);
+		}
+		return false;
 	}
 }

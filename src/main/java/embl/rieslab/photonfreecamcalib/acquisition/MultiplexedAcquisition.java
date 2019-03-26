@@ -22,6 +22,10 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 	private PipelineController controller;
 	private boolean stop = false;
 	private boolean running = false;
+
+	private final static int START = 0;
+	private final static int DONE = -1;
+	private final static int STOP = -2;
 	
 	public MultiplexedAcquisition(Studio studio, AcquisitionSettings settings, PipelineController controller) {
 		if(studio == null || settings == null || controller == null) {
@@ -53,6 +57,7 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 	@Override
 	protected Integer doInBackground() throws Exception {
 			
+		// creates an array of stores
 		Datastore[] stores = new Datastore[settings.exposures_.length];
 		for(int i=0;i<settings.exposures_.length;i++) {
 			String expName = settings.name_ + "_" + settings.exposures_[i] + "ms";
@@ -63,6 +68,7 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 				settings.folder_ = settings.folder_+"_"+n;
 			}
 			
+			// sets the SaveMode
 			if (settings.saveMode_ == SaveMode.MULTIPAGE_TIFF) {
 				try {
 					stores[i] = studio.data().createMultipageTIFFDatastore(exppath, true, true);
@@ -83,6 +89,7 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 		}
 
 		if (!stop) {
+			// sets Roi
 			if(settings.roi_ != null) {
 				studio.getCMMCore().clearROI();
 				studio.getCMMCore().setROI((int) settings.roi_.getXBase(), (int) settings.roi_.getYBase(), 
@@ -91,6 +98,7 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 			
 			int frame = 0;
 
+			// prepares coordinates
 			Image image;
 			Coords.CoordsBuilder builder = new DefaultCoords.Builder();
 			builder.channel(0).z(0).stagePosition(0);
@@ -99,7 +107,9 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 
 				builder = builder.time(frame);
 				
+				// for each exposure, sets the exposure, snaps an image and adds it to its respective store
 				for(int i=0;i<settings.exposures_.length; i++) {
+					studio.getCMMCore().setExposure(settings.exposures_[i]);
 					image = studio.live().snap(false).get(0);
 					image = image.copyAtCoords(builder.build());
 	
@@ -120,9 +130,9 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 		} 
 		
 		if(stop) {
-			publish(-2);
+			publish(STOP);
 		} else {
-			publish(-1);
+			publish(DONE);
 		}
 		
 		for(int i=0;i<settings.exposures_.length;i++) {
@@ -135,11 +145,11 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 	@Override
 	protected void process(List<Integer> chunks) {
 		for(Integer i:chunks) {
-			if(i == 0) {
+			if(i == START) {
 				controller.acquisitionHasStarted();;
-			} else if(i == -2) {
+			} else if(i == STOP) {
 				controller.acquisitionHasStopped();
-			} else if(i == -1) {
+			} else if(i == DONE) {
 				controller.acquisitionHasEnded();
 			} else {
 				int progress = 100*i / getMaxNumberFrames(); 

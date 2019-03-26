@@ -19,6 +19,6 @@ public class ProcessorFactory {
 	}
 	
 	public Processor getProcessor(Studio studio, String[] directories, PipelineController controller) {
-		return new AvgAndStdProcessor(studio, directories, controller);
+		return new AvgAndVarProcessor(studio, directories, controller);
 	}
 }

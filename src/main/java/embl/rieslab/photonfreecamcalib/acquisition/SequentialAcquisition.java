@@ -23,6 +23,10 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 	private boolean stop = false;
 	private boolean running = false;
 	
+	private final static int START = 0;
+	private final static int DONE = -1;
+	private final static int STOP = -2;
+	
 	public SequentialAcquisition(Studio studio, AcquisitionSettings settings, PipelineController controller) {
 		if(studio == null || settings == null || controller == null) {
 			throw new NullPointerException();
@@ -55,6 +59,7 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 	
 		int numExpo = 0;
 	
+		// clears ROIs and apply the ROI from the settings if non-null 
 		if(settings.roi_ != null) {
 			studio.getCMMCore().clearROI();
 			studio.getCMMCore().setROI((int) settings.roi_.getXBase(), (int) settings.roi_.getYBase(), 
@@ -63,10 +68,10 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 		
 		for(int exposure: settings.exposures_) {
 			
-			// set exposure time
+			// sets exposure time
 			studio.getCMMCore().setExposure(exposure);
 			
-			// create data store
+			// creates data store
 			Datastore currAcqStore = null;
 			String expName = settings.name_ + "_" + exposure + "ms";
 			String exppath = settings.folder_ + "/" + expName;
@@ -76,6 +81,7 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 				settings.folder_ = settings.folder_+"_"+n;
 			}
 			
+			// sets SaveMode
 			if(settings.saveMode_ == SaveMode.MULTIPAGE_TIFF){
 				try {
 					currAcqStore = studio.data().createMultipageTIFFDatastore(exppath, true, true);
@@ -103,6 +109,7 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 					
 				while(!stop && frame < settings.numFrames_) {
 				
+					// snaps an image and adds it to the store
 					builder = builder.time(frame);
 					image = studio.live().snap(false).get(0);
 					image = image.copyAtCoords(builder.build());
@@ -128,9 +135,9 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 		}
 		
 		if(stop) {
-			publish(-2);
+			publish(STOP);
 		} else {
-			publish(-1);
+			publish(DONE);
 		}
 		
 		return 0;
@@ -149,11 +156,11 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 	@Override
 	protected void process(List<Integer> chunks) {
 		for(Integer i:chunks) {
-			if(i == 0) {
+			if(i == START) {
 				controller.acquisitionHasStarted();
-			} else if(i == -1) {
+			} else if(i == DONE) {
 				controller.acquisitionHasEnded();;
-			} else if(i == -2) {
+			} else if(i == STOP) {
 				controller.acquisitionHasStopped();
 			} else {
 				int progress = 100*i / getMaxNumberFrames();

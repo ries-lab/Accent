@@ -15,8 +15,9 @@ import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.process.FloatProcessor;
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
+import main.java.embl.rieslab.photonfreecamcalib.utils.utils;
 
-public class AvgAndStdProcessor extends SwingWorker<Integer, Integer> implements Processor{
+public class AvgAndVarProcessor extends SwingWorker<Integer, Integer> implements Processor{
 	
 	private Studio studio;
 	private String[] directories;
@@ -24,7 +25,11 @@ public class AvgAndStdProcessor extends SwingWorker<Integer, Integer> implements
 	private boolean stop = false;
 	private boolean running = false;
 	
-	public AvgAndStdProcessor(Studio studio, String[] directories, PipelineController controller) {
+	private final static int START = 0;
+	private final static int DONE = -1;
+	private final static int STOP = -2;
+	
+	public AvgAndVarProcessor(Studio studio, String[] directories, PipelineController controller) {
 		if(studio == null || directories == null || controller == null) {
 			throw new NullPointerException();
 		}
@@ -56,7 +61,7 @@ public class AvgAndStdProcessor extends SwingWorker<Integer, Integer> implements
 	@Override
 	protected Integer doInBackground() throws Exception {
 		
-		publish(0);
+		publish(START);
 		int counter = 0;
 		double percentile = 100/directories.length;
 		
@@ -64,35 +69,39 @@ public class AvgAndStdProcessor extends SwingWorker<Integer, Integer> implements
 						
 		    try {
 				Datastore store = studio.data().loadData(file, true);
-
-				float size = (float) store.getNumImages();
+				float stackSize = (float) store.getNumImages();
 				
+				// gets the first image of the stack
 	 			Coords.CoordsBuilder builder = new DefaultCoords.Builder();
 				builder.channel(0).z(0).stagePosition(0).time(0);
 				
 				FloatProcessor avg_im = studio.data().ij().createProcessor(store.getImage(builder.build())).convertToFloatProcessor();
-				FloatProcessor sqravg_im = (FloatProcessor) avg_im.clone();
+				FloatProcessor avgsq_im = (FloatProcessor) avg_im.clone();
 						
 				int height = avg_im.getHeight();
 				int width = avg_im.getWidth();
 
-
 				FloatProcessor improc = new FloatProcessor(width, height);
-				FloatProcessor sd_im = new FloatProcessor(width, height);
-				
+				FloatProcessor var_im = new FloatProcessor(width, height);
+
+				// normalizes pixel-wise the avg image and the avg square image by the stack size
 				for(int x=0;x<width;x++) {
 					for(int y=0;y<height;y++){						
-						float val =  avg_im.getf(x, y)/size;
+						float val =  avg_im.getf(x, y)/stackSize;
 						avg_im.setf(x, y, val);
-						sqravg_im.setf(x, y, avg_im.getf(x, y)*val);
+						avgsq_im.setf(x, y, avg_im.getf(x, y)*val);
 					}
 				}
 
-				for(int z=1;z<size;z++) {
+				// loops over the stack and adds pixel-wise the value of each pixels and their square (normalized by the stack size)
+				for(int z=1;z<stackSize;z++) {
+
+					// gets image at position z in the stack
 					builder.time(z);
 					improc = studio.data().ij().createProcessor(store.getImage(builder.build())).convertToFloatProcessor();
 					
-					publish((int) (percentile*counter+percentile*z/size));
+					// updates progress bar
+					publish((int) (percentile*counter+percentile*z/stackSize)); 
 					
 					for(int x=0;x<width;x++) {
 
@@ -106,9 +115,9 @@ public class AvgAndStdProcessor extends SwingWorker<Integer, Integer> implements
 								break;
 							}
 							
-							float val = improc.getf(x, y)/size;
+							float val = improc.getf(x, y)/stackSize;
 							avg_im.setf(x, y, val);
-							sqravg_im.setf(x, y, val*improc.getf(x, y));	
+							avgsq_im.setf(x, y, val*improc.getf(x, y));	
 						}
 					}
 					
@@ -123,21 +132,21 @@ public class AvgAndStdProcessor extends SwingWorker<Integer, Integer> implements
 					break;
 				}
 
-				
+				// computes the variance image from the average square and the average values
 				for(int x=0;x<width;x++) {
 					for(int y=0;y<height;y++){
-						sd_im.setf(x, y, (float) (Math.sqrt(sqravg_im.getf(x, y)-avg_im.getf(x, y)*avg_im.getf(x, y)) ));
+						var_im.setf(x, y, (float) (avgsq_im.getf(x, y)-avg_im.getf(x, y)*avg_im.getf(x, y)));
 					}
 				}
-				
-				int exposure = extractExposure(file);
-				System.out.println(getParentPath(file)+"/"+"Avg_"+exposure+"ms.tiff");
+
+				// save as images
+				int exposure = utils.extractExposurefromFolderName(file);
 				
 				FileSaver avgsaver = new FileSaver(new ImagePlus("Avg_"+exposure+"ms",avg_im)); 
 				avgsaver.saveAsTiff(getParentPath(file)+"/"+"Avg_"+exposure+"ms.tiff");
 				
-				FileSaver sdsaver = new FileSaver(new ImagePlus("Sd_"+exposure+"ms",sd_im)); 
-				sdsaver.saveAsTiff(getParentPath(file)+"/"+"Sd_"+exposure+"ms.tiff");
+				FileSaver sdsaver = new FileSaver(new ImagePlus("Var_"+exposure+"ms",var_im)); 
+				sdsaver.saveAsTiff(getParentPath(file)+"/"+"Var_"+exposure+"ms.tiff");
 				
 				counter ++;
 			
@@ -145,14 +154,14 @@ public class AvgAndStdProcessor extends SwingWorker<Integer, Integer> implements
 				
 		    } catch (IOException e) {
 				e.printStackTrace();
-				publish(-2);
+				publish(STOP);
 			}
 		}
 		
 		if(stop) {
-			publish(-2);
+			publish(STOP);
 		} else {
-			publish(-1);
+			publish(DONE);
 		}
 		
 		return 0;
@@ -161,11 +170,11 @@ public class AvgAndStdProcessor extends SwingWorker<Integer, Integer> implements
 	@Override
 	protected void process(List<Integer> chunks) {
 		for(Integer i:chunks) {
-			if(i == 0) {
+			if(i == START) {
 				controller.processingHasStarted();
-			} else if(i == -1) {
-				controller.processingHasEnded();;
-			} else if(i == -2) {
+			} else if(i == DONE) {
+				controller.processingHasEnded();
+			} else if(i == STOP) {
 				controller.processingHasStopped();
 			} else {
 				int progress = i;
@@ -174,24 +183,17 @@ public class AvgAndStdProcessor extends SwingWorker<Integer, Integer> implements
 		}
 	}
 	
-	public static int extractExposure(String dataFolder) {
-		
-		if(dataFolder.substring(dataFolder.length()-2).equals("ms")) {
-			int length = 0;
-			int index  = dataFolder.length()-3;
-
-			while(Character.isDigit(dataFolder.charAt(index))) {
-				length ++;
-				index --;
-			}
-
-			return Integer.parseInt(dataFolder.substring(index+1, index+1+length));
-		}
-		
-		return 0;
-	}
 	
 	public static String getParentPath(String dataFolder) {
 		return new File(dataFolder).getParent();
+	}
+	
+	@Override
+	public String getCurrentParentPath() {
+		if(directories == null || !new File(directories[0]).exists()) {
+			return "";
+		}
+		
+		return new File(directories[0]).getParent();
 	}
 }

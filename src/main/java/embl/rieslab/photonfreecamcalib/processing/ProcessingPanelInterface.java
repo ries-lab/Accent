@@ -6,9 +6,9 @@ public interface ProcessingPanelInterface {
 	
 	public void setProgress(int progress);
 	
-	public void procHasStarted();
+	public void processingHasStarted();
 	
-	public void procHasStopped();
+	public void processingHasStopped();
 	
-	public void procHasEnded();
+	public void processingHasEnded();
 }
