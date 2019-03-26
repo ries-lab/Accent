@@ -1,6 +1,7 @@
 package main.java.embl.rieslab.photonfreecamcalib.acquisition;
 
 import org.micromanager.Studio;
+import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
 
 public class AcquisitionFactory {
 
@@ -15,11 +16,11 @@ public class AcquisitionFactory {
 		return factory;
 	}
 	
-	public Acquisition getAcquisition(Studio studio, AcquisitionSettings settings, AcquisitionPanelInterface panel) {
+	public Acquisition getAcquisition(Studio studio, AcquisitionSettings settings, PipelineController controller) {
 		if(!settings.simultaneousAcq) {
-			return new SequentialAcquisition(studio, settings, panel);
+			return new SequentialAcquisition(studio, settings, controller);
 		} else {
-			return new MultiplexedAcquisition(studio, settings, panel);
+			return new MultiplexedAcquisition(studio, settings, controller);
 		}
 	}
 }

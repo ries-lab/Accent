@@ -8,7 +8,7 @@ public class AcquisitionSettings {
 
 	public String name_ = null;
 	
-	public String path_ = null;
+	public String folder_ = null;
 	
 	public int numFrames_ = 20000;
 	

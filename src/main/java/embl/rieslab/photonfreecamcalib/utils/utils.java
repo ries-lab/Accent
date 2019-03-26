@@ -25,4 +25,16 @@ public class utils {
 	    }
 	    return true;
 	}
+	
+    public static boolean isNumeric(String s) {
+    	if(s != null){
+	    	if(s.matches("[-+]?\\d*\\.?\\d+")){
+	    		return true;
+	    	} else if(s.matches("[-+]?\\d*\\,?\\d+")){
+	    		return true;
+	    	}
+    	}
+        return false;  
+    }  
+    
 }

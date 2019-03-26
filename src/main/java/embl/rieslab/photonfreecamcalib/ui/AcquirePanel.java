@@ -8,8 +8,7 @@ import org.micromanager.data.Datastore;
 
 import ij.gui.Roi;
 import ij.plugin.frame.RoiManager;
-import main.java.embl.rieslab.photonfreecamcalib.acquisition.Acquisition;
-import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionFactory;
+import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionPanelInterface;
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionSettings;
 import main.java.embl.rieslab.photonfreecamcalib.utils.utils;
@@ -38,10 +37,13 @@ import java.awt.event.ItemEvent;
 import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
-import java.awt.Dimension;
 
 public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4398801968229229824L;
 	private JTextField nameTextField;
 	private JTextField pathTextField;
 	private JTextField exposuresTextField;
@@ -52,9 +54,9 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 	private JSpinner framesSpinner;
 	private JCheckBox acquireSimultaneously;
 	private JToggleButton btnStart;
-	private Acquisition acq_;
 	
 	private Studio studio_;
+	private PipelineController controller;
 	
 	private JProgressBar acquisitionProgress;
 	private final ButtonGroup saveModeButtonGroup = new ButtonGroup();
@@ -65,8 +67,9 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 	/**
 	 * Create the panel.
 	 */
-	public AcquirePanel(Studio studio) {
+	public AcquirePanel(Studio studio, PipelineController controller) {
 		studio_ = studio;
+		this.controller = controller;
 		
 		// figure out camera name
 		String camName = studio_.getCMMCore().getCameraDevice();
@@ -253,7 +256,6 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		roiWField.setColumns(10);
 		
 		roiHField = new JTextField();
-		roiHField.setPreferredSize(new Dimension(20, 6));
 		GridBagConstraints gbc_roiHField = new GridBagConstraints();
 		gbc_roiHField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_roiHField.gridx = 3;
@@ -456,7 +458,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		AcquisitionSettings settings  = new AcquisitionSettings();
 		
 		settings.name_ = getAcqName();
-		settings.path_ = getAcqPath();
+		settings.folder_ = getAcqPath();
 		settings.numFrames_ = getFrames();
 		settings.exposures_ = getExposures();
 		settings.roi_ = getRoi();
@@ -468,22 +470,14 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		}
 		
 		settings.simultaneousAcq = acquireSimultaneoulsy();
-		
-		acq_ = AcquisitionFactory.getFactory().getAcquisition(studio_, settings, this);
 				
-		if(settings.path_ != null || !settings.path_.equals("")) {
-			acq_.start();
+		if(settings.folder_ != null || !settings.folder_.equals("")) {
+			controller.startAcquisition(settings);
 		}
 	}
 	
 	private void stopAcquisition() {
-		if(acq_ != null) {
-			acq_.stop();
-		}
-	}
-	
-	public boolean isRunning() {
-		return acq_.isRunning();
+			controller.stopAcquisition();
 	}
 
 	protected JRadioButton getRdbtnMultistacks() {
@@ -495,7 +489,6 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 
 	@Override
 	public void setProgress(int progress) {
-		System.out.println("Progress is "+progress);
 		if(progress>=0 && progress<=100) {
 			acquisitionProgress.setValue(progress);
 		}
@@ -509,14 +502,12 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 
 	@Override
 	public void acqHasStopped() {
-		System.out.println("Acq has stopped");
 		btnStart.setText("Start");
 		btnStart.setSelected(false);
 	}
 
 	@Override
 	public void acqHasEnded() {
-		System.out.println("Acq has ended");
 		acquisitionProgress.setValue(100);
 		btnStart.setText("Start");	
 		btnStart.setSelected(false);	

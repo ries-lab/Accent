@@ -13,22 +13,24 @@ import org.micromanager.data.Image;
 import org.micromanager.data.Datastore.SaveMode;
 import org.micromanager.data.internal.DefaultCoords;
 
+import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
+
 public class SequentialAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
 	
 	private Studio studio;
 	private AcquisitionSettings settings;
-	private AcquisitionPanelInterface panel;
+	private PipelineController controller;
 	private boolean stop = false;
 	private boolean running = false;
 	
-	public SequentialAcquisition(Studio studio, AcquisitionSettings settings, AcquisitionPanelInterface panel) {
-		if(studio == null || settings == null || panel == null) {
+	public SequentialAcquisition(Studio studio, AcquisitionSettings settings, PipelineController controller) {
+		if(studio == null || settings == null || controller == null) {
 			throw new NullPointerException();
 		}
 		
 		this.studio = studio;
 		this.settings = settings;
-		this.panel = panel;
+		this.controller = controller;
 	}
 	
 	@Override
@@ -66,11 +68,12 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 			
 			// create data store
 			Datastore currAcqStore = null;
-			String exppath = settings.path_+"/"+settings.name_+"_"+exposure+"ms";
-			
+			String expName = settings.name_ + "_" + exposure + "ms";
+			String exppath = settings.folder_ + "/" + expName;
 			if(new File(exppath).exists()) {
-				int n = getLastFileNumber(exppath);
-				exppath = exppath+"_"+n;
+				int n = getLastFileNumber(settings.folder_,expName);
+				exppath = settings.folder_+"_"+n+"/"+expName;
+				settings.folder_ = settings.folder_+"_"+n;
 			}
 			
 			if(settings.saveMode_ == SaveMode.MULTIPAGE_TIFF){
@@ -119,6 +122,8 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 				}
 			}
 
+			currAcqStore.close();
+			
 			numExpo ++;			
 		}
 		
@@ -131,12 +136,12 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 		return 0;
 	}
 
-	private int getLastFileNumber(String exppath) {
+	private int getLastFileNumber(String folder, String expName) {
 		int num = 0;
-		String base = exppath;
+		String base = folder+"/"+expName;
 		while(new File(base).exists()) {
 			num++;
-			base = exppath+"_"+num;
+			base = folder+"_"+num+"/"+expName;
 		}
 		return num;
 	}
@@ -145,14 +150,14 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 	protected void process(List<Integer> chunks) {
 		for(Integer i:chunks) {
 			if(i == 0) {
-				panel.acqHasStarted();
+				controller.acquisitionHasStarted();
 			} else if(i == -1) {
-				panel.acqHasEnded();
+				controller.acquisitionHasEnded();;
 			} else if(i == -2) {
-				panel.acqHasStopped();
+				controller.acquisitionHasStopped();
 			} else {
 				int progress = 100*i / getMaxNumberFrames();
-				panel.setProgress(progress);
+				controller.updateAcquisitionProgress(progress);
 			}
 		}
 	}
@@ -160,5 +165,10 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 	@Override
 	public int getMaxNumberFrames() {
 		return settings.numFrames_*settings.exposures_.length;
+	}
+
+	@Override
+	public AcquisitionSettings getSettings() {
+		return settings ;
 	}
 }

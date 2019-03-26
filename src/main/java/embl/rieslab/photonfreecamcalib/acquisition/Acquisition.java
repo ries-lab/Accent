@@ -10,4 +10,6 @@ public interface Acquisition {
 	public boolean isRunning();
 
 	public int getMaxNumberFrames();
+	
+	public AcquisitionSettings getSettings();
 }

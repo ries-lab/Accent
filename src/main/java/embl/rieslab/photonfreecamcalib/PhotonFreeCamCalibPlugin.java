@@ -6,6 +6,7 @@ import org.scijava.plugin.Plugin;
 import org.scijava.plugin.SciJavaPlugin;
 
 import main.java.embl.rieslab.photonfreecamcalib.ui.MainFrame;
+import test.ProcessImage;
 
 @Plugin(type = MenuPlugin.class)
 public class PhotonFreeCamCalibPlugin implements MenuPlugin, SciJavaPlugin {
@@ -50,6 +51,7 @@ public class PhotonFreeCamCalibPlugin implements MenuPlugin, SciJavaPlugin {
 	public void onPluginSelected() {
 		MainFrame frame = new MainFrame(studio);
 		frame.setVisible(true);
+		//ProcessImage.main(studio);
 	}
 
 }
