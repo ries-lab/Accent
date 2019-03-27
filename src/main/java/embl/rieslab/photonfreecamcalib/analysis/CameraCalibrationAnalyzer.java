@@ -6,12 +6,15 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
+import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.micromanager.data.Coords;
 import org.micromanager.data.internal.DefaultCoords;
 
 import ij.ImagePlus;
+import ij.io.FileSaver;
 import ij.io.Opener;
+import ij.process.FloatProcessor;
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
 import main.java.embl.rieslab.photonfreecamcalib.calibration.Calibration;
 import main.java.embl.rieslab.photonfreecamcalib.calibration.CalibrationIO;
@@ -96,7 +99,7 @@ public class CameraCalibrationAnalyzer extends SwingWorker<Integer, Integer> imp
 				break;
 			}
 
-			int exposure = utils.extractExposurefromTiff(avgs[z]);
+			double exposure = utils.extractExposurefromTiff(avgs[z]) / 1000.; // convert to seconds
 
 			for (int j = 0; j < height; j++) {
 
@@ -121,6 +124,7 @@ public class CameraCalibrationAnalyzer extends SwingWorker<Integer, Integer> imp
 		}
 
 		if (!stop) {
+			// fits the data
 			SimpleRegression[] avg_exp_reg = new SimpleRegression[height * width];
 			SimpleRegression[] var_exp_reg = new SimpleRegression[height * width];
 			SimpleRegression[] var_avg_reg = new SimpleRegression[height * width];
@@ -152,24 +156,46 @@ public class CameraCalibrationAnalyzer extends SwingWorker<Integer, Integer> imp
 				publish(100 * i / totlength);
 			}
 
+			// sanity check on the median: replace negative gains by the median
+			double median = StatUtils.percentile(gain, 50);
+			for (int i = 0; i < totlength; i++) {
+				if(Double.isNaN(gain[i]) || Double.compare(gain[i], 0) <= 0) {
+					gain[i] = median;
+				}
+			}
+			
 			if (!stop) {
 				// saves results in the calibration
 				results.width = width;
 				results.height = height;
 				results.baseline = baseline;
-				results.DC_per_t = dcpt;
+				results.dc_per_sec = dcpt;
 				results.gain = gain;
-				results.RN_sq = rnsq;
-				results.TN_sq_per_t = tnsqpt;
+				results.rn_sq = rnsq;
+				results.tn_sq_per_sec = tnsqpt;
 
 				// Writes configuration to disk
-				CalibrationIO.write(new File(new File(avgs[0]).getParentFile().getAbsolutePath()+"\\results.calb"), results);
+				String parentFolder = new File(avgs[0]).getParentFile().getAbsolutePath();
+				CalibrationIO.write(new File(parentFolder+"\\results.calb"), results);
 				
-				
+				// Writes the results as images
+				FileSaver baselineim = new FileSaver(new ImagePlus("Baseline",new FloatProcessor(width, height, results.baseline))); 
+				baselineim.saveAsTiff(parentFolder+"\\"+"Baseline.tiff");
+
+				FileSaver dcpert = new FileSaver(new ImagePlus("DC_per_sec",new FloatProcessor(width, height, results.dc_per_sec))); 
+				dcpert.saveAsTiff(parentFolder+"\\"+"DC_per_sec.tiff");
+
+				FileSaver gainim = new FileSaver(new ImagePlus("Gain",new FloatProcessor(width, height, results.gain))); 
+				gainim.saveAsTiff(parentFolder+"\\"+"Gain.tiff");
+
+				FileSaver rnsqim = new FileSaver(new ImagePlus("RN_sq",new FloatProcessor(width, height, results.rn_sq))); 
+				rnsqim.saveAsTiff(parentFolder+"\\"+"RN_sq.tiff");
+
+				FileSaver tnsqpert = new FileSaver(new ImagePlus("TN_sq_per_sec",new FloatProcessor(width, height, results.tn_sq_per_sec))); 
+				tnsqpert.saveAsTiff(parentFolder+"\\"+"TN_sq_per_sec.tiff");
 			}
 
 		}
-
 
 		if(stop) {
 			publish(-2);

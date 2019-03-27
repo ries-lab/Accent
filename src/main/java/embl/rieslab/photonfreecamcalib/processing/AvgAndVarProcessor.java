@@ -14,6 +14,7 @@ import org.micromanager.data.internal.DefaultCoords;
 import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.process.FloatProcessor;
+import ij.process.ImageProcessor;
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
 import main.java.embl.rieslab.photonfreecamcalib.utils.utils;
 
@@ -75,30 +76,24 @@ public class AvgAndVarProcessor extends SwingWorker<Integer, Integer> implements
 	 			Coords.CoordsBuilder builder = new DefaultCoords.Builder();
 				builder.channel(0).z(0).stagePosition(0).time(0);
 				
-				FloatProcessor avg_im = studio.data().ij().createProcessor(store.getImage(builder.build())).convertToFloatProcessor();
-				FloatProcessor avgsq_im = (FloatProcessor) avg_im.clone();
+				ImageProcessor improc = studio.data().ij().createProcessor(store.getImage(builder.build()));
 						
-				int height = avg_im.getHeight();
-				int width = avg_im.getWidth();
+				int height = improc.getHeight();
+				int width = improc.getWidth();
 
-				FloatProcessor improc = new FloatProcessor(width, height);
+				FloatProcessor avg_im = new FloatProcessor(width, height);
+				FloatProcessor avgsq_im = new FloatProcessor(width, height);
+				avg_im.setFloatArray(improc.getFloatArray());
+				avgsq_im.setFloatArray(improc.getFloatArray());
+				
 				FloatProcessor var_im = new FloatProcessor(width, height);
-
-				// normalizes pixel-wise the avg image and the avg square image by the stack size
-				for(int x=0;x<width;x++) {
-					for(int y=0;y<height;y++){						
-						float val =  avg_im.getf(x, y)/stackSize;
-						avg_im.setf(x, y, val);
-						avgsq_im.setf(x, y, avg_im.getf(x, y)*val);
-					}
-				}
 
 				// loops over the stack and adds pixel-wise the value of each pixels and their square (normalized by the stack size)
 				for(int z=1;z<stackSize;z++) {
 
 					// gets image at position z in the stack
 					builder.time(z);
-					improc = studio.data().ij().createProcessor(store.getImage(builder.build())).convertToFloatProcessor();
+					improc = studio.data().ij().createProcessor(store.getImage(builder.build()));
 					
 					// updates progress bar
 					publish((int) (percentile*counter+percentile*z/stackSize)); 
@@ -115,9 +110,8 @@ public class AvgAndVarProcessor extends SwingWorker<Integer, Integer> implements
 								break;
 							}
 							
-							float val = improc.getf(x, y)/stackSize;
-							avg_im.setf(x, y, val);
-							avgsq_im.setf(x, y, val*improc.getf(x, y));	
+							avg_im.setf(x, y, avg_im.getf(x, y)+improc.getf(x, y));
+							avgsq_im.setf(x, y, avgsq_im.getf(x, y)+improc.getf(x, y)*improc.getf(x, y));	
 						}
 					}
 					
@@ -135,7 +129,12 @@ public class AvgAndVarProcessor extends SwingWorker<Integer, Integer> implements
 				// computes the variance image from the average square and the average values
 				for(int x=0;x<width;x++) {
 					for(int y=0;y<height;y++){
-						var_im.setf(x, y, (float) (avgsq_im.getf(x, y)-avg_im.getf(x, y)*avg_im.getf(x, y)));
+						avg_im.setf(x, y, avg_im.getf(x, y)/stackSize);
+						float var = (float) (avgsq_im.getf(x, y)/stackSize-avg_im.getf(x, y)*avg_im.getf(x, y));
+						if(var <= 0) {
+							var = 65535; // 16bits unsigned max, for IJ 
+						}
+						var_im.setf(x, y, var);
 					}
 				}
 

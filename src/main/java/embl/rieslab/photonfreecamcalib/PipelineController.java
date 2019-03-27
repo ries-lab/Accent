@@ -11,10 +11,10 @@ import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionPanelInt
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionSettings;
 import main.java.embl.rieslab.photonfreecamcalib.analysis.AnalysisPanelInterface;
 import main.java.embl.rieslab.photonfreecamcalib.analysis.Analyzer;
-import main.java.embl.rieslab.photonfreecamcalib.analysis.AnalyzerFactory;
+import main.java.embl.rieslab.photonfreecamcalib.analysis.CameraCalibrationAnalyzer;
+import main.java.embl.rieslab.photonfreecamcalib.processing.AvgAndVarProcessor;
 import main.java.embl.rieslab.photonfreecamcalib.processing.ProcessingPanelInterface;
 import main.java.embl.rieslab.photonfreecamcalib.processing.Processor;
-import main.java.embl.rieslab.photonfreecamcalib.processing.ProcessorFactory;
 
 public class PipelineController {
 
@@ -86,7 +86,7 @@ public class PipelineController {
 			String[] directories = getExposureFolders(path);
 			
 			if(directories.length > 0) {
-				proc = ProcessorFactory.getFactory().getProcessor(studio, directories, this);
+				proc = new AvgAndVarProcessor(studio, directories, this);
 				proc.start();
 			}
 		}
@@ -131,7 +131,7 @@ public class PipelineController {
 			String[] vars = getVarianceImages(path);
 
 			if(avgs.length > 0 && avgs.length == vars.length) {
-				analyzer = AnalyzerFactory.getFactory().getProcessor(avgs, vars, this);
+				analyzer = new CameraCalibrationAnalyzer(avgs, vars, this);
 				analyzer.start();
 			}
 		}
