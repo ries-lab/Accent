@@ -17,7 +17,7 @@ public class AcquisitionFactory {
 	}
 	
 	public Acquisition getAcquisition(Studio studio, AcquisitionSettings settings, PipelineController controller) {
-		if(!settings.simultaneousAcq) {
+		if(!settings.multiplexedAcq) {
 			return new SequentialAcquisition(studio, settings, controller);
 		} else {
 			return new MultiplexedAcquisition(studio, settings, controller);

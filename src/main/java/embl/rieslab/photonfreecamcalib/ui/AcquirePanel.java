@@ -3,7 +3,6 @@ package main.java.embl.rieslab.photonfreecamcalib.ui;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-import org.micromanager.Studio;
 import org.micromanager.data.Datastore;
 
 import ij.gui.Roi;
@@ -52,10 +51,9 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 	private JTextField roiWField;
 	private JTextField roiY0Field;
 	private JSpinner framesSpinner;
-	private JCheckBox acquireSimultaneously;
+	private JCheckBox acquireMultiplexed;
 	private JToggleButton btnStart;
 	
-	private Studio studio_;
 	private PipelineController controller;
 	
 	private JProgressBar acquisitionProgress;
@@ -63,16 +61,16 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 	private final ButtonGroup acquisitionButtonGroup = new ButtonGroup();
 	private JRadioButton saveSingleImg;
 	private JRadioButton saveStacks;
+	private JTextField textField;
 
 	/**
 	 * Create the panel.
 	 */
-	public AcquirePanel(Studio studio, PipelineController controller) {
-		studio_ = studio;
+	public AcquirePanel(String camera, PipelineController controller) {
 		this.controller = controller;
 		
 		// figure out camera name
-		String camName = studio_.getCMMCore().getCameraDevice();
+		String camName = camera;
 		
 		// get date
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -96,7 +94,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		GridBagLayout gbl_pathPanel = new GridBagLayout();
 		gbl_pathPanel.columnWidths = new int[] {30, 0, 0};
 		gbl_pathPanel.rowHeights = new int[] {30, 30};
-		gbl_pathPanel.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
+		gbl_pathPanel.columnWeights = new double[]{0.0, 1.0, 1.0, 0.0};
 		gbl_pathPanel.rowWeights = new double[]{0.0, 0.0};
 		pathPanel.setLayout(gbl_pathPanel);
 		
@@ -124,10 +122,20 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		pathPanel.add(nameTextField, gbc_nameTextField);
 		nameTextField.setColumns(10);
 		
+		textField = new JTextField();
+		GridBagConstraints gbc_textField = new GridBagConstraints();
+		gbc_textField.gridwidth = 2;
+		gbc_textField.insets = new Insets(0, 0, 5, 5);
+		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField.gridx = 1;
+		gbc_textField.gridy = 0;
+		pathPanel.add(textField, gbc_textField);
+		textField.setColumns(10);
+		
 		JLabel pathLabel = new JLabel("Path:");
 		GridBagConstraints gbc_pathLabel = new GridBagConstraints();
 		gbc_pathLabel.weightx = 0.1;
-		gbc_pathLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_pathLabel.insets = new Insets(0, 0, 0, 5);
 		gbc_pathLabel.gridx = 0;
 		gbc_pathLabel.gridy = 1;
 		pathPanel.add(pathLabel, gbc_pathLabel);
@@ -136,7 +144,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		GridBagConstraints gbc_pathTextField = new GridBagConstraints();
 		gbc_pathTextField.gridwidth = 2;
 		gbc_pathTextField.weightx = 1.0;
-		gbc_pathTextField.insets = new Insets(0, 0, 5, 5);
+		gbc_pathTextField.insets = new Insets(0, 0, 0, 5);
 		gbc_pathTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_pathTextField.gridx = 1;
 		gbc_pathTextField.gridy = 1;
@@ -150,7 +158,6 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 			}
 		});
 		GridBagConstraints gbc_pathButton = new GridBagConstraints();
-		gbc_pathButton.insets = new Insets(0, 0, 5, 0);
 		gbc_pathButton.gridx = 3;
 		gbc_pathButton.gridy = 1;
 		pathPanel.add(pathButton, gbc_pathButton);
@@ -163,9 +170,9 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_acqPanel.gridy = 1;
 		add(acqPanel, gbc_acqPanel);
 		GridBagLayout gbl_acqPanel = new GridBagLayout();
-		gbl_acqPanel.columnWidths = new int[] {0, 0, 0, 0, 0, 0};
+		gbl_acqPanel.columnWidths = new int[] {0, 0, 0, 0, 0, 0, 0};
 		gbl_acqPanel.rowHeights = new int[] {0, 0};
-		gbl_acqPanel.columnWeights = new double[]{0.0, 1.0, 1.0, 1.0, 1.0, 0.0};
+		gbl_acqPanel.columnWeights = new double[]{0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0};
 		gbl_acqPanel.rowWeights = new double[]{0.0, 1.0};
 		acqPanel.setLayout(gbl_acqPanel);
 		
@@ -181,7 +188,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		GridBagConstraints gbc_framesSpinner = new GridBagConstraints();
 		gbc_framesSpinner.fill = GridBagConstraints.HORIZONTAL;
 		gbc_framesSpinner.gridwidth = 2;
-		gbc_framesSpinner.insets = new Insets(0, 0, 5, 5);
+		gbc_framesSpinner.insets = new Insets(0, 0, 5, 10);
 		gbc_framesSpinner.gridx = 1;
 		gbc_framesSpinner.gridy = 0;
 		acqPanel.add(framesSpinner, gbc_framesSpinner);
@@ -198,7 +205,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		exposuresTextField.setText("10,500,1000");
 		GridBagConstraints gbc_exposuresTextField = new GridBagConstraints();
 		gbc_exposuresTextField.gridwidth = 2;
-		gbc_exposuresTextField.insets = new Insets(0, 0, 5, 0);
+		gbc_exposuresTextField.insets = new Insets(0, 0, 5, 40);
 		gbc_exposuresTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_exposuresTextField.gridx = 4;
 		gbc_exposuresTextField.gridy = 0;
@@ -215,7 +222,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		
 		JPanel roiPanel = new JPanel();
 		GridBagConstraints gbc_roiPanel = new GridBagConstraints();
-		gbc_roiPanel.gridwidth = 4;
+		gbc_roiPanel.gridwidth = 5;
 		gbc_roiPanel.insets = new Insets(0, 0, 0, 5);
 		gbc_roiPanel.fill = GridBagConstraints.BOTH;
 		gbc_roiPanel.gridx = 1;
@@ -257,6 +264,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		
 		roiHField = new JTextField();
 		GridBagConstraints gbc_roiHField = new GridBagConstraints();
+		gbc_roiHField.insets = new Insets(0, 0, 0, 5);
 		gbc_roiHField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_roiHField.gridx = 3;
 		gbc_roiHField.gridy = 0;
@@ -270,7 +278,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 			}
 		});
 		GridBagConstraints gbc_getroiButton = new GridBagConstraints();
-		gbc_getroiButton.gridx = 5;
+		gbc_getroiButton.gridx = 6;
 		gbc_getroiButton.gridy = 1;
 		acqPanel.add(getroiButton, gbc_getroiButton);
 		
@@ -282,31 +290,20 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		add(optionsPanel, gbc_optionsPanel);
 		GridBagLayout gbl_optionsPanel = new GridBagLayout();
 		gbl_optionsPanel.rowHeights = new int[] {30, 30, 30};
-		gbl_optionsPanel.columnWidths = new int[] {30, 30, 30};
-		gbl_optionsPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+		gbl_optionsPanel.columnWidths = new int[] {0, 50, 30, 50, 0, 0, 0, 0};
+		gbl_optionsPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 		gbl_optionsPanel.rowWeights = new double[]{0.0, 0.0, 0.0};
 		optionsPanel.setLayout(gbl_optionsPanel);
 		
-		btnStart = new JToggleButton("Start");
-		btnStart.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent state) {
-				if (state.getStateChange() == ItemEvent.SELECTED) {
-					runAcquisition();
-				} else {
-					stopAcquisition();
-				}
-			}
-		});
-		
-		acquireSimultaneously = new JCheckBox("Acquire simultaneously");
-		acquireSimultaneously.setSelected(true);
-		acquisitionButtonGroup.add(acquireSimultaneously);
+		acquireMultiplexed = new JCheckBox("Acquire alternatively");
+		acquireMultiplexed.setSelected(true);
+		acquisitionButtonGroup.add(acquireMultiplexed);
 		GridBagConstraints gbc_acquireSimultaneously = new GridBagConstraints();
 		gbc_acquireSimultaneously.anchor = GridBagConstraints.WEST;
 		gbc_acquireSimultaneously.insets = new Insets(0, 0, 5, 5);
 		gbc_acquireSimultaneously.gridx = 0;
 		gbc_acquireSimultaneously.gridy = 0;
-		optionsPanel.add(acquireSimultaneously, gbc_acquireSimultaneously);
+		optionsPanel.add(acquireMultiplexed, gbc_acquireSimultaneously);
 		
 		saveStacks = new JRadioButton("Save tiff-stacks");
 		saveStacks.setSelected(true);
@@ -314,16 +311,9 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		GridBagConstraints saveTiffStack = new GridBagConstraints();
 		saveTiffStack.fill = GridBagConstraints.HORIZONTAL;
 		saveTiffStack.insets = new Insets(0, 0, 5, 5);
-		saveTiffStack.gridx = 1;
+		saveTiffStack.gridx = 2;
 		saveTiffStack.gridy = 0;
 		optionsPanel.add(saveStacks, saveTiffStack);
-		GridBagConstraints gbc_btnStart = new GridBagConstraints();
-		gbc_btnStart.gridheight = 3;
-		gbc_btnStart.fill = GridBagConstraints.BOTH;
-		gbc_btnStart.gridwidth = 4;
-		gbc_btnStart.gridx = 2;
-		gbc_btnStart.gridy = 0;
-		optionsPanel.add(btnStart, gbc_btnStart);
 		
 		JCheckBox acquireSequentially = new JCheckBox("Acquire sequentially");
 		acquisitionButtonGroup.add(acquireSequentially);
@@ -339,14 +329,35 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		GridBagConstraints saveSingleTiffs = new GridBagConstraints();
 		saveSingleTiffs.fill = GridBagConstraints.HORIZONTAL;
 		saveSingleTiffs.insets = new Insets(0, 0, 5, 5);
-		saveSingleTiffs.gridx = 1;
+		saveSingleTiffs.gridx = 2;
 		saveSingleTiffs.gridy = 1;
 		optionsPanel.add(saveSingleImg, saveSingleTiffs);
+		
+		btnStart = new JToggleButton("Start");
+		btnStart.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent state) {
+				if (state.getStateChange() == ItemEvent.SELECTED) {
+					runAcquisition();
+				} else {
+					stopAcquisition();
+				}
+			}
+		});
+		GridBagConstraints gbc_btnStart = new GridBagConstraints();
+		gbc_btnStart.insets = new Insets(10, 10, 10, 10);
+		gbc_btnStart.ipadx = 5;
+		gbc_btnStart.ipady = 5;
+		gbc_btnStart.gridheight = 2;
+		gbc_btnStart.fill = GridBagConstraints.BOTH;
+		gbc_btnStart.gridwidth = 3;
+		gbc_btnStart.gridx = 7;
+		gbc_btnStart.gridy = 1;
+		optionsPanel.add(btnStart, gbc_btnStart);
 		
 		acquisitionProgress = new JProgressBar();
 		GridBagConstraints gbc_acquisitionProgress = new GridBagConstraints();
 		gbc_acquisitionProgress.fill = GridBagConstraints.HORIZONTAL;
-		gbc_acquisitionProgress.gridwidth = 2;
+		gbc_acquisitionProgress.gridwidth = 6;
 		gbc_acquisitionProgress.insets = new Insets(0, 0, 0, 5);
 		gbc_acquisitionProgress.gridx = 0;
 		gbc_acquisitionProgress.gridy = 2;
@@ -445,8 +456,8 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		return new Roi(x,y,w,h);
 	}
 	
-	protected boolean acquireSimultaneoulsy() {
-		return acquireSimultaneously.isSelected();
+	protected boolean acquireMultiplexed() {
+		return acquireMultiplexed.isSelected();
 	}
 	
 	protected boolean acquireStacks() {
@@ -469,7 +480,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 			settings.saveMode_ = Datastore.SaveMode.SINGLEPLANE_TIFF_SERIES;
 		}
 		
-		settings.simultaneousAcq = acquireSimultaneoulsy();
+		settings.multiplexedAcq = acquireMultiplexed();
 				
 		if(settings.folder_ != null || !settings.folder_.equals("")) {
 			controller.startAcquisition(settings);

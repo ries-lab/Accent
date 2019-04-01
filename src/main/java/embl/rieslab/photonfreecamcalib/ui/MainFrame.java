@@ -25,7 +25,7 @@ public class MainFrame extends JFrame {
 		content.setLayout(new BoxLayout(content, BoxLayout.PAGE_AXIS));
 		
 		PipelineController controller = new PipelineController(studio);
-		AcquirePanel acqpane = new AcquirePanel(studio, controller); 
+		AcquirePanel acqpane = new AcquirePanel(studio.getCMMCore().getCameraDevice(), controller); 
 		ProcessPanel procpane = new ProcessPanel(controller);
 		AnalysisPanel analysispane = new AnalysisPanel(controller);
 		controller.setAcquisitionPanel(acqpane);

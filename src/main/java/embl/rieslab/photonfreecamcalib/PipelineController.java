@@ -3,6 +3,8 @@ package main.java.embl.rieslab.photonfreecamcalib;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import org.micromanager.Studio;
 
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.Acquisition;
@@ -88,6 +90,11 @@ public class PipelineController {
 			if(directories.length > 0) {
 				proc = new AvgAndVarProcessor(studio, directories, this);
 				proc.start();
+			} else {
+				JOptionPane.showMessageDialog(null, "No experimental folder found in:\n" + path + 
+						"\n\nExperiment folder names end with <###ms> where ### is the exposure time.",
+						"Error", JOptionPane.INFORMATION_MESSAGE);
+				processingHasStopped();
 			}
 		}
 	}

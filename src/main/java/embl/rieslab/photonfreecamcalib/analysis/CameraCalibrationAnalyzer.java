@@ -8,8 +8,6 @@ import javax.swing.SwingWorker;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
-import org.micromanager.data.Coords;
-import org.micromanager.data.internal.DefaultCoords;
 
 import ij.ImagePlus;
 import ij.io.FileSaver;
@@ -27,6 +25,7 @@ public class CameraCalibrationAnalyzer extends SwingWorker<Integer, Integer> imp
 	private boolean stop = false;
 	private boolean running = false;
 	private Calibration results;
+	private String calibPath;
 	
 	public CameraCalibrationAnalyzer(String[] avgs, String[] vars, PipelineController controller) {
 		if(avgs == null || vars == null || controller == null) {
@@ -41,6 +40,7 @@ public class CameraCalibrationAnalyzer extends SwingWorker<Integer, Integer> imp
 		this.vars = vars;
 		this.controller = controller;
 		results = new Calibration();
+		calibPath = "";
 	}
 	
 	
@@ -68,9 +68,6 @@ public class CameraCalibrationAnalyzer extends SwingWorker<Integer, Integer> imp
 		publish(0);
 
 		int numPoints = avgs.length;
-		
-		Coords.CoordsBuilder builder = new DefaultCoords.Builder();
-		builder.channel(0).stagePosition(0).time(0).z(0);
 
 		Opener opener = new Opener();
 		ImagePlus im = opener.openImage(avgs[0]);
@@ -90,7 +87,7 @@ public class CameraCalibrationAnalyzer extends SwingWorker<Integer, Integer> imp
 		float[] avg_pix;
 		float[] var_pix;
 		for (int z = 0; z < numPoints; z++) { // loops over the different exposures
-			builder.z(z);
+
 			avg_pix = (float[]) opener.openImage(avgs[z]).getProcessor().convertToFloatProcessor().getPixels();
 			var_pix = (float[]) opener.openImage(vars[z]).getProcessor().convertToFloatProcessor().getPixels();
 			
@@ -134,16 +131,17 @@ public class CameraCalibrationAnalyzer extends SwingWorker<Integer, Integer> imp
 			double[] tnsqpt = new double[height * width];
 			double[] gain = new double[height * width];
 			int totlength = width * height;
+						
 			for (int i = 0; i < totlength; i++) {
 				if (stop) {
 					break;
 				}
-
+				
 				avg_exp_reg[i] = new SimpleRegression();
 				avg_exp_reg[i].addData(avg_exp_list.get(i));
 				baseline[i] = avg_exp_reg[i].getIntercept();
 				dcpt[i] = avg_exp_reg[i].getSlope();
-
+				
 				var_exp_reg[i] = new SimpleRegression();
 				var_exp_reg[i].addData(var_exp_list.get(i));
 				rnsq[i] = var_exp_reg[i].getIntercept();
@@ -159,7 +157,7 @@ public class CameraCalibrationAnalyzer extends SwingWorker<Integer, Integer> imp
 			// sanity check on the median: replace negative gains by the median
 			double median = StatUtils.percentile(gain, 50);
 			for (int i = 0; i < totlength; i++) {
-				if(Double.isNaN(gain[i]) || Double.compare(gain[i], 0) <= 0) {
+				if(Double.isNaN(gain[i]) || Double.compare(gain[i], 0) <= 0.0) {
 					gain[i] = median;
 				}
 			}
@@ -176,7 +174,8 @@ public class CameraCalibrationAnalyzer extends SwingWorker<Integer, Integer> imp
 
 				// Writes configuration to disk
 				String parentFolder = new File(avgs[0]).getParentFile().getAbsolutePath();
-				CalibrationIO.write(new File(parentFolder+"\\results.calb"), results);
+				calibPath = parentFolder+"\\results.calb";
+				CalibrationIO.write(new File(calibPath), results);
 				
 				// Writes the results as images
 				FileSaver baselineim = new FileSaver(new ImagePlus("Baseline",new FloatProcessor(width, height, results.baseline))); 
@@ -247,5 +246,11 @@ public class CameraCalibrationAnalyzer extends SwingWorker<Integer, Integer> imp
 	@Override
 	public Calibration getResults() {
 		return results;
+	}
+
+
+	@Override
+	public String getCurrentCalibrationPath() {
+		return calibPath;
 	}
 }

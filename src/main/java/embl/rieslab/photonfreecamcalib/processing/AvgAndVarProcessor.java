@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import org.micromanager.Studio;
@@ -67,17 +68,16 @@ public class AvgAndVarProcessor extends SwingWorker<Integer, Integer> implements
 		double percentile = 100/directories.length;
 		
 		for(String file: directories) {
-						
-		    try {
+			try {
 				Datastore store = studio.data().loadData(file, true);
 				float stackSize = (float) store.getNumImages();
-				
+
 				// gets the first image of the stack
-	 			Coords.CoordsBuilder builder = new DefaultCoords.Builder();
+				Coords.CoordsBuilder builder = new DefaultCoords.Builder();
 				builder.channel(0).z(0).stagePosition(0).time(0);
-				
+
 				ImageProcessor improc = studio.data().ij().createProcessor(store.getImage(builder.build()));
-						
+
 				int height = improc.getHeight();
 				int width = improc.getWidth();
 
@@ -85,54 +85,55 @@ public class AvgAndVarProcessor extends SwingWorker<Integer, Integer> implements
 				FloatProcessor avgsq_im = new FloatProcessor(width, height);
 				avg_im.setFloatArray(improc.getFloatArray());
 				avgsq_im.setFloatArray(improc.getFloatArray());
-				
+
 				FloatProcessor var_im = new FloatProcessor(width, height);
 
-				// loops over the stack and adds pixel-wise the value of each pixels and their square (normalized by the stack size)
-				for(int z=1;z<stackSize;z++) {
+				// loops over the stack and adds pixel-wise the value of each pixels and their
+				// square (normalized by the stack size)
+				for (int z = 1; z < stackSize; z++) {
 
 					// gets image at position z in the stack
 					builder.time(z);
 					improc = studio.data().ij().createProcessor(store.getImage(builder.build()));
-					
-					// updates progress bar
-					publish((int) (percentile*counter+percentile*z/stackSize)); 
-					
-					for(int x=0;x<width;x++) {
 
-						if(stop) {
+					// updates progress bar
+					publish((int) (percentile * counter + percentile * z / stackSize));
+
+					for (int x = 0; x < width; x++) {
+
+						if (stop) {
 							break;
 						}
-						
-						for(int y=0;y<height;y++){
-							
-							if(stop) {
+
+						for (int y = 0; y < height; y++) {
+
+							if (stop) {
 								break;
 							}
-							
-							avg_im.setf(x, y, avg_im.getf(x, y)+improc.getf(x, y));
-							avgsq_im.setf(x, y, avgsq_im.getf(x, y)+improc.getf(x, y)*improc.getf(x, y));	
+
+							avg_im.setf(x, y, avg_im.getf(x, y) + improc.getf(x, y));
+							avgsq_im.setf(x, y, avgsq_im.getf(x, y) + improc.getf(x, y) * improc.getf(x, y));
 						}
 					}
-					
-					if(stop) {
+
+					if (stop) {
 						break;
 					}
 
 				}
-				
-				if(stop) {
+
+				if (stop) {
 					store.close();
 					break;
 				}
 
 				// computes the variance image from the average square and the average values
-				for(int x=0;x<width;x++) {
-					for(int y=0;y<height;y++){
-						avg_im.setf(x, y, avg_im.getf(x, y)/stackSize);
-						float var = (float) (avgsq_im.getf(x, y)/stackSize-avg_im.getf(x, y)*avg_im.getf(x, y));
-						if(var <= 0) {
-							var = 65535; // 16bits unsigned max, for IJ 
+				for (int x = 0; x < width; x++) {
+					for (int y = 0; y < height; y++) {
+						avg_im.setf(x, y, avg_im.getf(x, y) / stackSize);
+						float var = (float) (avgsq_im.getf(x, y) / stackSize - avg_im.getf(x, y) * avg_im.getf(x, y));
+						if (var <= 0.0) {
+							var = 65535; // 16bits unsigned max, for IJ
 						}
 						var_im.setf(x, y, var);
 					}
@@ -140,22 +141,24 @@ public class AvgAndVarProcessor extends SwingWorker<Integer, Integer> implements
 
 				// save as images
 				int exposure = utils.extractExposurefromFolderName(file);
-				
-				FileSaver avgsaver = new FileSaver(new ImagePlus("Avg_"+exposure+"ms",avg_im)); 
-				avgsaver.saveAsTiff(getParentPath(file)+"/"+"Avg_"+exposure+"ms.tiff");
-				
-				FileSaver sdsaver = new FileSaver(new ImagePlus("Var_"+exposure+"ms",var_im)); 
-				sdsaver.saveAsTiff(getParentPath(file)+"/"+"Var_"+exposure+"ms.tiff");
-				
-				counter ++;
-			
+
+				FileSaver avgsaver = new FileSaver(new ImagePlus("Avg_" + exposure + "ms", avg_im));
+				avgsaver.saveAsTiff(getParentPath(file) + "/" + "Avg_" + exposure + "ms.tiff");
+
+				FileSaver sdsaver = new FileSaver(new ImagePlus("Var_" + exposure + "ms", var_im));
+				sdsaver.saveAsTiff(getParentPath(file) + "/" + "Var_" + exposure + "ms.tiff");
+
+				counter++;
+
 				store.close();
-				
-		    } catch (IOException e) {
+
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(null, "Unable to load:\n" + file + "\n\nWas it acquired with Micro-Manager?",
+						"Error", JOptionPane.INFORMATION_MESSAGE);
+
 				e.printStackTrace();
 				publish(STOP);
-			}
-		}
+			}		}
 		
 		if(stop) {
 			publish(STOP);
@@ -165,7 +168,7 @@ public class AvgAndVarProcessor extends SwingWorker<Integer, Integer> implements
 		
 		return 0;
 	}
-
+	
 	@Override
 	protected void process(List<Integer> chunks) {
 		for(Integer i:chunks) {

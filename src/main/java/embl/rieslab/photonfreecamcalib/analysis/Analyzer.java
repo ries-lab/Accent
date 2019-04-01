@@ -3,6 +3,8 @@ package main.java.embl.rieslab.photonfreecamcalib.analysis;
 import main.java.embl.rieslab.photonfreecamcalib.calibration.Calibration;
 
 public interface Analyzer {
+	
+	public String getCurrentCalibrationPath();
 
 	public void start();
 	
