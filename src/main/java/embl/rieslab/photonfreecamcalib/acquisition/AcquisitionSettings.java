@@ -18,6 +18,8 @@ public class AcquisitionSettings {
 	
 	public Datastore.SaveMode saveMode_ = Datastore.SaveMode.MULTIPAGE_TIFF;
 	
-	public boolean multiplexedAcq = false;
+	public boolean multiplexedAcq = true;
+	
+	public boolean onlineAnalysis = true;
 	
 }

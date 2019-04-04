@@ -2,7 +2,9 @@ package main.java.embl.rieslab.photonfreecamcalib.acquisition;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.SwingWorker;
 
@@ -14,6 +16,7 @@ import org.micromanager.data.Datastore.SaveMode;
 import org.micromanager.data.internal.DefaultCoords;
 
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
+import main.java.embl.rieslab.photonfreecamcalib.data.FloatImage;
 
 public class SequentialAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
 	
@@ -177,5 +180,11 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 	@Override
 	public AcquisitionSettings getSettings() {
 		return settings ;
+	}
+
+	@Override
+	public ArrayList<ArrayBlockingQueue<FloatImage>> getQueues() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

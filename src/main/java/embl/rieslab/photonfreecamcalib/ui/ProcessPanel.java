@@ -112,6 +112,7 @@ public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
 
 
 	protected void startProcessing() {
+		System.out.println("Processing demanded by panel");
 		controller.startProcessor(textField.getText());
 	}
 
@@ -138,6 +139,9 @@ public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
 	public void processingHasStarted() {
 		progressBar.setValue(0);
 		btnProcess.setText("Stop");
+		if(!btnProcess.isSelected()) {
+			btnProcess.setSelected(true);
+		}
 	}
 
 

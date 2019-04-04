@@ -2,7 +2,9 @@ package main.java.embl.rieslab.photonfreecamcalib.acquisition;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.SwingWorker;
 
@@ -14,6 +16,7 @@ import org.micromanager.data.Datastore.SaveMode;
 import org.micromanager.data.internal.DefaultCoords;
 
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
+import main.java.embl.rieslab.photonfreecamcalib.data.FloatImage;
 
 public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
 
@@ -27,6 +30,8 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 	private final static int DONE = -1;
 	private final static int STOP = -2;
 	
+	private ArrayList<ArrayBlockingQueue<FloatImage>> queues;
+	
 	public MultiplexedAcquisition(Studio studio, AcquisitionSettings settings, PipelineController controller) {
 		if(studio == null || settings == null || controller == null) {
 			throw new NullPointerException();
@@ -35,6 +40,11 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 		this.studio = studio;
 		this.settings = settings;
 		this.controller = controller;
+		
+		queues = new ArrayList<ArrayBlockingQueue<FloatImage>>();
+		for(int i=0;i<settings.exposures_.length;i++) {
+			queues.add(new ArrayBlockingQueue<FloatImage>(settings.numFrames_));
+		}
 	}
 	
 	@Override
@@ -115,10 +125,17 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 	
 					try {
 						stores[i].putImage(image);
+						
+						if(settings.multiplexedAcq) {
+							// add to queue
+							queues.get(i).add(new FloatImage(image.getWidth(), image.getHeight(), studio.data().ij().createProcessor(image).getFloatArray(), settings.exposures_[i]));
+						}
 					} catch (IOException e) {
 						stop = true;
 						e.printStackTrace();
 					}
+					
+					
 				}
 
 				if (frame % 30 == 0) {
@@ -177,5 +194,10 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 	@Override
 	public AcquisitionSettings getSettings() {
 		return settings;
+	}
+
+	@Override
+	public ArrayList<ArrayBlockingQueue<FloatImage>> getQueues() {
+		return queues;
 	}
 }

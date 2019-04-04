@@ -27,13 +27,10 @@ public class MainFrame extends JFrame {
 		PipelineController controller = new PipelineController(studio);
 		AcquirePanel acqpane = new AcquirePanel(studio.getCMMCore().getCameraDevice(), controller); 
 		ProcessPanel procpane = new ProcessPanel(controller);
-		AnalysisPanel analysispane = new AnalysisPanel(controller);
 		controller.setAcquisitionPanel(acqpane);
 		controller.setProcessingPanel(procpane);
-		controller.setAnalysisPanel(analysispane);
 		content.add(acqpane);
 		content.add(procpane);
-		content.add(analysispane);
 		
 		this.setContentPane(content);
 		this.pack();
