@@ -26,6 +26,8 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 	private boolean stop = false;
 	private boolean running = false;
 	
+	private long startTime, stopTime;
+	
 	private final static int START = 0;
 	private final static int DONE = -1;
 	private final static int STOP = -2;
@@ -38,6 +40,9 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 		this.studio = studio;
 		this.settings = settings;
 		this.controller = controller;
+		
+		startTime = 0;
+		stopTime = 0;
 	}
 	
 	@Override
@@ -59,7 +64,7 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 
 	@Override
 	protected Integer doInBackground() throws Exception {
-	
+		startTime = System.currentTimeMillis();
 		int numExpo = 0;
 	
 		// clears ROIs and apply the ROI from the settings if non-null 
@@ -137,6 +142,9 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 			numExpo ++;			
 		}
 		
+
+		stopTime = System.currentTimeMillis();
+		
 		if(stop) {
 			publish(STOP);
 		} else {
@@ -186,5 +194,10 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 	public ArrayList<ArrayBlockingQueue<FloatImage>> getQueues() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public double getExecutionTime() {
+		return ((double) stopTime-startTime)/1000.0;
 	}
 }

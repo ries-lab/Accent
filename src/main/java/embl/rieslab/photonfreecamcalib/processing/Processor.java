@@ -8,4 +8,5 @@ public interface Processor {
 	
 	public boolean isRunning();
 	
+	public double getExecutionTime();
 }

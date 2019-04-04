@@ -26,6 +26,8 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 	private boolean stop = false;
 	private boolean running = false;
 
+	private long startTime, stopTime;
+	
 	private final static int START = 0;
 	private final static int DONE = -1;
 	private final static int STOP = -2;
@@ -43,8 +45,11 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 		
 		queues = new ArrayList<ArrayBlockingQueue<FloatImage>>();
 		for(int i=0;i<settings.exposures_.length;i++) {
-			queues.add(new ArrayBlockingQueue<FloatImage>(settings.numFrames_));
+			queues.add(new ArrayBlockingQueue<FloatImage>(200));
 		}
+		
+		startTime = 0;
+		stopTime = 0;
 	}
 	
 	@Override
@@ -67,6 +72,8 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 	@Override
 	protected Integer doInBackground() throws Exception {
 			
+		startTime = System.currentTimeMillis();
+		
 		// creates an array of stores
 		Datastore[] stores = new Datastore[settings.exposures_.length];
 		for(int i=0;i<settings.exposures_.length;i++) {
@@ -126,7 +133,7 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 					try {
 						stores[i].putImage(image);
 						
-						if(settings.multiplexedAcq) {
+						if(settings.onlineAnalysis) {
 							// add to queue
 							queues.get(i).add(new FloatImage(image.getWidth(), image.getHeight(), studio.data().ij().createProcessor(image).getFloatArray(), settings.exposures_[i]));
 						}
@@ -138,7 +145,8 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 					
 				}
 
-				if (frame % 30 == 0) {
+				if (frame % 100 == 0) {
+					System.out.println("Frame number "+frame);
 					publish(frame);
 				}
 
@@ -146,6 +154,8 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 			}
 		} 
 		
+		stopTime = System.currentTimeMillis();
+
 		if(stop) {
 			publish(STOP);
 		} else {
@@ -199,5 +209,10 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 	@Override
 	public ArrayList<ArrayBlockingQueue<FloatImage>> getQueues() {
 		return queues;
+	}
+	
+	@Override
+	public double getExecutionTime() {
+		return ((double) stopTime-startTime)/1000.0;
 	}
 }

@@ -18,5 +18,7 @@ public interface Acquisition {
 	public AcquisitionSettings getSettings();
 	
 	public ArrayList<ArrayBlockingQueue<FloatImage>> getQueues();
+	
+	public double getExecutionTime();
 }
     

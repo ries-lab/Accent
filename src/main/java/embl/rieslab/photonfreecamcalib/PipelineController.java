@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 import org.micromanager.Studio;
+import org.micromanager.data.Datastore;
 
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.Acquisition;
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionFactory;
@@ -24,6 +25,8 @@ public class PipelineController {
 	private AcquisitionSettings acqSettings;
 	private ProcessingPanelInterface procPanel;
 	private Processor proc;
+	
+	private boolean acqDone, procDone;
 		
 	
 	public PipelineController(Studio studio) {
@@ -39,11 +42,13 @@ public class PipelineController {
 	
 	public void startAcquisition(AcquisitionSettings settings) {
 		if(isReady() && (acq == null || !acq.isRunning())) {
+			acqDone = false;
 			acqSettings = settings;
 			acq = AcquisitionFactory.getFactory().getAcquisition(studio, acqSettings, this);
 			acq.start();
 			
-			if(acqSettings.multiplexedAcq) {
+			if(acqSettings.onlineAnalysis) {
+				procDone = false;
 				proc = new ConcurrentCalibrationProcessor(acqSettings.folder_, acq.getQueues(), this);
 				proc.start();
 			} 
@@ -54,6 +59,7 @@ public class PipelineController {
 	public void stopAcquisition() {
 		if(acq != null) {
 			acq.stop();
+			acqDone = true;
 		}
 	}
 	
@@ -71,8 +77,10 @@ public class PipelineController {
 	}
 	
 	public void acquisitionHasEnded() {
+		acqDone = true;
 		acqPanel.acqHasEnded();
 		setProcessorParameters(acqSettings.folder_);
+		System.out.println("Acquisition running time (s): "+acq.getExecutionTime());
 	}	
 	
 	//////// Processing
@@ -87,6 +95,7 @@ public class PipelineController {
 		if(isReady() && path != null &&
 				(isAcqPathKnown(path) || new File(path).exists()) && (proc == null || !proc.isRunning())) {
 			
+			procDone = false;
 			String[] directories = getExposureFolders(path);
 			
 			if(directories.length > 0) {
@@ -103,6 +112,7 @@ public class PipelineController {
 
 	public void stopProcessor() {
 		if(proc != null) {
+			procDone = true;
 			proc.stop();
 		}
 	}
@@ -120,11 +130,17 @@ public class PipelineController {
 	}
 	
 	public void processingHasEnded() {
+		procDone = true;
 		procPanel.processingHasEnded();
+		System.out.println("Processing running time (s): "+proc.getExecutionTime());
 	}
 	
 
 	//////////////////////// Other methods
+	
+	public boolean isAcquisitionDone() {
+		return acqDone;
+	}
 	
 	public void setAcquisitionPanel(AcquisitionPanelInterface acqpane) {
 		this.acqPanel = acqpane;
@@ -137,7 +153,7 @@ public class PipelineController {
 	public boolean isReady() {
 		return (acqPanel != null && procPanel != null);
 	}
-	
+		
 	/////////////////////// Private methods
 	
 	private String[] getExposureFolders(String path) {
@@ -158,4 +174,5 @@ public class PipelineController {
 		}
 		return false;
 	}
+
 }

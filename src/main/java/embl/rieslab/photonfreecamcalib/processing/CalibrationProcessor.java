@@ -33,6 +33,8 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 	private boolean stop = false;
 	private boolean running = false;
 
+	private long startTime, stopTime;
+	
 	private Calibration results;
 	private String calibPath;
 	
@@ -40,16 +42,19 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 	private final static int DONE = -1;
 	private final static int STOP = -2;
 	
-	public CalibrationProcessor(Studio studio, String[] directories, PipelineController controller) {
-		if(studio == null || directories == null || controller == null) {
+	public CalibrationProcessor(Studio studio, String[] directories, PipelineController testPipelineController) {
+		if(studio == null || directories == null || testPipelineController == null) {
 			throw new NullPointerException();
 		}
 		
 		this.studio = studio;
 		this.directories = directories;
-		this.controller = controller;
+		this.controller = testPipelineController;
 		
 		results = new Calibration();
+		
+		startTime = 0;
+		stopTime = 0;
 	}
 	
 	
@@ -73,7 +78,8 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 
 	@Override
 	protected Integer doInBackground() throws Exception {
-		
+
+		startTime = System.currentTimeMillis();
 		publish(START);
 
 		double percentile = 100/(directories.length+1);
@@ -285,11 +291,14 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 			}
 		}
 
+		stopTime = System.currentTimeMillis();
+		
 		if(stop) {
 			publish(STOP);
 		} else {
 			publish(DONE);
 		}
+
 		
 		return 0;
 	}
@@ -313,5 +322,11 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 	
 	public static String getParentPath(String dataFolder) {
 		return new File(dataFolder).getParent();
+	}
+
+
+	@Override
+	public double getExecutionTime() {
+		return ((double) stopTime-startTime)/1000.0;
 	}
 }

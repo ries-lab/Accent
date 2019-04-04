@@ -26,6 +26,8 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 	private Calibration results;
 	private String calibPath;
 	private final String folder;
+
+	private long startTime, stopTime;
 	
 	private final static int START = 0;
 	private final static int DONE = -1;
@@ -33,8 +35,8 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 	
 	private final ArrayList<ArrayBlockingQueue<FloatImage>> queues;
 	
-	public ConcurrentCalibrationProcessor(String folder, ArrayList<ArrayBlockingQueue<FloatImage>> queues, PipelineController controller) {
-		if(queues == null|| controller == null) {
+	public ConcurrentCalibrationProcessor(String folder, ArrayList<ArrayBlockingQueue<FloatImage>> queues, PipelineController testPipelineController) {
+		if(queues == null|| testPipelineController == null) {
 			throw new NullPointerException();
 		}
 		
@@ -46,9 +48,12 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 		
 		this.folder = folder;
 		this.queues = queues;
-		this.controller = controller;
+		this.controller = testPipelineController;
 		
 		results = new Calibration();
+		
+		startTime = 0;
+		stopTime = 0;
 	}
 	
 	
@@ -72,9 +77,7 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 	
 	@Override
 	protected Integer doInBackground() throws Exception {
-		
-		System.out.println("Queue size is "+queues.size());
-		
+		startTime = System.currentTimeMillis();
 		publish(START);	
 
 		FloatImage[] avgs = new FloatImage[queues.size()];
@@ -86,23 +89,19 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 			boolean allEmpty = true;
 			for(int q=0;q<queues.size();q++) {
 				if(!queues.get(q).isEmpty()) {
-					System.out.println("Queue "+q+" has "+queues.get(q).size()+" elements");
 					allEmpty = false;
 					
 					// first round
 					if(avgs[q] == null) {
-						System.out.println("First round with "+q);
 						stackSizes[q] = 1;
 						avgs[q] = queues.get(q).poll();
 						vars[q] = avgs[q].copy();
 						vars[q].square();
 					} else {
-						System.out.println("Not a first round");
 						// poll the newest image
 						FloatImage im = queues.get(q).poll();
 						avgs[q].addPixels(im.getPixels());
 						vars[q].addSquarePixels(im.getPixels());
-						System.out.println("Round"+stackSizes[q]+" with "+q);
 						stackSizes[q]++;
 					}
 				}
@@ -110,32 +109,16 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 			
 			// if stopped by the user
 			if(stop){
-				System.out.println("Stopping demanded");
 				done = true;
 			}
 			
 			// all queues were empty
-			if(allEmpty) {
-				System.out.println("- All queues are empty, stopping ?");
-				
-				// waits 2 second, then test if all empty
-				Thread.sleep(2000);
+			if(allEmpty && controller.isAcquisitionDone()) {
 				done = true;
-				for(int q=0;q<queues.size();q++) {
-					if(!queues.get(q).isEmpty()) {
-						done = false;
-					}
-				}
-				if(done) {
-					System.out.println("All queues are empty, stopping at size: "+stackSizes[0]);
-				} else {
-					System.out.println("Resume, queues are not empty anymore");
-				}
 			}
 			
 		}
 
-		System.out.println("Done with queues");
 		publish(33);
 		
 		// instantiates the arrays for the linear regression
@@ -246,35 +229,38 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 				results.tn_sq_per_sec = tnsqpt;
 
 				// Writes configuration to disk
-				String parentFolder = new File(folder).getParentFile().getAbsolutePath();
-				calibPath = parentFolder+"\\results.calb";
+				calibPath = folder+"\\results.calb";
 				CalibrationIO.write(new File(calibPath), results);
 				
 				// Writes the results as images
 				FileSaver baselineim = new FileSaver(new ImagePlus("Baseline",new FloatProcessor(width, height, results.baseline))); 
-				baselineim.saveAsTiff(parentFolder+"\\"+"Baseline.tiff");
+				baselineim.saveAsTiff(folder+"\\"+"Baseline.tiff");
 
 				FileSaver dcpert = new FileSaver(new ImagePlus("DC_per_sec",new FloatProcessor(width, height, results.dc_per_sec))); 
-				dcpert.saveAsTiff(parentFolder+"\\"+"DC_per_sec.tiff");
+				dcpert.saveAsTiff(folder+"\\"+"DC_per_sec.tiff");
 
 				FileSaver gainim = new FileSaver(new ImagePlus("Gain",new FloatProcessor(width, height, results.gain))); 
-				gainim.saveAsTiff(parentFolder+"\\"+"Gain.tiff");
+				gainim.saveAsTiff(folder+"\\"+"Gain.tiff");
 
 				FileSaver rnsqim = new FileSaver(new ImagePlus("RN_sq",new FloatProcessor(width, height, results.rn_sq))); 
-				rnsqim.saveAsTiff(parentFolder+"\\"+"RN_sq.tiff");
+				rnsqim.saveAsTiff(folder+"\\"+"RN_sq.tiff");
 
 				FileSaver tnsqpert = new FileSaver(new ImagePlus("TN_sq_per_sec",new FloatProcessor(width, height, results.tn_sq_per_sec))); 
-				tnsqpert.saveAsTiff(parentFolder+"\\"+"TN_sq_per_sec.tiff");
+				tnsqpert.saveAsTiff(folder+"\\"+"TN_sq_per_sec.tiff");
 			}
 		}
 
 		publish(99);
+		
+		stopTime = System.currentTimeMillis();
 		
 		if(stop) {
 			publish(STOP);
 		} else {
 			publish(DONE);
 		}
+		
+
 		
 		return 0;
 	}
@@ -293,5 +279,10 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 				controller.updateProcessorProgress(progress);
 			}
 		}
+	}
+	
+	@Override
+	public double getExecutionTime() {
+		return ((double) stopTime-startTime)/1000.0;
 	}
 }
