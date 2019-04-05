@@ -1,46 +1,44 @@
 package main.java.embl.rieslab.photonfreecamcalib.ui;
 
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
-
-import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
-import main.java.embl.rieslab.photonfreecamcalib.processing.ProcessingPanelInterface;
-
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JProgressBar;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.border.TitledBorder;
 
-public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
+import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
+import main.java.embl.rieslab.photonfreecamcalib.generator.GeneratorPanelInterface;
+
+public class MapGenerationPanel extends JPanel  implements GeneratorPanelInterface {
 	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5981823617164261234L;
+	private static final long serialVersionUID = -7526823187498218297L;
 	private JTextField textField;
-	private JProgressBar progressBar;
-	private JToggleButton btnProcess;
+	private JToggleButton btnGenerate;
 	private PipelineController controller;
+	private JTextField exposureTextfield;
 
 	/**
 	 * Create the panel.
 	 */
-	public ProcessPanel(PipelineController controller) {
+	public MapGenerationPanel(PipelineController controller) {
 		this.controller = controller;
 		
-		setBorder(new TitledBorder(null, "Process", TitledBorder.LEFT, TitledBorder.TOP, null, null));
+		setBorder(new TitledBorder(null, "Generate", TitledBorder.LEFT, TitledBorder.TOP, null, null));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] {0, 0, 0};
 		gridBagLayout.rowHeights = new int[] {30, 40};
@@ -57,6 +55,7 @@ public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
 		add(lblPath, gbc_lblPath);
 		
 		textField = new JTextField();
+		textField.setToolTipText("Path to the calibration file (.calb)");
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
@@ -66,6 +65,7 @@ public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
 		textField.setColumns(10);
 		
 		JButton button = new JButton("...");
+		button.setToolTipText("Press to select path to the calibration file (.calb).");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {    	
 				showPathSelectionWindow();
@@ -76,18 +76,11 @@ public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
 		gbc_button.gridx = 2;
 		gbc_button.gridy = 0;
 		add(button, gbc_button);
+
 		
-		progressBar = new JProgressBar();
-		GridBagConstraints gbc_progressBar = new GridBagConstraints();
-		gbc_progressBar.fill = GridBagConstraints.HORIZONTAL;
-		gbc_progressBar.gridwidth = 2;
-		gbc_progressBar.insets = new Insets(0, 5, 0, 5);
-		gbc_progressBar.gridx = 0;
-		gbc_progressBar.gridy = 1;
-		add(progressBar, gbc_progressBar);
-		
-		btnProcess = new JToggleButton("Process");
-		btnProcess.addItemListener(new ItemListener() {
+		btnGenerate = new JToggleButton("Generate Maps");
+		btnGenerate.setToolTipText("Press to generate Avg and Var maps for the different exposures.");
+		btnGenerate.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent state) {
 				if (state.getStateChange() == ItemEvent.SELECTED) {
 					startProcessing();
@@ -97,11 +90,29 @@ public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
 			}
 		});
 		
+		JLabel lblExposures = new JLabel("Exposures:");
+		GridBagConstraints gbc_lblExposures = new GridBagConstraints();
+		gbc_lblExposures.anchor = GridBagConstraints.EAST;
+		gbc_lblExposures.insets = new Insets(0, 0, 0, 5);
+		gbc_lblExposures.gridx = 0;
+		gbc_lblExposures.gridy = 1;
+		add(lblExposures, gbc_lblExposures);
+		
+		exposureTextfield = new JTextField();
+		exposureTextfield.setToolTipText("Enter the exposures (comma separated) for which you want to generate the maps.");
+		GridBagConstraints gbc_exposureTextfield = new GridBagConstraints();
+		gbc_exposureTextfield.insets = new Insets(0, 0, 0, 5);
+		gbc_exposureTextfield.fill = GridBagConstraints.HORIZONTAL;
+		gbc_exposureTextfield.gridx = 1;
+		gbc_exposureTextfield.gridy = 1;
+		add(exposureTextfield, gbc_exposureTextfield);
+		exposureTextfield.setColumns(10);
+		
 		GridBagConstraints gbc_btnProcess = new GridBagConstraints();
 		gbc_btnProcess.fill = GridBagConstraints.BOTH;
 		gbc_btnProcess.gridx = 2;
 		gbc_btnProcess.gridy = 1;
-		add(btnProcess, gbc_btnProcess);
+		add(btnGenerate, gbc_btnProcess);
 
 	}
 
@@ -112,6 +123,7 @@ public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
 
 
 	protected void startProcessing() {
+		System.out.println("Processing demanded by panel");
 		controller.startProcessor(textField.getText());
 	}
 
@@ -129,38 +141,21 @@ public class ProcessPanel extends JPanel implements ProcessingPanelInterface {
 
 
 	@Override
-	public void setProgress(int progress) {
-		progressBar.setValue(progress);
-	}
-
-
-	@Override
 	public void processingHasStarted() {
-		progressBar.setValue(0);
-		btnProcess.setText("Stop");
-		if(!btnProcess.isSelected()) {
-			btnProcess.setSelected(true);
-		}
+		btnGenerate.setText("Stop");
 	}
 
 
 	@Override
 	public void processingHasStopped() {
-		btnProcess.setText("Start");
-		btnProcess.setSelected(false);
+		btnGenerate.setText("Generate Maps");
+		btnGenerate.setSelected(false);
 	}
 
 
 	@Override
 	public void processingHasEnded() {
-		progressBar.setValue(100);
-		btnProcess.setText("Start");
-		btnProcess.setSelected(false);
-	}
-
-
-	@Override
-	public void setDataPath(String path) {
-		textField.setText(path);
+		btnGenerate.setText("Generate Maps");
+		btnGenerate.setSelected(false);
 	}
 }

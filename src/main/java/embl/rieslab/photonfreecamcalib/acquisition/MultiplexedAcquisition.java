@@ -133,7 +133,7 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 					try {
 						stores[i].putImage(image);
 						
-						if(settings.onlineAnalysis) {
+						if(settings.parallelProcessing) {
 							// add to queue
 							queues.get(i).add(new FloatImage(image.getWidth(), image.getHeight(), studio.data().ij().createProcessor(image).getFloatArray(), settings.exposures_[i]));
 						}

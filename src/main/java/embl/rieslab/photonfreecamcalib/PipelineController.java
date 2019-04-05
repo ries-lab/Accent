@@ -47,7 +47,7 @@ public class PipelineController {
 			acq = AcquisitionFactory.getFactory().getAcquisition(studio, acqSettings, this);
 			acq.start();
 			
-			if(acqSettings.onlineAnalysis) {
+			if(acqSettings.parallelProcessing) {
 				procDone = false;
 				proc = new ConcurrentCalibrationProcessor(acqSettings.folder_, acq.getQueues(), this);
 				proc.start();

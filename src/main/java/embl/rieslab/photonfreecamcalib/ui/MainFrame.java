@@ -8,7 +8,7 @@ import org.micromanager.Studio;
 
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
 
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame{
 
 	/**
 	 * 
@@ -33,6 +33,9 @@ public class MainFrame extends JFrame {
 		content.add(procpane);
 		
 		this.setContentPane(content);
+		
+		MapGenerationPanel mapGenerationPanel = new MapGenerationPanel((PipelineController) null);
+		content.add(mapGenerationPanel);
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);

@@ -51,23 +51,32 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 	private JTextField roiWField;
 	private JTextField roiY0Field;
 	private JSpinner framesSpinner;
-	private JCheckBox acquireMultiplexed;
+	private JRadioButton acquireMultiplexed;
 	private JToggleButton btnStart;
 	
-	private PipelineController controller;
 	
 	private JProgressBar acquisitionProgress;
 	private final ButtonGroup saveModeButtonGroup = new ButtonGroup();
 	private final ButtonGroup acquisitionButtonGroup = new ButtonGroup();
 	private JRadioButton saveSingleImg;
 	private JRadioButton saveStacks;
-	private JTextField textField;
+	private JTextField txtEnterAName;
+	private JCheckBox onlineProcCheckBox;
 
+	private boolean alternatedAcquisition;
+	private boolean saveAsStacks;
+	private boolean parallelProcessing;
+	
+	private PipelineController controller;
 	/**
 	 * Create the panel.
 	 */
 	public AcquirePanel(String camera, PipelineController controller) {
 		this.controller = controller;
+		
+		alternatedAcquisition = true;
+		saveAsStacks = true;
+		parallelProcessing = true;
 		
 		// figure out camera name
 		String camName = camera;
@@ -122,15 +131,16 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		pathPanel.add(nameTextField, gbc_nameTextField);
 		nameTextField.setColumns(10);
 		
-		textField = new JTextField();
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.gridwidth = 2;
-		gbc_textField.insets = new Insets(0, 0, 5, 5);
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 0;
-		pathPanel.add(textField, gbc_textField);
-		textField.setColumns(10);
+		txtEnterAName = new JTextField();
+		txtEnterAName.setText("Enter a name for the acquisition.");
+		GridBagConstraints gbc_txtEnterAName = new GridBagConstraints();
+		gbc_txtEnterAName.gridwidth = 2;
+		gbc_txtEnterAName.insets = new Insets(0, 0, 5, 5);
+		gbc_txtEnterAName.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtEnterAName.gridx = 1;
+		gbc_txtEnterAName.gridy = 0;
+		pathPanel.add(txtEnterAName, gbc_txtEnterAName);
+		txtEnterAName.setColumns(10);
 		
 		JLabel pathLabel = new JLabel("Path:");
 		GridBagConstraints gbc_pathLabel = new GridBagConstraints();
@@ -152,6 +162,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		pathTextField.setColumns(10);
 		
 		JButton pathButton = new JButton("...");
+		pathButton.setToolTipText("Press to acquire the calibration frames.");
 		pathButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {    	
 				showPathSelectionWindow();
@@ -295,7 +306,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		gbl_optionsPanel.rowWeights = new double[]{0.0, 0.0, 0.0};
 		optionsPanel.setLayout(gbl_optionsPanel);
 		
-		acquireMultiplexed = new JCheckBox("Acquire alternatively");
+		acquireMultiplexed = new JRadioButton("Acquire alternatively");
 		acquireMultiplexed.setSelected(true);
 		acquisitionButtonGroup.add(acquireMultiplexed);
 		GridBagConstraints gbc_acquireSimultaneously = new GridBagConstraints();
@@ -315,7 +326,15 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		saveTiffStack.gridy = 0;
 		optionsPanel.add(saveStacks, saveTiffStack);
 		
-		JCheckBox acquireSequentially = new JCheckBox("Acquire sequentially");
+		onlineProcCheckBox = new JCheckBox("Online processing");
+		GridBagConstraints gbc_onlineProcCheckBox = new GridBagConstraints();
+		gbc_onlineProcCheckBox.gridwidth = 5;
+		gbc_onlineProcCheckBox.insets = new Insets(0, 0, 5, 5);
+		gbc_onlineProcCheckBox.gridx = 4;
+		gbc_onlineProcCheckBox.gridy = 0;
+		optionsPanel.add(onlineProcCheckBox, gbc_onlineProcCheckBox);
+		
+		JRadioButton acquireSequentially = new JRadioButton("Acquire sequentially");
 		acquisitionButtonGroup.add(acquireSequentially);
 		GridBagConstraints gbc_acquireSequentially = new GridBagConstraints();
 		gbc_acquireSequentially.fill = GridBagConstraints.HORIZONTAL;
@@ -333,7 +352,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		saveSingleTiffs.gridy = 1;
 		optionsPanel.add(saveSingleImg, saveSingleTiffs);
 		
-		btnStart = new JToggleButton("Start");
+		btnStart = new JToggleButton("Acquire");
 		btnStart.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent state) {
 				if (state.getStateChange() == ItemEvent.SELECTED) {
@@ -349,15 +368,14 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_btnStart.ipady = 5;
 		gbc_btnStart.gridheight = 2;
 		gbc_btnStart.fill = GridBagConstraints.BOTH;
-		gbc_btnStart.gridwidth = 3;
-		gbc_btnStart.gridx = 7;
+		gbc_btnStart.gridx = 9;
 		gbc_btnStart.gridy = 1;
 		optionsPanel.add(btnStart, gbc_btnStart);
 		
 		acquisitionProgress = new JProgressBar();
 		GridBagConstraints gbc_acquisitionProgress = new GridBagConstraints();
 		gbc_acquisitionProgress.fill = GridBagConstraints.HORIZONTAL;
-		gbc_acquisitionProgress.gridwidth = 6;
+		gbc_acquisitionProgress.gridwidth = 8;
 		gbc_acquisitionProgress.insets = new Insets(0, 0, 0, 5);
 		gbc_acquisitionProgress.gridx = 0;
 		gbc_acquisitionProgress.gridy = 2;
@@ -481,6 +499,7 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		}
 		
 		settings.multiplexedAcq = acquireMultiplexed();
+		settings.parallelProcessing = processOnline();
 				
 		if(settings.folder_ != null || !settings.folder_.equals("")) {
 			controller.startAcquisition(settings);
@@ -522,5 +541,15 @@ public class AcquirePanel extends JPanel implements AcquisitionPanelInterface {
 		acquisitionProgress.setValue(100);
 		btnStart.setText("Start");	
 		btnStart.setSelected(false);	
+	}
+	protected boolean processOnline() {
+		return onlineProcCheckBox.isSelected();
+	}
+
+	@Override
+	public void setAdvancedSettings(boolean alternatedAcquisition, boolean saveAsStacks, boolean parallelProcessing) {
+		this.alternatedAcquisition = alternatedAcquisition;
+		this.saveAsStacks = saveAsStacks;
+		this.parallelProcessing = parallelProcessing;
 	}
 }

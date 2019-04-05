@@ -20,6 +20,6 @@ public class AcquisitionSettings {
 	
 	public boolean multiplexedAcq = true;
 	
-	public boolean onlineAnalysis = true;
+	public boolean parallelProcessing = true;
 	
 }
