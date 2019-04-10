@@ -118,7 +118,7 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 		gbc_generateButton.gridy = 1;
 		this.add(generateButton, gbc_generateButton);
 		
-		feedbackLabel = new JLabel("");
+		feedbackLabel = new JLabel(" ");
 		feedbackLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
 		GridBagConstraints gbc_feedbackLabel = new GridBagConstraints();
 		gbc_feedbackLabel.insets = new Insets(0, 0, 0, 5);

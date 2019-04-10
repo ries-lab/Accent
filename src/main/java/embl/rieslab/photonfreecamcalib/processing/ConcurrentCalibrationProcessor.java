@@ -279,7 +279,7 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 				controller.updateProcessorProgress("Processing interrupted.",50);
 			} else {
 				int progress = i;
-				int step = progress / 33;
+				int step = (int) (progress * 33 / 100) +1;
 				if(i == 1) {
 					controller.updateProcessorProgress("Step: "+step+"/"+3, progress);
 				}

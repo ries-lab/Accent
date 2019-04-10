@@ -29,11 +29,12 @@ public class MainFrame extends JFrame{
 	 * Create the frame.
 	 */
 	public MainFrame(Studio studio) {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		JPanel content = new JPanel();
 		content.setLayout(new BoxLayout(content, BoxLayout.PAGE_AXIS));
 		
+		// help panel
 		JPanel helppanel = new JPanel();
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.rowHeights = new int[] {0, 0};
@@ -47,6 +48,7 @@ public class MainFrame extends JFrame{
 				
 			}
 		});
+		
 		helpLabel.setForeground(SystemColor.textHighlight);
 		helpLabel.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		helpLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -57,10 +59,14 @@ public class MainFrame extends JFrame{
 		gbc_helpLabel.gridy = 0;
 		helppanel.add(helpLabel, gbc_helpLabel);
 		
+		// controller and other panels
 		PipelineController controller = new PipelineController(studio);
+		
 		AcqPanel acqpane = new AcqPanel(studio.getCMMCore().getCameraDevice(), controller); 
 		ProcPanel procpane = new ProcPanel(controller);
 		GenPanel genpane = new GenPanel(controller);
+		
+		
 		controller.setAcquisitionPanel(acqpane);
 		controller.setProcessingPanel(procpane);
 		controller.setGeneratePanel(genpane);
@@ -73,7 +79,6 @@ public class MainFrame extends JFrame{
 		
 		this.pack();
 		this.setLocationRelativeTo(null);
-		this.setResizable(false);
 	}
 
 }

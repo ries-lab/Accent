@@ -293,12 +293,23 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		}
 		
 		settings.folder_ = getAcqPath();
-		if(settings.folder_ == null || settings.folder_.equals("") || !(new File(settings.folder_).isDirectory())) {
+		if(settings.folder_ == null || settings.folder_.equals("")) {
 			JOptionPane.showMessageDialog(null, "Invalid folder.",
 					"Error", JOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
 		
+		// test if the folder exists
+		File folderFile = new File(settings.folder_);
+		if(!folderFile.exists()) {
+			boolean success = folderFile.mkdir();
+			if(!success) {
+				JOptionPane.showMessageDialog(null, "Error creating the folder, please create it manually and try again.",
+						"Error", JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+		} 
+
 		settings.numFrames_ = getFrames();
 		settings.exposures_ = getExposures();
 		
