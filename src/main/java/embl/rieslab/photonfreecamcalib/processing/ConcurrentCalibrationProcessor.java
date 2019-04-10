@@ -276,7 +276,7 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 				controller.updateProcessorProgress("Done.",100);
 			} else if(i == STOP) {
 				controller.processingHasStopped();
-				controller.updateProcessorProgress("Processing interrupted.",50);
+				controller.updateProcessorProgress("Interrupted.",50);
 			} else {
 				int progress = i;
 				int step = (int) (progress * 33 / 100) +1;

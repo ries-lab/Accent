@@ -176,7 +176,7 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 				controller.acquisitionHasStarted();
 			} else if(i == STOP) {
 				controller.acquisitionHasStopped();
-				controller.updateAcquisitionProgress("Acquisition interrupted.", 50);
+				controller.updateAcquisitionProgress("Interrupted.", 50);
 			} else if(i == DONE) {
 				controller.acquisitionHasEnded();
 				controller.updateAcquisitionProgress("Done.", 100);

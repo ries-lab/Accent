@@ -313,7 +313,7 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 				controller.updateProcessorProgress("Done.",100);
 			} else if(i == STOP) {
 				controller.processingHasStopped();
-				controller.updateProcessorProgress("Processing interrupted.",50);
+				controller.updateProcessorProgress("Interrupted.",50);
 			} else {
 				int progress = i;
 				int step = (int) (progress * (directories.length+1) / 100)+1;

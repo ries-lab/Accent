@@ -17,6 +17,8 @@ import org.micromanager.Studio;
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
 
 public class MainFrame extends JFrame{
 
@@ -29,51 +31,49 @@ public class MainFrame extends JFrame{
 	 * Create the frame.
 	 */
 	public MainFrame(Studio studio) {
-		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
-		JPanel content = new JPanel();
-		content.setLayout(new BoxLayout(content, BoxLayout.PAGE_AXIS));
-		
-		// help panel
-		JPanel helppanel = new JPanel();
-		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.rowHeights = new int[] {0, 0};
-		gbl_contentPane.columnWidths = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		helppanel.setLayout(gbl_contentPane);
-		content.add(helppanel);
-		JLabel helpLabel = new JLabel("<HTML><U>Help...</U></HTML>");
-		helpLabel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				
-			}
-		});
-		
-		helpLabel.setForeground(SystemColor.textHighlight);
-		helpLabel.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		helpLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		GridBagConstraints gbc_helpLabel = new GridBagConstraints();
-		gbc_helpLabel.anchor = GridBagConstraints.EAST;
-		gbc_helpLabel.insets = new Insets(0, 0, 5, 0);
-		gbc_helpLabel.gridx = 9;
-		gbc_helpLabel.gridy = 0;
-		helppanel.add(helpLabel, gbc_helpLabel);
-		
-		// controller and other panels
+
+		// controller 
 		PipelineController controller = new PipelineController(studio);
 		
-		AcqPanel acqpane = new AcqPanel(studio.getCMMCore().getCameraDevice(), controller); 
-		ProcPanel procpane = new ProcPanel(controller);
-		GenPanel genpane = new GenPanel(controller);
-		
-		
-		controller.setAcquisitionPanel(acqpane);
-		controller.setProcessingPanel(procpane);
-		controller.setGeneratePanel(genpane);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		content.add(acqpane);
-		content.add(procpane);
-		content.add(genpane);
+		JPanel content = new JPanel();
+		GridBagLayout gbl_content = new GridBagLayout();
+		gbl_content.columnWidths = new int[] {355};
+		gbl_content.rowHeights = new int[] {50, 40, 40};
+		gbl_content.columnWeights = new double[] { 0.0 };
+		gbl_content.rowWeights = new double[] { 0.0, 0.0, 0.0 };
+		content.setLayout(gbl_content);
+
+		AcqPanel acqpane = new AcqPanel(studio.getCMMCore().getCameraDevice(), controller);
+
+		controller.setAcquisitionPanel(acqpane);
+
+		GridBagConstraints gbc_acqpane = new GridBagConstraints();
+		gbc_acqpane.weighty = 0.2;
+		gbc_acqpane.weightx = 0.2;
+		gbc_acqpane.fill = GridBagConstraints.HORIZONTAL;
+		gbc_acqpane.gridx = 0;
+		gbc_acqpane.gridy = 0;
+		content.add(acqpane, gbc_acqpane);
+		ProcPanel procpane = new ProcPanel(controller);
+		controller.setProcessingPanel(procpane);
+		GridBagConstraints gbc_procpane = new GridBagConstraints();
+		gbc_procpane.weighty = 0.2;
+		gbc_procpane.weightx = 0.2;
+		gbc_procpane.fill = GridBagConstraints.HORIZONTAL;
+		gbc_procpane.gridx = 0;
+		gbc_procpane.gridy = 1;
+		content.add(procpane, gbc_procpane);
+		GenPanel genpane = new GenPanel(controller);
+		controller.setGeneratePanel(genpane);
+		GridBagConstraints gbc_genpane = new GridBagConstraints();
+		gbc_genpane.weighty = 0.2;
+		gbc_genpane.weightx = 0.2;
+		gbc_genpane.fill = GridBagConstraints.HORIZONTAL;
+		gbc_genpane.gridx = 0;
+		gbc_genpane.gridy = 2;
+		content.add(genpane, gbc_genpane);
 		
 		this.setContentPane(content);
 		
