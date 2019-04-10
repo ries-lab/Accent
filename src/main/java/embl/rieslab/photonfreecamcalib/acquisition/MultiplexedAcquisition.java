@@ -173,14 +173,16 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 	protected void process(List<Integer> chunks) {
 		for(Integer i:chunks) {
 			if(i == START) {
-				controller.acquisitionHasStarted();;
+				controller.acquisitionHasStarted();
 			} else if(i == STOP) {
 				controller.acquisitionHasStopped();
+				controller.updateAcquisitionProgress("Acquisition interrupted.", 50);
 			} else if(i == DONE) {
 				controller.acquisitionHasEnded();
+				controller.updateAcquisitionProgress("Done.", 100);
 			} else {
 				int progress = 100*i / getMaxNumberFrames(); 
-				controller.updateAcquisitionProgress(progress);
+				controller.updateAcquisitionProgress(i+"/"+getMaxNumberFrames(), progress);
 			}
 		}
 	}

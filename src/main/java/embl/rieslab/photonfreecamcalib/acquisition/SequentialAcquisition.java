@@ -170,12 +170,14 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 			if(i == START) {
 				controller.acquisitionHasStarted();
 			} else if(i == DONE) {
-				controller.acquisitionHasEnded();;
+				controller.acquisitionHasEnded();
+				controller.updateAcquisitionProgress("Done.", 100);
 			} else if(i == STOP) {
 				controller.acquisitionHasStopped();
+				controller.updateAcquisitionProgress("Acquisition interrupted.", 50);
 			} else {
 				int progress = 100*i / getMaxNumberFrames();
-				controller.updateAcquisitionProgress(progress);
+				controller.updateAcquisitionProgress(i+"/"+getMaxNumberFrames(), progress);
 			}
 		}
 	}

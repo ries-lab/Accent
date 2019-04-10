@@ -10,11 +10,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSpinner;
@@ -26,6 +30,7 @@ import javax.swing.border.TitledBorder;
 
 import org.micromanager.data.Datastore;
 
+import ij.gui.Roi;
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionPanelInterface;
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionSettings;
@@ -51,6 +56,8 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	private JToggleButton acquireButton;
 	private JProgressBar acqProgressBar;
 	private JButton optionsButton;
+	
+	private Roi roi;
 
 	private final static String ACQ_START = "Acquire";
 	private final static String ACQ_STOP = "Stop";
@@ -63,9 +70,8 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		alternatedAcquisition = true;
 		saveAsStacks = true;
 		parallelProcessing = true;
-		
-		JPanel AcqPanel = new JPanel();
-		AcqPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Acquire raw data", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
+
+		this.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Acquire raw data", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		GridBagConstraints gbc_AcqPanel = new GridBagConstraints();
 		gbc_AcqPanel.insets = new Insets(0, 0, 5, 5);
 		gbc_AcqPanel.fill = GridBagConstraints.BOTH;
@@ -77,7 +83,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbl_AcqPanel.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
 		gbl_AcqPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_AcqPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		AcqPanel.setLayout(gbl_AcqPanel);
+		this.setLayout(gbl_AcqPanel);
 		
 		JLabel expNameLbl = new JLabel("Name:");
 		GridBagConstraints gbc_expNameLbl = new GridBagConstraints();
@@ -85,28 +91,39 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_expNameLbl.anchor = GridBagConstraints.EAST;
 		gbc_expNameLbl.gridx = 0;
 		gbc_expNameLbl.gridy = 0;
-		AcqPanel.add(expNameLbl, gbc_expNameLbl);
+		this.add(expNameLbl, gbc_expNameLbl);
 		
-		expNameField = new JTextField();
+	
+		if(camera != null && camera != "") {
+			// get date
+			DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+			Date date = new Date();
+			expNameField = new JTextField(camera+"_"+dateFormat.format(date));
+		} else {
+			expNameField = new JTextField();
+		}
+		
 		GridBagConstraints gbc_expNameField = new GridBagConstraints();
 		gbc_expNameField.gridwidth = 3;
 		gbc_expNameField.insets = new Insets(0, 0, 5, 5);
 		gbc_expNameField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_expNameField.gridx = 1;
 		gbc_expNameField.gridy = 0;
-		AcqPanel.add(expNameField, gbc_expNameField);
+		this.add(expNameField, gbc_expNameField);
 		expNameField.setColumns(10);
 		
 		savePathButton = new JButton("...");
 		savePathButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent arg0) {    	
+				showPathSelectionWindow();
 			}
 		});
+		
 		GridBagConstraints gbc_savePathButton = new GridBagConstraints();
 		gbc_savePathButton.insets = new Insets(0, 0, 5, 0);
 		gbc_savePathButton.gridx = 7;
 		gbc_savePathButton.gridy = 0;
-		AcqPanel.add(savePathButton, gbc_savePathButton);
+		this.add(savePathButton, gbc_savePathButton);
 		
 		JLabel savePathLabel = new JLabel("Path:");
 		GridBagConstraints gbc_savePathLabel = new GridBagConstraints();
@@ -114,7 +131,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_savePathLabel.anchor = GridBagConstraints.EAST;
 		gbc_savePathLabel.gridx = 0;
 		gbc_savePathLabel.gridy = 1;
-		AcqPanel.add(savePathLabel, gbc_savePathLabel);
+		this.add(savePathLabel, gbc_savePathLabel);
 		
 		savePathField = new JTextField();
 		GridBagConstraints gbc_savePathField = new GridBagConstraints();
@@ -123,7 +140,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_savePathField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_savePathField.gridx = 1;
 		gbc_savePathField.gridy = 1;
-		AcqPanel.add(savePathField, gbc_savePathField);
+		this.add(savePathField, gbc_savePathField);
 		savePathField.setColumns(10);
 		
 		JLabel nFramesLabel = new JLabel("# frames");
@@ -131,7 +148,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_nFramesLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_nFramesLabel.gridx = 0;
 		gbc_nFramesLabel.gridy = 2;
-		AcqPanel.add(nFramesLabel, gbc_nFramesLabel);
+		this.add(nFramesLabel, gbc_nFramesLabel);
 		
 		framesSpinner = new JSpinner();
 		framesSpinner.setModel(new SpinnerNumberModel(new Integer(20000), new Integer(1), null, new Integer(1000)));
@@ -141,7 +158,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_framesSpinner.insets = new Insets(0, 0, 5, 5);
 		gbc_framesSpinner.gridx = 1;
 		gbc_framesSpinner.gridy = 2;
-		AcqPanel.add(framesSpinner, gbc_framesSpinner);
+		this.add(framesSpinner, gbc_framesSpinner);
 		
 		acquireButton = new JToggleButton(ACQ_START);
 		acquireButton.addItemListener(new ItemListener() {
@@ -160,14 +177,14 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_acquireButton.insets = new Insets(8, 0, 5, 0);
 		gbc_acquireButton.gridx = 7;
 		gbc_acquireButton.gridy = 2;
-		AcqPanel.add(acquireButton, gbc_acquireButton);
+		this.add(acquireButton, gbc_acquireButton);
 		
 		JLabel acqExposuresLabel = new JLabel("Exposures:");
 		GridBagConstraints gbc_acqExposuresLabel = new GridBagConstraints();
 		gbc_acqExposuresLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_acqExposuresLabel.gridx = 0;
 		gbc_acqExposuresLabel.gridy = 3;
-		AcqPanel.add(acqExposuresLabel, gbc_acqExposuresLabel);
+		this.add(acqExposuresLabel, gbc_acqExposuresLabel);
 		
 		acqExposuresField = new JTextField();
 		acqExposuresField.setText("10,500,1000");
@@ -177,7 +194,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_acqExposuresField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_acqExposuresField.gridx = 1;
 		gbc_acqExposuresField.gridy = 3;
-		AcqPanel.add(acqExposuresField, gbc_acqExposuresField);
+		this.add(acqExposuresField, gbc_acqExposuresField);
 		acqExposuresField.setColumns(10);
 		
 		optionsButton = new JButton("Options");
@@ -190,7 +207,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_optionsButton.insets = new Insets(0, 0, 5, 5);
 		gbc_optionsButton.gridx = 6;
 		gbc_optionsButton.gridy = 3;
-		AcqPanel.add(optionsButton, gbc_optionsButton);
+		this.add(optionsButton, gbc_optionsButton);
 		
 		acqFeeedbackLabel = new JLabel("     ");
 		acqFeeedbackLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -200,7 +217,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_acqFeeedbackLabel.gridwidth = 2;
 		gbc_acqFeeedbackLabel.gridx = 1;
 		gbc_acqFeeedbackLabel.gridy = 4;
-		AcqPanel.add(acqFeeedbackLabel, gbc_acqFeeedbackLabel);
+		this.add(acqFeeedbackLabel, gbc_acqFeeedbackLabel);
 		
 		acqProgressBar = new JProgressBar();
 		GridBagConstraints gbc_acqProgressBar = new GridBagConstraints();
@@ -208,7 +225,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_acqProgressBar.gridwidth = 5;
 		gbc_acqProgressBar.gridx = 3;
 		gbc_acqProgressBar.gridy = 4;
-		AcqPanel.add(acqProgressBar, gbc_acqProgressBar);
+		this.add(acqProgressBar, gbc_acqProgressBar);
 	}
 
 	protected void showOptionFrame() {
@@ -242,12 +259,25 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	protected Integer[] getExposures() {
 		String[] exp = acqExposuresField.getText().split(",");
 		
+		boolean badInput = false;
+		StringBuilder sb = new StringBuilder("The following exposures are invalid:\n");
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for(int i=0;i<exp.length;i++) {
 			if(utils.isInteger(exp[i])) {
 				list.add(Integer.valueOf(exp[i]));
+			} else {
+				sb.append("<");
+				sb.append(exp[i]);
+				sb.append(">\n");
+				badInput = true;
 			}
 		}
+		
+		if(badInput) {
+			JOptionPane.showMessageDialog(null, sb.toString(),
+					"Error", JOptionPane.INFORMATION_MESSAGE);
+		}
+		
 		return list.toArray(new Integer[0]);
 	}
 
@@ -256,7 +286,19 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		AcquisitionSettings settings  = new AcquisitionSettings();
 		
 		settings.name_ = getAcqName();
+		if(settings.name_ == null || settings.name_.equals("")) {
+			JOptionPane.showMessageDialog(null, "Invalid acquisition name.",
+					"Error", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		
 		settings.folder_ = getAcqPath();
+		if(settings.folder_ == null || settings.folder_.equals("") || !(new File(settings.folder_).isDirectory())) {
+			JOptionPane.showMessageDialog(null, "Invalid folder.",
+					"Error", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		
 		settings.numFrames_ = getFrames();
 		settings.exposures_ = getExposures();
 		
@@ -268,10 +310,13 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		
 		settings.multiplexedAcq = alternatedAcquisition;
 		settings.parallelProcessing = parallelProcessing;
-				
-		if(settings.folder_ != null || !settings.folder_.equals("")) {
-			controller.startAcquisition(settings);
+		
+		if(roi != null) {
+			settings.roi_ = roi;
 		}
+				
+		controller.startAcquisition(settings);
+		
 	}
 	
 	private void stopAcquisition() {
@@ -279,11 +324,11 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	}
 
 	@Override
-	public void setProgress(int currStep, int totStep, int progress) {
-		if(progress>=0 && progress<=100) {
-			acqProgressBar.setValue(progress);
+	public void setProgress(String progress, int percentage) {
+		if(percentage>=0 && percentage<=100) {
+			acqProgressBar.setValue(percentage);
 		}
-		acqFeeedbackLabel.setText(currStep+"/"+totStep);
+		acqFeeedbackLabel.setText(progress);
 	}
 
 	@Override
@@ -306,10 +351,11 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	}
 
 	@Override
-	public void setAdvancedSettings(boolean alternatedAcquisition, boolean saveAsStacks, boolean parallelProcessing) {
+	public void setAdvancedSettings(boolean alternatedAcquisition, boolean saveAsStacks, boolean parallelProcessing, Roi roi) {
 		this.alternatedAcquisition = alternatedAcquisition;
 		this.saveAsStacks = saveAsStacks;
 		this.parallelProcessing = parallelProcessing;
+		this.roi = roi;
 	}
 
 }

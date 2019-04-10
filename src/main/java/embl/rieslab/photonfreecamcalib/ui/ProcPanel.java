@@ -36,7 +36,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 	private JToggleButton processButton;
 	
 	private final static String START = "Process";
-	private final static String STOP = "STOP";
+	private final static String STOP = "Stop";
 		
 	private PipelineController controller;
 
@@ -46,8 +46,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 	public ProcPanel(PipelineController controller) {
 		this.controller = controller;
 		
-		JPanel ProcessPanel = new JPanel();
-		ProcessPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Process raw data", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		this.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Process raw data", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		GridBagConstraints gbc_ProcessPanel = new GridBagConstraints();
 		gbc_ProcessPanel.insets = new Insets(0, 0, 5, 5);
 		gbc_ProcessPanel.fill = GridBagConstraints.BOTH;
@@ -58,7 +57,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 		gbl_ProcessPanel.rowHeights = new int[]{0, 0, 0, 0};
 		gbl_ProcessPanel.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		gbl_ProcessPanel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		ProcessPanel.setLayout(gbl_ProcessPanel);
+		this.setLayout(gbl_ProcessPanel);
 		
 		JLabel folderLabel = new JLabel("Folder:");
 		GridBagConstraints gbc_folderLabel = new GridBagConstraints();
@@ -66,7 +65,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 		gbc_folderLabel.anchor = GridBagConstraints.EAST;
 		gbc_folderLabel.gridx = 0;
 		gbc_folderLabel.gridy = 0;
-		ProcessPanel.add(folderLabel, gbc_folderLabel);
+		this.add(folderLabel, gbc_folderLabel);
 		
 		folderField = new JTextField();
 		GridBagConstraints gbc_folderField = new GridBagConstraints();
@@ -75,7 +74,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 		gbc_folderField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_folderField.gridx = 1;
 		gbc_folderField.gridy = 0;
-		ProcessPanel.add(folderField, gbc_folderField);
+		this.add(folderField, gbc_folderField);
 		folderField.setColumns(10);
 		
 		folderButton = new JButton("...");
@@ -88,7 +87,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 		gbc_folderButton.insets = new Insets(0, 0, 5, 0);
 		gbc_folderButton.gridx = 3;
 		gbc_folderButton.gridy = 0;
-		ProcessPanel.add(folderButton, gbc_folderButton);
+		this.add(folderButton, gbc_folderButton);
 		
 		procFeedbackLabel = new JLabel("    ");
 		procFeedbackLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -96,7 +95,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 		gbc_procFeedbackLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_procFeedbackLabel.gridx = 2;
 		gbc_procFeedbackLabel.gridy = 1;
-		ProcessPanel.add(procFeedbackLabel, gbc_procFeedbackLabel);
+		this.add(procFeedbackLabel, gbc_procFeedbackLabel);
 		
 		processButton = new JToggleButton(START);
 		processButton.addItemListener(new ItemListener()  {
@@ -115,7 +114,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 		gbc_processButton.gridheight = 2;
 		gbc_processButton.gridx = 3;
 		gbc_processButton.gridy = 1;
-		ProcessPanel.add(processButton, gbc_processButton);
+		this.add(processButton, gbc_processButton);
 		
 		procProgressBar = new JProgressBar();
 		GridBagConstraints gbc_procProgressBar = new GridBagConstraints();
@@ -123,7 +122,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 		gbc_procProgressBar.insets = new Insets(0, 0, 0, 5);
 		gbc_procProgressBar.gridx = 2;
 		gbc_procProgressBar.gridy = 2;
-		ProcessPanel.add(procProgressBar, gbc_procProgressBar);
+		this.add(procProgressBar, gbc_procProgressBar);
 	}
 	
 	protected void stopProcessing() {
@@ -149,9 +148,9 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 
 
 	@Override
-	public void setProgress(String preTitle, int currStep, int totStep, int progress) {
-		procProgressBar.setValue(progress);
-		procFeedbackLabel.setText(preTitle+currStep+"/"+totStep);
+	public void setProgress(String progress, int percentage) {
+		procProgressBar.setValue(percentage);
+		procFeedbackLabel.setText(progress);
 	}
 
 
@@ -167,7 +166,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 
 	@Override
 	public void processingHasStopped() {
-		processButton.setText(START);
+		processButton.setText(STOP);
 		processButton.setSelected(false);
 	}
 
@@ -175,7 +174,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 	@Override
 	public void processingHasEnded() {
 		procProgressBar.setValue(100);
-		processButton.setText(STOP);
+		processButton.setText(START);
 		processButton.setSelected(false);
 	}
 

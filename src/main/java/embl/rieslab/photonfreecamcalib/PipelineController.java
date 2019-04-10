@@ -6,12 +6,16 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 import org.micromanager.Studio;
-import org.micromanager.data.Datastore;
 
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.Acquisition;
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionFactory;
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionPanelInterface;
 import main.java.embl.rieslab.photonfreecamcalib.acquisition.AcquisitionSettings;
+import main.java.embl.rieslab.photonfreecamcalib.calibration.Calibration;
+import main.java.embl.rieslab.photonfreecamcalib.calibration.CalibrationIO;
+import main.java.embl.rieslab.photonfreecamcalib.generator.AvgVarMapsGenerator;
+import main.java.embl.rieslab.photonfreecamcalib.generator.GeneratePanelInterface;
+import main.java.embl.rieslab.photonfreecamcalib.generator.Generator;
 import main.java.embl.rieslab.photonfreecamcalib.processing.CalibrationProcessor;
 import main.java.embl.rieslab.photonfreecamcalib.processing.ConcurrentCalibrationProcessor;
 import main.java.embl.rieslab.photonfreecamcalib.processing.ProcessingPanelInterface;
@@ -25,8 +29,10 @@ public class PipelineController {
 	private AcquisitionSettings acqSettings;
 	private ProcessingPanelInterface procPanel;
 	private Processor proc;
+	private GeneratePanelInterface genPanel;
+	private Generator gen;
 	
-	private boolean acqDone, procDone;
+	private boolean acqDone;
 		
 	
 	public PipelineController(Studio studio) {
@@ -48,7 +54,6 @@ public class PipelineController {
 			acq.start();
 			
 			if(acqSettings.parallelProcessing) {
-				procDone = false;
 				proc = new ConcurrentCalibrationProcessor(acqSettings.folder_, acq.getQueues(), this);
 				proc.start();
 			} 
@@ -63,8 +68,8 @@ public class PipelineController {
 		}
 	}
 	
-	public void updateAcquisitionProgress(int progress) {
-		acqPanel.setProgress(progress);
+	public void updateAcquisitionProgress(String progressText, int progress) {
+		acqPanel.setProgress(progressText, progress);
 	}
 	
 	public void acquisitionHasStarted() {
@@ -95,7 +100,6 @@ public class PipelineController {
 		if(isReady() && path != null &&
 				(isAcqPathKnown(path) || new File(path).exists()) && (proc == null || !proc.isRunning())) {
 			
-			procDone = false;
 			String[] directories = getExposureFolders(path);
 			
 			if(directories.length > 0) {
@@ -112,13 +116,12 @@ public class PipelineController {
 
 	public void stopProcessor() {
 		if(proc != null) {
-			procDone = true;
 			proc.stop();
 		}
 	}
 	
-	public void updateProcessorProgress(int progress) {
-		procPanel.setProgress(progress);
+	public void updateProcessorProgress(String progressString, int progress) {
+		procPanel.setProgress(progressString, progress);
 	}
 
 	public void processingHasStopped() {
@@ -130,12 +133,42 @@ public class PipelineController {
 	}
 	
 	public void processingHasEnded() {
-		procDone = true;
 		procPanel.processingHasEnded();
 		System.out.println("Processing running time (s): "+proc.getExecutionTime());
 	}
 	
-
+	//////// map generation
+	
+	public void startMapGeneration(String path, Integer[] exposures) {		
+		if(isReady() && path != null &&
+				(new File(path).exists()) && (exposures != null && Integer.SIZE > 0)) {
+			
+			if(path.endsWith(CalibrationIO.CALIB_EXT)) {
+				File calibFile = new File(path);
+				Calibration calib = CalibrationIO.read(calibFile);		
+				String parent = calibFile.getParentFile().getAbsolutePath();
+				gen = new AvgVarMapsGenerator(this);
+				gen.generate(parent, calib, exposures);
+			} else {
+				JOptionPane.showMessageDialog(null, path + 
+						"\n\nis not a calibration file.",
+						"Error", JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+	}
+	
+	public boolean isGenerationRunning() {
+		if(gen != null) {
+			return gen.isRunning();
+		}
+		return false;
+	}
+	
+	public void setGeneratorProgress(String progress) {
+		if(genPanel != null) {
+			genPanel.setProgress(progress);
+		}
+	}
 	//////////////////////// Other methods
 	
 	public boolean isAcquisitionDone() {
@@ -149,11 +182,15 @@ public class PipelineController {
 	public void setProcessingPanel(ProcessingPanelInterface procpane) {
 		this.procPanel = procpane;
 	}
+	
+	public void setGeneratePanel(GeneratePanelInterface genpane) {
+		this.genPanel = genpane;
+	}
 		
 	public boolean isReady() {
 		return (acqPanel != null && procPanel != null);
 	}
-		
+
 	/////////////////////// Private methods
 	
 	private String[] getExposureFolders(String path) {
@@ -174,5 +211,8 @@ public class PipelineController {
 		}
 		return false;
 	}
+
+
+
 
 }

@@ -229,7 +229,7 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 				results.tn_sq_per_sec = tnsqpt;
 
 				// Writes configuration to disk
-				calibPath = folder+"\\results.calb";
+				calibPath = folder+"\\results."+CalibrationIO.CALIB_EXT;
 				CalibrationIO.write(new File(calibPath), results);
 				
 				// Writes the results as images
@@ -270,13 +270,20 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 		for(Integer i:chunks) {
 			if(i == START) {
 				controller.processingHasStarted();
+				controller.updateProcessorProgress("Processing ...",33);
 			} else if(i == DONE) {
 				controller.processingHasEnded();
+				controller.updateProcessorProgress("Done.",100);
 			} else if(i == STOP) {
 				controller.processingHasStopped();
+				controller.updateProcessorProgress("Processing interrupted.",50);
 			} else {
 				int progress = i;
-				controller.updateProcessorProgress(progress);
+				int step = progress / 33;
+				if(i == 1) {
+					controller.updateProcessorProgress("Step: "+step+"/"+3, progress);
+				}
+				
 			}
 		}
 	}

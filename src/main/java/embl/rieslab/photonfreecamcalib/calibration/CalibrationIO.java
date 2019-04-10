@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class CalibrationIO {
 	
+	public final static String CALIB_EXT = "calb";
+	
 	public static Calibration read(File fileToReadFrom) {
 		
 		ObjectMapper objectMapper = new ObjectMapper();

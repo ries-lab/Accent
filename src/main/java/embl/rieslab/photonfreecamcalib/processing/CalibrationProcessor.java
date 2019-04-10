@@ -82,7 +82,7 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 		startTime = System.currentTimeMillis();
 		publish(START);
 
-		double percentile = 100/(directories.length+1);
+		double percentile = 100./(directories.length+1);
 		
 		// extract width and height
 		Datastore store = studio.data().loadData(directories[0], true);
@@ -270,7 +270,7 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 
 				// Writes configuration to disk
 				String parentFolder = new File(directories[0]).getParentFile().getAbsolutePath();
-				calibPath = parentFolder+"\\results.calb";
+				calibPath = parentFolder+"\\results."+CalibrationIO.CALIB_EXT;
 				CalibrationIO.write(new File(calibPath), results);
 				
 				// Writes the results as images
@@ -310,11 +310,14 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 				controller.processingHasStarted();
 			} else if(i == DONE) {
 				controller.processingHasEnded();
+				controller.updateProcessorProgress("Done.",100);
 			} else if(i == STOP) {
 				controller.processingHasStopped();
+				controller.updateProcessorProgress("Processing interrupted.",50);
 			} else {
 				int progress = i;
-				controller.updateProcessorProgress(progress);
+				int step = (int) (progress * (directories.length+1) / 100)+1;
+				controller.updateProcessorProgress("Step: "+step+"/"+(directories.length+1), progress);
 			}
 		}
 	}

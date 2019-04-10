@@ -1,8 +1,10 @@
 package main.java.embl.rieslab.photonfreecamcalib.acquisition;
 
+import ij.gui.Roi;
+
 public interface AcquisitionPanelInterface {
 
-	public void setProgress(int currStep, int totalSteps, int percentage);
+	public void setProgress(String progress, int percentage);
 	
 	public void acqHasStarted();
 	
@@ -10,5 +12,5 @@ public interface AcquisitionPanelInterface {
 	
 	public void acqHasEnded();
 	
-	public void setAdvancedSettings(boolean alternatedAcquisition, boolean saveAsStacks, boolean parallelProcessing);
+	public void setAdvancedSettings(boolean alternatedAcquisition, boolean saveAsStacks, boolean parallelProcessing, Roi roi);
 }

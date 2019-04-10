@@ -4,7 +4,7 @@ public interface ProcessingPanelInterface {
 
 	public void setDataPath(String path);
 	
-	public void setProgress(String preTitle, int currStep, int totalSteps, int percentage);
+	public void setProgress(String progress, int percentage);
 	
 	public void processingHasStarted();
 	
