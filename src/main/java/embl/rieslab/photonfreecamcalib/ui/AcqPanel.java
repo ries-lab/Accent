@@ -237,7 +237,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		} else {
 			if(!opFrame.isVisible()) {
 				opFrame.dispose();
-				opFrame = new AcqOptionFrame(this);
+				opFrame = new AcqOptionFrame(this, alternatedAcquisition, saveAsStacks, parallelProcessing, roi);
 				opFrame.setVisible(true);
 			}
 		}

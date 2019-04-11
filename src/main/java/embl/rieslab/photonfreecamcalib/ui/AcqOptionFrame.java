@@ -57,7 +57,40 @@ public class AcqOptionFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public AcqOptionFrame(AcquisitionPanelInterface owner) {
+		
 		this.owner = owner;
+		setUpFrame();
+	}
+	
+	/**
+	 * Create the frame.
+	 */
+	public AcqOptionFrame(AcquisitionPanelInterface owner, boolean multiplexedAcq, boolean multiStacks, boolean parallelProcessing, Roi roi) {
+		
+		this.owner = owner;
+		setUpFrame();
+
+		if(!multiplexedAcq) {
+			acqCombo.setSelectedIndex(1);
+		}
+
+		if(!multiStacks) {
+			saveCombo.setSelectedIndex(1);
+		}
+
+		if(!parallelProcessing) {
+			processCombo.setSelectedIndex(1);
+		}
+		
+		if(roi != null) {
+			x0Field.setText(String.valueOf((int) roi.getXBase()));
+			y0Field.setText(String.valueOf((int) roi.getYBase()));
+			widthField.setText(String.valueOf((int) roi.getFloatWidth()));
+			heightField.setText(String.valueOf((int) roi.getFloatHeight()));
+		}
+	}
+	
+	private void setUpFrame() {
 		
 		setBounds(100, 100, 158, 403);
 		contentPane = new JPanel();
