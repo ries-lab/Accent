@@ -129,9 +129,8 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 						e.printStackTrace();
 					}
 					
-					if(frame % 100 == 0) {
-						publish(frame+settings.numFrames_*numExpo);
-					}
+					publish(frame+settings.numFrames_*numExpo);
+					
 					
 					frame ++;
 				}

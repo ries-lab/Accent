@@ -145,10 +145,7 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 					
 				}
 
-				if (frame % 100 == 0) {
-					System.out.println("Frame number "+frame);
-					publish(frame);
-				}
+				publish(frame);
 
 				frame++;
 			}
