@@ -57,6 +57,8 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	private JProgressBar acqProgressBar;
 	private JButton optionsButton;
 	
+	private AcqOptionFrame opFrame;
+	
 	private Roi roi;
 
 	private final static String ACQ_START = "Acquire";
@@ -229,8 +231,16 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	}
 
 	protected void showOptionFrame() {
-		AcqOptionFrame opFrame = new AcqOptionFrame(this);
-		opFrame.setVisible(true);
+		if(opFrame == null) {
+			opFrame = new AcqOptionFrame(this);
+			opFrame.setVisible(true);
+		} else {
+			if(!opFrame.isVisible()) {
+				opFrame.dispose();
+				opFrame = new AcqOptionFrame(this);
+				opFrame.setVisible(true);
+			}
+		}
 	}
 
 	protected void showPathSelectionWindow() {

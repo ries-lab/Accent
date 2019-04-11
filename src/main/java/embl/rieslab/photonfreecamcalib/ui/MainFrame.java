@@ -1,24 +1,15 @@
 package main.java.embl.rieslab.photonfreecamcalib.ui;
 
-import java.awt.Cursor;
-import java.awt.Font;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.SystemColor;
 
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.micromanager.Studio;
 
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.Dimension;
-import java.awt.BorderLayout;
 
 public class MainFrame extends JFrame{
 
