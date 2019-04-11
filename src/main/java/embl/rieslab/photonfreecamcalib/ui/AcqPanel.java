@@ -105,6 +105,8 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 			expNameField = new JTextField();
 		}
 		
+		expNameField.setBackground(Color.WHITE);
+		
 		GridBagConstraints gbc_expNameField = new GridBagConstraints();
 		gbc_expNameField.gridwidth = 3;
 		gbc_expNameField.insets = new Insets(0, 0, 5, 5);
@@ -145,6 +147,8 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		this.add(savePathField, gbc_savePathField);
 		savePathField.setColumns(10);
 		
+		savePathField.setBackground(Color.WHITE);
+		
 		JLabel nFramesLabel = new JLabel("# frames");
 		GridBagConstraints gbc_nFramesLabel = new GridBagConstraints();
 		gbc_nFramesLabel.insets = new Insets(0, 0, 5, 5);
@@ -161,6 +165,8 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_framesSpinner.gridx = 1;
 		gbc_framesSpinner.gridy = 2;
 		this.add(framesSpinner, gbc_framesSpinner);
+		
+		framesSpinner.getEditor().getComponent(0).setBackground(Color.WHITE);
 		
 		acquireButton = new JToggleButton(ACQ_START);
 		acquireButton.addItemListener(new ItemListener() {
@@ -198,6 +204,8 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_acqExposuresField.gridy = 3;
 		this.add(acqExposuresField, gbc_acqExposuresField);
 		acqExposuresField.setColumns(10);
+		
+		acqExposuresField.setBackground(Color.WHITE);
 		
 		optionsButton = new JButton("Options");
 		optionsButton.addActionListener(new ActionListener() {

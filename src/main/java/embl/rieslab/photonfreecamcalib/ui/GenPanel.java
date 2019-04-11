@@ -1,5 +1,6 @@
 package main.java.embl.rieslab.photonfreecamcalib.ui;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -41,7 +42,7 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 	public GenPanel(PipelineController controller) {
 		this.controller = controller;
 		
-		this.setBorder(new TitledBorder(null, "Generate maps for specific exposures", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		this.setBorder(new TitledBorder(null, "Generate exposure library", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_GeneratePanel = new GridBagConstraints();
 		gbc_GeneratePanel.insets = new Insets(0, 0, 0, 5);
 		gbc_GeneratePanel.fill = GridBagConstraints.BOTH;
@@ -71,6 +72,8 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 		gbc_calibField.gridy = 0;
 		this.add(calibField, gbc_calibField);
 		calibField.setColumns(10);
+		
+		calibField.setBackground(Color.WHITE);
 		
 		calibButton = new JButton("...");
 		calibButton.addActionListener(new ActionListener() {
@@ -102,6 +105,8 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 		gbc_genExposuresField.gridy = 1;
 		this.add(genExposuresField, gbc_genExposuresField);
 		genExposuresField.setColumns(10);
+		
+		genExposuresField.setBackground(Color.WHITE);
 		
 		generateButton = new JButton("Generate");
 		generateButton.addActionListener(new ActionListener() {

@@ -77,6 +77,8 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 		this.add(folderField, gbc_folderField);
 		folderField.setColumns(10);
 		
+		folderField.setBackground(Color.WHITE);
+		
 		folderButton = new JButton("...");
 		folderButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {    	

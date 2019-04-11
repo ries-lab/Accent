@@ -27,6 +27,7 @@ public class MainFrame extends JFrame{
 		PipelineController controller = new PipelineController(studio);
 		
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setTitle("Accent");
 
 		JPanel content = new JPanel();
 		GridBagLayout gbl_content = new GridBagLayout();

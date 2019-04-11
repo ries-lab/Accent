@@ -293,6 +293,11 @@ public class AcqOptionFrame extends JFrame {
 		gbc_heightField.gridy = 4;
 		roiPanel.add(heightField, gbc_heightField);
 		
+		x0Field.setBackground(Color.WHITE);
+		y0Field.setBackground(Color.WHITE);
+		widthField.setBackground(Color.WHITE);
+		heightField.setBackground(Color.WHITE);
+		
 		JSeparator separator_2 = new JSeparator();
 		separator_2.setForeground(Color.GRAY);
 		separator_2.setBackground(Color.LIGHT_GRAY);
