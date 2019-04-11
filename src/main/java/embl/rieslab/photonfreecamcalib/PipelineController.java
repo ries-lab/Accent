@@ -78,6 +78,7 @@ public class PipelineController {
 	
 	public void acquisitionHasStopped() {
 		acqPanel.acqHasStopped();
+		
 		setProcessorParameters(acqSettings.folder_);
 	}
 	
