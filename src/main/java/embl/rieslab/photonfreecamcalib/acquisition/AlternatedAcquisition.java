@@ -18,7 +18,7 @@ import org.micromanager.data.internal.DefaultCoords;
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
 import main.java.embl.rieslab.photonfreecamcalib.data.FloatImage;
 
-public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
+public class AlternatedAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
 
 	private Studio studio;
 	private AcquisitionSettings settings;
@@ -31,10 +31,11 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 	private final static int START = 0;
 	private final static int DONE = -1;
 	private final static int STOP = -2;
+	private final static int PRERUN = -3;
 	
 	private ArrayList<ArrayBlockingQueue<FloatImage>> queues;
 	
-	public MultiplexedAcquisition(Studio studio, AcquisitionSettings settings, PipelineController controller) {
+	public AlternatedAcquisition(Studio studio, AcquisitionSettings settings, PipelineController controller) {
 		if(studio == null || settings == null || controller == null) {
 			throw new NullPointerException();
 		}
@@ -73,6 +74,30 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 	protected Integer doInBackground() throws Exception {
 			
 		startTime = System.currentTimeMillis();
+		
+		// pre-run
+		if(settings.preRunTime_ > 0) {
+			publish(PRERUN);
+			
+			int tot_expo = 0;
+			for(int i: settings.exposures_) {
+				tot_expo += i;
+			}
+			int prunFrames = settings.preRunTime_*1000*60 / tot_expo;
+
+			int frame = 0;
+			while (!stop && frame < prunFrames) {
+
+				// for each exposure, sets the exposure, snaps an image
+				for (int i = 0; i < settings.exposures_.length; i++) {
+					studio.getCMMCore().setExposure(settings.exposures_[i]);
+					studio.live().snap(false).get(0);
+				}
+
+				frame++;
+			}
+	
+		}
 		
 		// creates an array of stores
 		Datastore[] stores = new Datastore[settings.exposures_.length];
@@ -180,6 +205,8 @@ public class MultiplexedAcquisition extends SwingWorker<Integer, Integer> implem
 				controller.acquisitionHasEnded();
 				controller.updateAcquisitionProgress("Done.", 100);
 				running = false;
+			} else if(i == PRERUN) {
+				controller.updateAcquisitionProgress("Pre-run...", 0);
 			} else {
 				int progress = 100*i / getMaxNumberFrames(); 
 				controller.updateAcquisitionProgress(i+"/"+getMaxNumberFrames(), progress);

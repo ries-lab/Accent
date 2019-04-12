@@ -11,7 +11,9 @@ import javax.swing.JComboBox;
 import java.awt.Insets;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSeparator;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -44,6 +46,8 @@ public class AcqOptionFrame extends JFrame {
 	private JTextField widthField;
 	private JTextField heightField;
 	
+	private JSpinner prerunsSpinner;
+	
 	private AcquisitionPanelInterface owner;
 
 	private final static String ACQ_ALT = "alternately";
@@ -53,23 +57,17 @@ public class AcqOptionFrame extends JFrame {
 	private final static String PROC_PAR = "in parallel";
 	private final static String PROC_SEP = "separately";
 	
-	/**
-	 * Create the frame.
-	 */
-	public AcqOptionFrame(AcquisitionPanelInterface owner) {
-		
-		this.owner = owner;
-		setUpFrame();
-	}
 	
 	/**
 	 * Create the frame.
 	 */
-	public AcqOptionFrame(AcquisitionPanelInterface owner, boolean multiplexedAcq, boolean multiStacks, boolean parallelProcessing, Roi roi) {
+	public AcqOptionFrame(AcquisitionPanelInterface owner, int preRun, boolean multiplexedAcq, boolean multiStacks, boolean parallelProcessing, Roi roi) {
 		
 		this.owner = owner;
 		setUpFrame();
 
+		prerunsSpinner.setValue(preRun);
+		
 		if(!multiplexedAcq) {
 			acqCombo.setSelectedIndex(1);
 		}
@@ -92,15 +90,15 @@ public class AcqOptionFrame extends JFrame {
 	
 	private void setUpFrame() {
 		
-		setBounds(100, 100, 158, 403);
+		setBounds(100, 100, 158, 447);
 		contentPane = new JPanel();
 		contentPane.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Options", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{0, 0};
-		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_contentPane.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 
 		Component horizontalStrut = Box.createHorizontalStrut(20);
@@ -109,6 +107,24 @@ public class AcqOptionFrame extends JFrame {
 		gbc_horizontalStrut.gridx = 0;
 		gbc_horizontalStrut.gridy = 0;
 		contentPane.add(horizontalStrut, gbc_horizontalStrut);
+		
+		JLabel preWarmLabel = new JLabel("Pre-run (min)...");
+		preWarmLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+		GridBagConstraints gbc_preWarmLabel = new GridBagConstraints();
+		gbc_preWarmLabel.anchor = GridBagConstraints.WEST;
+		gbc_preWarmLabel.insets = new Insets(0, 0, 5, 0);
+		gbc_preWarmLabel.gridx = 0;
+		gbc_preWarmLabel.gridy = 1;
+		contentPane.add(preWarmLabel, gbc_preWarmLabel);
+		
+		prerunsSpinner = new JSpinner();
+		prerunsSpinner.setModel(new SpinnerNumberModel(0, null, 500, 1));
+		GridBagConstraints gbc_spinner = new GridBagConstraints();
+		gbc_spinner.fill = GridBagConstraints.HORIZONTAL;
+		gbc_spinner.insets = new Insets(0, 20, 5, 20);
+		gbc_spinner.gridx = 0;
+		gbc_spinner.gridy = 2;
+		contentPane.add(prerunsSpinner, gbc_spinner);
 
 		JLabel lblNewLabel = new JLabel("Acquire exposures...");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -116,7 +132,7 @@ public class AcqOptionFrame extends JFrame {
 		acqlabel.anchor = GridBagConstraints.WEST;
 		acqlabel.insets = new Insets(0, 0, 5, 0);
 		acqlabel.gridx = 0;
-		acqlabel.gridy = 1;
+		acqlabel.gridy = 3;
 		contentPane.add(lblNewLabel, acqlabel);
 
 		acqCombo = new JComboBox<String>();
@@ -125,7 +141,7 @@ public class AcqOptionFrame extends JFrame {
 		gbc_acqCombo.insets = new Insets(0, 8, 5, 8);
 		gbc_acqCombo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_acqCombo.gridx = 0;
-		gbc_acqCombo.gridy = 2;
+		gbc_acqCombo.gridy = 4;
 		contentPane.add(acqCombo, gbc_acqCombo);
 
 		JSeparator separator = new JSeparator();
@@ -135,7 +151,7 @@ public class AcqOptionFrame extends JFrame {
 		GridBagConstraints gbc_separator = new GridBagConstraints();
 		gbc_separator.insets = new Insets(0, 0, 5, 0);
 		gbc_separator.gridx = 0;
-		gbc_separator.gridy = 3;
+		gbc_separator.gridy = 5;
 		contentPane.add(separator, gbc_separator);
 
 		JLabel saveLabel = new JLabel("Save frames as ...");
@@ -144,7 +160,7 @@ public class AcqOptionFrame extends JFrame {
 		gbc_saveLabel.insets = new Insets(0, 0, 5, 0);
 		gbc_saveLabel.anchor = GridBagConstraints.WEST;
 		gbc_saveLabel.gridx = 0;
-		gbc_saveLabel.gridy = 4;
+		gbc_saveLabel.gridy = 6;
 		contentPane.add(saveLabel, gbc_saveLabel);
 
 		saveCombo = new JComboBox<String>();
@@ -153,7 +169,7 @@ public class AcqOptionFrame extends JFrame {
 		gbc_saveCombo.insets = new Insets(0, 8, 5, 8);
 		gbc_saveCombo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_saveCombo.gridx = 0;
-		gbc_saveCombo.gridy = 5;
+		gbc_saveCombo.gridy = 7;
 		contentPane.add(saveCombo, gbc_saveCombo);
 
 		JSeparator separator_1 = new JSeparator();
@@ -163,7 +179,7 @@ public class AcqOptionFrame extends JFrame {
 		GridBagConstraints gbc_separator_1 = new GridBagConstraints();
 		gbc_separator_1.insets = new Insets(0, 0, 5, 0);
 		gbc_separator_1.gridx = 0;
-		gbc_separator_1.gridy = 6;
+		gbc_separator_1.gridy = 8;
 		contentPane.add(separator_1, gbc_separator_1);
 
 		JLabel processLabel = new JLabel("Process data ...");
@@ -172,7 +188,7 @@ public class AcqOptionFrame extends JFrame {
 		gbc_processLabel.insets = new Insets(0, 0, 5, 0);
 		gbc_processLabel.anchor = GridBagConstraints.WEST;
 		gbc_processLabel.gridx = 0;
-		gbc_processLabel.gridy = 7;
+		gbc_processLabel.gridy = 9;
 		contentPane.add(processLabel, gbc_processLabel);
 
 		processCombo = new JComboBox<String>();
@@ -181,7 +197,7 @@ public class AcqOptionFrame extends JFrame {
 		gbc_processCombo.insets = new Insets(0, 8, 5, 8);
 		gbc_processCombo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_processCombo.gridx = 0;
-		gbc_processCombo.gridy = 8;
+		gbc_processCombo.gridy = 10;
 		contentPane.add(processCombo, gbc_processCombo);
 		
 		JSeparator separator_3 = new JSeparator();
@@ -191,7 +207,7 @@ public class AcqOptionFrame extends JFrame {
 		GridBagConstraints gbc_separator_3 = new GridBagConstraints();
 		gbc_separator_3.insets = new Insets(0, 0, 5, 0);
 		gbc_separator_3.gridx = 0;
-		gbc_separator_3.gridy = 9;
+		gbc_separator_3.gridy = 11;
 		contentPane.add(separator_3, gbc_separator_3);
 		
 		JLabel roiLabel = new JLabel("Roi");
@@ -200,7 +216,7 @@ public class AcqOptionFrame extends JFrame {
 		gbc_roiLabel.anchor = GridBagConstraints.SOUTHWEST;
 		gbc_roiLabel.insets = new Insets(0, 0, 5, 0);
 		gbc_roiLabel.gridx = 0;
-		gbc_roiLabel.gridy = 10;
+		gbc_roiLabel.gridy = 12;
 		contentPane.add(roiLabel, gbc_roiLabel);
 		
 		JPanel roiPanel = new JPanel();
@@ -209,7 +225,7 @@ public class AcqOptionFrame extends JFrame {
 		gbc_roiPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_roiPanel.fill = GridBagConstraints.BOTH;
 		gbc_roiPanel.gridx = 0;
-		gbc_roiPanel.gridy = 11;
+		gbc_roiPanel.gridy = 13;
 		contentPane.add(roiPanel, gbc_roiPanel);
 		GridBagLayout gbl_roiPanel = new GridBagLayout();
 		gbl_roiPanel.columnWidths = new int[]{0, 0, 0};
@@ -224,6 +240,7 @@ public class AcqOptionFrame extends JFrame {
 				grabRoi();
 			}
 		});
+		
 		GridBagConstraints gbc_btnGetRoi = new GridBagConstraints();
 		gbc_btnGetRoi.insets = new Insets(0, 0, 5, 0);
 		gbc_btnGetRoi.gridx = 1;
@@ -304,7 +321,7 @@ public class AcqOptionFrame extends JFrame {
 		GridBagConstraints gbc_separator_2 = new GridBagConstraints();
 		gbc_separator_2.insets = new Insets(0, 0, 5, 0);
 		gbc_separator_2.gridx = 0;
-		gbc_separator_2.gridy = 12;
+		gbc_separator_2.gridy = 14;
 		contentPane.add(separator_2, gbc_separator_2);
 		
 		JButton btnSave = new JButton("Save");
@@ -315,7 +332,7 @@ public class AcqOptionFrame extends JFrame {
 		});
 		GridBagConstraints gbc_btnSave = new GridBagConstraints();
 		gbc_btnSave.gridx = 0;
-		gbc_btnSave.gridy = 13;
+		gbc_btnSave.gridy = 15;
 		contentPane.add(btnSave, gbc_btnSave);
 	}
 	
@@ -400,7 +417,7 @@ public class AcqOptionFrame extends JFrame {
 		
 		Roi roi = getRoi();
 		
-		owner.setAdvancedSettings(alternatedAcquisition, saveAsStacks, parallelProcessing, roi);
+		owner.setAdvancedSettings((int) prerunsSpinner.getValue(), alternatedAcquisition, saveAsStacks, parallelProcessing, roi);
 		this.setVisible(false);
 		this.dispose();
 	}

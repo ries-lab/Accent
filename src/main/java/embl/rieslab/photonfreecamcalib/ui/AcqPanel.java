@@ -46,6 +46,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	private boolean alternatedAcquisition;
 	private boolean saveAsStacks;
 	private boolean parallelProcessing;
+	private int preRunTime;
 	
 	private JTextField expNameField;
 	private JTextField savePathField;
@@ -69,9 +70,15 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	public AcqPanel(String camera, PipelineController controller) {
 		this.controller = controller;
 
-		alternatedAcquisition = true;
-		saveAsStacks = true;
-		parallelProcessing = true;
+		AcquisitionSettings settings  = new AcquisitionSettings();
+		alternatedAcquisition = settings.alternatedAcquisition_;
+		if(settings.saveMode_ == Datastore.SaveMode.MULTIPAGE_TIFF) {
+			saveAsStacks = true;
+		} else {
+			saveAsStacks = false;
+		}
+		parallelProcessing = settings.parallelProcessing;
+		preRunTime = settings.preRunTime_;
 
 		this.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Acquire raw data", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		GridBagConstraints gbc_AcqPanel = new GridBagConstraints();
@@ -240,12 +247,12 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 
 	protected void showOptionFrame() {
 		if(opFrame == null) {
-			opFrame = new AcqOptionFrame(this);
+			opFrame = new AcqOptionFrame(this, preRunTime, alternatedAcquisition, saveAsStacks, parallelProcessing, roi);
 			opFrame.setVisible(true);
 		} else {
 			if(!opFrame.isVisible()) {
 				opFrame.dispose();
-				opFrame = new AcqOptionFrame(this, alternatedAcquisition, saveAsStacks, parallelProcessing, roi);
+				opFrame = new AcqOptionFrame(this, preRunTime, alternatedAcquisition, saveAsStacks, parallelProcessing, roi);
 				opFrame.setVisible(true);
 			}
 		}
@@ -337,12 +344,14 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 			settings.saveMode_ = Datastore.SaveMode.SINGLEPLANE_TIFF_SERIES;
 		}
 		
-		settings.multiplexedAcq = alternatedAcquisition;
+		settings.alternatedAcquisition_ = alternatedAcquisition;
 		settings.parallelProcessing = parallelProcessing;
 		
 		if(roi != null) {
 			settings.roi_ = roi;
 		}
+		
+		settings.preRunTime_ = preRunTime;
 				
 		controller.startAcquisition(settings);
 		
@@ -380,11 +389,12 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	}
 
 	@Override
-	public void setAdvancedSettings(boolean alternatedAcquisition, boolean saveAsStacks, boolean parallelProcessing, Roi roi) {
+	public void setAdvancedSettings(int preRunTime, boolean alternatedAcquisition, boolean saveAsStacks, boolean parallelProcessing, Roi roi) {
 		this.alternatedAcquisition = alternatedAcquisition;
 		this.saveAsStacks = saveAsStacks;
 		this.parallelProcessing = parallelProcessing;
 		this.roi = roi;
+		this.preRunTime = preRunTime;
 	}
 
 }

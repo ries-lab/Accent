@@ -18,8 +18,10 @@ public class AcquisitionSettings {
 	
 	public Datastore.SaveMode saveMode_ = Datastore.SaveMode.MULTIPAGE_TIFF;
 	
-	public boolean multiplexedAcq = true;
+	public boolean alternatedAcquisition_ = true;
 	
 	public boolean parallelProcessing = true;
+
+	public int preRunTime_= 0;
 	
 }

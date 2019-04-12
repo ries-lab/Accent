@@ -12,5 +12,5 @@ public interface AcquisitionPanelInterface {
 	
 	public void acqHasEnded();
 	
-	public void setAdvancedSettings(boolean alternatedAcquisition, boolean saveAsStacks, boolean parallelProcessing, Roi roi);
+	public void setAdvancedSettings(int preRunTime, boolean alternatedAcquisition, boolean saveAsStacks, boolean parallelProcessing, Roi roi);
 }
