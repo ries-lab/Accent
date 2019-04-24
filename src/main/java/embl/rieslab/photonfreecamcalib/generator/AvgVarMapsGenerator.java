@@ -58,10 +58,10 @@ public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implement
 			FloatImage var_im = CalibrationMap.generateVarMap(calib, exp);
 			
 			FileSaver avg_saver = new FileSaver(new ImagePlus("Average_"+exp+"ms",avg_im.getProcessor())); 
-			avg_saver.saveAsTiff(path+"\\"+"Avg_"+exp+"ms.tiff");
+			avg_saver.saveAsTiff(path+"\\"+"generated_Avg_"+exp+"ms.tiff");
 			
 			FileSaver var_saver = new FileSaver(new ImagePlus("Variance_"+exp+"ms",var_im.getProcessor())); 
-			var_saver.saveAsTiff(path+"\\"+"Var_"+exp+"ms.tiff");
+			var_saver.saveAsTiff(path+"\\"+"generated_Var_"+exp+"ms.tiff");
 			
 		}
 		
