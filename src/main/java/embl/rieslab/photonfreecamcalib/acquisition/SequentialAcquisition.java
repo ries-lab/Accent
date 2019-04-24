@@ -25,13 +25,14 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 	private PipelineController controller;
 	private boolean stop = false;
 	private boolean running = false;
+	private boolean prerun = false;
+	private int prerunFrames = 0;
 	
 	private long startTime, stopTime;
 	
 	private final static int START = 0;
 	private final static int DONE = -1;
 	private final static int STOP = -2;
-	private final static int PRERUN = -3;
 	
 	public SequentialAcquisition(Studio studio, AcquisitionSettings settings, PipelineController controller) {
 		if(studio == null || settings == null || controller == null) {
@@ -70,17 +71,17 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 	
 		// pre-run
 		if(settings.preRunTime_ > 0) {
-			publish(PRERUN);
+			prerun = true;
 			
 			int tot_expo = 0;
 			for(int i: settings.exposures_) {
 				tot_expo += i;
 			}
-			int prunFrames = settings.preRunTime_*1000*60 / tot_expo;
+			prerunFrames = settings.preRunTime_*1000*60 / tot_expo;
 			
 			int frame = 0;
 
-			while (!stop && frame < prunFrames) {
+			while (!stop && frame < prerunFrames) {
 
 				// for each exposure, sets the exposure, snaps an image
 				for (int i = 0; i < settings.exposures_.length; i++) {
@@ -89,9 +90,11 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 				}
 
 				frame++;
+				publish(frame);
 			}
 
 		}
+		prerun = false;
 		
 		// clears ROIs and apply the ROI from the settings if non-null 
 		if(settings.roi_ != null) {
@@ -203,11 +206,13 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 				controller.acquisitionHasStopped();
 				controller.updateAcquisitionProgress("Interrupted.", 50);
 				running = false;
-			} else if(i == PRERUN) {
-				controller.updateAcquisitionProgress("Pre-run...", 0);
 			} else {
-				int progress = 100*i / getMaxNumberFrames();
-				controller.updateAcquisitionProgress(i+"/"+getMaxNumberFrames(), progress);
+				if(prerun) {
+					controller.updateAcquisitionProgress("Pre-run "+i+"/"+prerunFrames, 0);
+				} else {
+					int progress = 100*i / getMaxNumberFrames();
+					controller.updateAcquisitionProgress(i+"/"+getMaxNumberFrames(), progress);
+				}
 			}
 		}
 	}
