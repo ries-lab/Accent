@@ -154,9 +154,9 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 					}
 					
 					for (int x = 0; x < avgs[0].getWidth(); x++) {
-						avg_exp_list.get(x + avgs[0].getWidth() * y)[q][0] = avgs[q].getExposure();
+						avg_exp_list.get(x + avgs[0].getWidth() * y)[q][0] = avgs[q].getExposure()*1000;
 						avg_exp_list.get(x + avgs[0].getWidth() * y)[q][1] = avgs[q].getProcessor().getf(x, y);
-						var_exp_list.get(x + avgs[0].getWidth() * y)[q][0] = avgs[q].getExposure();
+						var_exp_list.get(x + avgs[0].getWidth() * y)[q][0] = avgs[q].getExposure()*1000;
 						var_exp_list.get(x + avgs[0].getWidth() * y)[q][1] = vars[q].getProcessor().getf(x, y);
 						var_avg_list.get(x + avgs[0].getWidth() * y)[q][0] = avgs[q].getProcessor().getf(x, y);
 						var_avg_list.get(x + avgs[0].getWidth() * y)[q][1] = vars[q].getProcessor().getf(x, y);
