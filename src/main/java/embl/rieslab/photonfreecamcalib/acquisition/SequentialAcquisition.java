@@ -66,6 +66,12 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 
 	@Override
 	protected Integer doInBackground() throws Exception {
+		
+		// check if camera is running
+		if(studio.getCMMCore().isSequenceRunning()){
+			studio.getCMMCore().stopSequenceAcquisition();
+		}
+		
 		startTime = System.currentTimeMillis();
 		int numExpo = 0;
 	
