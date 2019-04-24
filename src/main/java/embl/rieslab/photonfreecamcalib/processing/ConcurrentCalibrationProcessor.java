@@ -119,7 +119,7 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 			
 		}
 
-		publish(33);
+		publish(1);
 		
 		// instantiates the arrays for the linear regression
 		ArrayList<double[][]> avg_exp_list = new ArrayList<double[][]>();
@@ -172,7 +172,7 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 			
 		}
 		
-		publish(66);
+		publish(2);
 		
 		if(!stop) {
 			
@@ -250,7 +250,7 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 			}
 		}
 
-		publish(99);
+		publish(3);
 		
 		stopTime = System.currentTimeMillis();
 		
@@ -270,7 +270,7 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 		for(Integer i:chunks) {
 			if(i == START) {
 				controller.processingHasStarted();
-				controller.updateProcessorProgress("Processing ...",33);
+				controller.updateProcessorProgress("Processing ...",0);
 			} else if(i == DONE) {
 				controller.processingHasEnded();
 				controller.updateProcessorProgress("Done.",100);
@@ -278,11 +278,7 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 				controller.processingHasStopped();
 				controller.updateProcessorProgress("Interrupted.",50);
 			} else {
-				int progress = i;
-				int step = (int) (progress * 33 / 100) +1;
-				if(i == 1) {
-					controller.updateProcessorProgress("Step: "+step+"/"+3, progress);
-				}
+				controller.updateProcessorProgress("Step: "+i+"/"+3, i*33);
 				
 			}
 		}

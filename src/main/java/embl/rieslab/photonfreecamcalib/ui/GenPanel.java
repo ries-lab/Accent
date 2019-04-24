@@ -87,7 +87,7 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 		gbc_calibButton.gridy = 0;
 		this.add(calibButton, gbc_calibButton);
 		
-		JLabel genExposuresLabel = new JLabel("Exposures:");
+		JLabel genExposuresLabel = new JLabel("Exposures (ms):");
 		GridBagConstraints gbc_genExposuresLabel = new GridBagConstraints();
 		gbc_genExposuresLabel.anchor = GridBagConstraints.EAST;
 		gbc_genExposuresLabel.insets = new Insets(0, 0, 5, 5);
@@ -114,7 +114,7 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 				startMapGeneration();
 			}
 		});
-		generateButton.setFont(new Font("Tahoma", Font.BOLD, 12));
+		generateButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_generateButton = new GridBagConstraints();
 		gbc_generateButton.insets = new Insets(0, 0, 2, 0);
 		gbc_generateButton.fill = GridBagConstraints.VERTICAL;

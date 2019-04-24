@@ -110,7 +110,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 			}
 		});
 		
-		processButton.setFont(new Font("Tahoma", Font.BOLD, 12));
+		processButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_processButton = new GridBagConstraints();
 		gbc_processButton.fill = GridBagConstraints.VERTICAL;
 		gbc_processButton.gridheight = 2;

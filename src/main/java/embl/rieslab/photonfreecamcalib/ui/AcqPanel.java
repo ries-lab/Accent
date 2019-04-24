@@ -62,7 +62,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	
 	private Roi roi;
 
-	private final static String ACQ_START = "Acquire";
+	private final static String ACQ_START = "Run";
 	private final static String ACQ_STOP = "Stop";
 	
 	private PipelineController controller;
@@ -194,7 +194,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		gbc_acquireButton.gridy = 2;
 		this.add(acquireButton, gbc_acquireButton);
 		
-		JLabel acqExposuresLabel = new JLabel("Exposures:");
+		JLabel acqExposuresLabel = new JLabel("Exposures (ms):");
 		GridBagConstraints gbc_acqExposuresLabel = new GridBagConstraints();
 		gbc_acqExposuresLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_acqExposuresLabel.gridx = 0;
