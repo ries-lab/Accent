@@ -111,12 +111,16 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		
 		// creates an array of stores
 		Datastore[] stores = new Datastore[settings.exposures_.length];
+		
+		// folder's name
+		String base = settings.folder_;
+		
 		for(int i=0;i<settings.exposures_.length;i++) {
 			String expName = settings.name_ + "_" + settings.exposures_[i] + "ms";
-			String exppath = settings.folder_ + "/" + expName;
+			String exppath = base + "/" + expName;
 			if(new File(exppath).exists()) {
-				String base = getFolderName(settings.folder_,expName);
-				exppath = base+"/"+expName;
+				base = getFolderName(settings.folder_);
+				exppath = base + "/" + expName;
 				settings.folder_ = base;
 			}
 			
@@ -230,7 +234,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 	}
 
 
-	private String getFolderName(String folder, String expName) {
+	private String getFolderName(String folder) {
 		// check if the folder has _# 
 		int num = 0;
 		int i;
@@ -243,11 +247,18 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 			}
 		}
 		
+		String base;
 		if(num == 0) {
-			return folder+"_1";
+			base = folder+"_";
 		} else {
-			return folder.substring(0,i)+"_"+(num+1);			
+			base = folder.substring(0,i)+"_";			
 		}
+		
+		while(new File(base+(num+1)).exists()) {
+			num++;
+		}
+		
+		return base+(num+1);
 	}
 	
 	@Override
