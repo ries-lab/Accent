@@ -16,7 +16,9 @@ import org.micromanager.data.Datastore.SaveMode;
 import org.micromanager.data.internal.DefaultCoords;
 
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
+import main.java.embl.rieslab.photonfreecamcalib.calibration.JacksonRoiO;
 import main.java.embl.rieslab.photonfreecamcalib.data.FloatImage;
+import main.java.embl.rieslab.photonfreecamcalib.utils.utils;
 
 public class SequentialAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
 	
@@ -107,6 +109,8 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 			studio.getCMMCore().clearROI();
 			studio.getCMMCore().setROI((int) settings.roi_.getXBase(), (int) settings.roi_.getYBase(), 
 					(int) settings.roi_.getFloatWidth(), (int) settings.roi_.getFloatHeight());
+			
+			JacksonRoiO.write(new File(settings.folder_+"/roi.roi"), settings.getRoi());
 		}
 		
 		for(int exposure: settings.exposures_) {
@@ -119,9 +123,9 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 			String expName = settings.name_ + "_" + exposure + "ms";
 			String exppath = settings.folder_ + "/" + expName;
 			if(new File(exppath).exists()) {
-				int n = getLastFileNumber(settings.folder_,expName);
-				exppath = settings.folder_+"_"+n+"/"+expName;
-				settings.folder_ = settings.folder_+"_"+n;
+				String base = getFolderName(settings.folder_,expName);
+				exppath = base+"/"+expName;
+				settings.folder_ = base;
 			}
 			
 			// sets SaveMode
@@ -188,16 +192,6 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 		return 0;
 	}
 
-	private int getLastFileNumber(String folder, String expName) {
-		int num = 0;
-		String base = folder+"/"+expName;
-		while(new File(base).exists()) {
-			num++;
-			base = folder+"_"+num+"/"+expName;
-		}
-		return num;
-	}
-
 	@Override
 	protected void process(List<Integer> chunks) {
 		for(Integer i:chunks) {
@@ -223,6 +217,26 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 		}
 	}
 
+	private String getFolderName(String folder, String expName) {
+		// check if the folder has _# 
+		int num = 0;
+		int i;
+		for(i=folder.length()-1; i>=0; i--) {
+			if(folder.charAt(i) == '_') {
+				if(utils.isInteger(folder.substring(i+1))){
+					num = Integer.parseInt(folder.substring(i+1));
+					break;
+				}
+			}
+		}
+		
+		if(num == 0) {
+			return folder+"_1";
+		} else {
+			return folder.substring(0,i)+"_"+(num+1);			
+		}
+	}
+	
 	@Override
 	public int getMaxNumberFrames() {
 		return settings.numFrames_*settings.exposures_.length;

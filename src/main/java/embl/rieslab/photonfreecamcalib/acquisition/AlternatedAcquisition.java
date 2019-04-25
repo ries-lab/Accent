@@ -16,7 +16,9 @@ import org.micromanager.data.Datastore.SaveMode;
 import org.micromanager.data.internal.DefaultCoords;
 
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
+import main.java.embl.rieslab.photonfreecamcalib.calibration.JacksonRoiO;
 import main.java.embl.rieslab.photonfreecamcalib.data.FloatImage;
+import main.java.embl.rieslab.photonfreecamcalib.utils.utils;
 
 public class AlternatedAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
 
@@ -113,9 +115,9 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 			String expName = settings.name_ + "_" + settings.exposures_[i] + "ms";
 			String exppath = settings.folder_ + "/" + expName;
 			if(new File(exppath).exists()) {
-				int n = getLastFileNumber(settings.folder_,expName);
-				exppath = settings.folder_+"_"+n+"/"+expName;
-				settings.folder_ = settings.folder_+"_"+n;
+				String base = getFolderName(settings.folder_,expName);
+				exppath = base+"/"+expName;
+				settings.folder_ = base;
 			}
 			
 			// sets the SaveMode
@@ -144,6 +146,9 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 				studio.getCMMCore().clearROI();
 				studio.getCMMCore().setROI((int) settings.roi_.getXBase(), (int) settings.roi_.getYBase(), 
 						(int) settings.roi_.getFloatWidth(), (int) settings.roi_.getFloatHeight());
+				
+				// write roi to disk
+				JacksonRoiO.write(new File(settings.folder_+"/roi.roi"), settings.getRoi());
 			}
 			
 			int frame = 0;
@@ -225,14 +230,24 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 	}
 
 
-	private int getLastFileNumber(String folder, String expName) {
+	private String getFolderName(String folder, String expName) {
+		// check if the folder has _# 
 		int num = 0;
-		String base = folder+"/"+expName;
-		while(new File(base).exists()) {
-			num++;
-			base = folder+"_"+num+"/"+expName;
+		int i;
+		for(i=folder.length()-1; i>=0; i--) {
+			if(folder.charAt(i) == '_') {
+				if(utils.isInteger(folder.substring(i+1))){
+					num = Integer.parseInt(folder.substring(i+1));
+					break;
+				}
+			}
 		}
-		return num;
+		
+		if(num == 0) {
+			return folder+"_1";
+		} else {
+			return folder.substring(0,i)+"_"+(num+1);			
+		}
 	}
 	
 	@Override

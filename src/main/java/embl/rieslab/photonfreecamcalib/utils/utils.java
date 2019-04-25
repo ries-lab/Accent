@@ -2,6 +2,7 @@ package main.java.embl.rieslab.photonfreecamcalib.utils;
 
 public class utils {
 
+
 	public static boolean isInteger(String str) {
 	    if (str == null) {
 	        return false;
