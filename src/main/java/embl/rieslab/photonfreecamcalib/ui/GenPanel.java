@@ -132,7 +132,7 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 		this.add(feedbackLabel, gbc_feedbackLabel);
 	}
 	
-	protected Integer[] getExposures() {
+	public Integer[] getExposures() {
 		String[] exp = genExposuresField.getText().split(",");
 		
 		boolean badInput = false;
@@ -158,9 +158,7 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 	}
 	
 	private void startMapGeneration() {
-		if(!controller.isGenerationRunning()) {
-			controller.startMapGeneration(calibField.getText(), getExposures());
-		}
+		controller.startMapGeneration(calibField.getText(), getExposures());
 	}
 
 	protected void showPathSelectionWindow() {
@@ -178,6 +176,11 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 	@Override
 	public void setProgress(String progress) {
 		feedbackLabel.setText(progress);
+	}
+
+	@Override
+	public void setCalibrationPath(String path) {
+		calibField.setText(path);
 	}
 
 }

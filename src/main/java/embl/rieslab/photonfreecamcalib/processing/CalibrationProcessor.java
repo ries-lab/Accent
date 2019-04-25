@@ -299,6 +299,7 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 			publish(DONE);
 		}
 
+		running = false;
 		
 		return 0;
 	}
@@ -331,5 +332,19 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 	@Override
 	public double getExecutionTime() {
 		return ((double) stopTime-startTime)/1000.0;
+	}
+
+
+	@Override
+	public String getCalibrationPath() {
+		String parentFolder = new File(directories[0]).getParentFile().getAbsolutePath();
+
+		return parentFolder+"\\results."+CalibrationIO.CALIB_EXT;
+	}
+
+
+	@Override
+	public Calibration getCalibration() {
+		return results;
 	}
 }

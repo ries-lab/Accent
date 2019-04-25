@@ -353,8 +353,11 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		
 		settings.preRunTime_ = preRunTime;
 				
-		controller.startAcquisition(settings);
+		boolean b = controller.startAcquisition(settings);
 		
+		if(!b) {
+			acqHasStopped();
+		}
 	}
 	
 	private void stopAcquisition() {

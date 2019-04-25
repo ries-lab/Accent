@@ -46,8 +46,8 @@ public class PipelineController {
 	
 	/////////////// Acquisition
 	
-	public void startAcquisition(AcquisitionSettings settings) {
-		if(isReady() && (acq == null || !acq.isRunning())) {
+	public boolean startAcquisition(AcquisitionSettings settings) {
+		if(isReady()) {
 			acqDone = false;
 			acqSettings = settings;
 			acq = AcquisitionFactory.getFactory().getAcquisition(studio, acqSettings, this);
@@ -58,7 +58,9 @@ public class PipelineController {
 				proc.start();
 			} 
 			
+			return true;
 		}
+		return false;
 	}
 	
 	public void stopAcquisition() {
@@ -97,22 +99,25 @@ public class PipelineController {
 		}
 	}
 	
-	public void startProcessor(String path) {		
+	public boolean startProcessor(String path) {		
 		if(isReady() && path != null &&
-				(isAcqPathKnown(path) || new File(path).exists()) && (proc == null || !proc.isRunning())) {
+				(isAcqPathKnown(path) || new File(path).exists())) {
 			
 			String[] directories = getExposureFolders(path);
 			
 			if(directories.length > 0) {
 				proc = new CalibrationProcessor(studio, directories, this);
 				proc.start();
+				return true;
 			} else {
 				JOptionPane.showMessageDialog(null, "No experimental folder found in:\n" + path + 
 						"\n\nExperiment folder names end with <###ms> where ### is the exposure time.",
 						"Error", JOptionPane.INFORMATION_MESSAGE);
 				processingHasStopped();
+				return false;
 			}
-		}
+		} 
+		return false;
 	}
 
 	public void stopProcessor() {
@@ -136,13 +141,32 @@ public class PipelineController {
 	public void processingHasEnded() {
 		procPanel.processingHasEnded();
 		System.out.println("Processing running time (s): "+proc.getExecutionTime());
+		
+		// set path to calibration file on generation panel and start
+		genPanel.setCalibrationPath(proc.getCalibrationPath());
+
+		if(isReady()) {
+			Integer[] exposures = genPanel.getExposures();
+			if(exposures.length > 0) {
+				gen = new AvgVarMapsGenerator(this);
+				gen.generate(new File(proc.getCalibrationPath()).getParentFile().getAbsolutePath(), 
+						proc.getCalibration(), exposures);
+			}
+		}
 	}
+
+	public boolean isProcessingRunning() {
+		if(proc != null && proc.isRunning()) {
+			return true;
+		}
+		return false;
+	}
+
 	
 	//////// map generation
-	
-	public void startMapGeneration(String path, Integer[] exposures) {		
+	public boolean startMapGeneration(String path, Integer[] exposures) {		
 		if(isReady() && path != null &&
-				(new File(path).exists()) && (exposures != null && Integer.SIZE > 0)) {
+				(new File(path).exists()) && (exposures != null && exposures.length > 0)) {
 			
 			if(path.endsWith(CalibrationIO.CALIB_EXT)) {
 				File calibFile = new File(path);
@@ -150,12 +174,15 @@ public class PipelineController {
 				String parent = calibFile.getParentFile().getAbsolutePath();
 				gen = new AvgVarMapsGenerator(this);
 				gen.generate(parent, calib, exposures);
+				return true;
 			} else {
 				JOptionPane.showMessageDialog(null, path + 
 						"\n\nis not a calibration file.",
 						"Error", JOptionPane.INFORMATION_MESSAGE);
+				return false;
 			}
 		}
+		return false;
 	}
 	
 	public boolean isGenerationRunning() {
@@ -170,6 +197,7 @@ public class PipelineController {
 			genPanel.setProgress(progress);
 		}
 	}
+	
 	//////////////////////// Other methods
 	
 	public boolean isAcquisitionDone() {
@@ -189,7 +217,23 @@ public class PipelineController {
 	}
 		
 	public boolean isReady() {
-		return (acqPanel != null && procPanel != null);
+		if(acqPanel == null || procPanel == null || genPanel == null) {
+			return false;
+		}
+		
+		if(acq != null && acq.isRunning()) {
+			return false;
+		}
+		
+		if(proc != null && proc.isRunning()) {
+			return false;
+		}
+		
+		if(gen != null && gen.isRunning()) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	/////////////////////// Private methods
@@ -212,8 +256,5 @@ public class PipelineController {
 		}
 		return false;
 	}
-
-
-
 
 }

@@ -260,7 +260,7 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 			publish(DONE);
 		}
 		
-
+		running = false;
 		
 		return 0;
 	}
@@ -279,7 +279,6 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 				controller.updateProcessorProgress("Interrupted.",50);
 			} else {
 				controller.updateProcessorProgress("Step: "+i+"/"+3, i*33);
-				
 			}
 		}
 	}
@@ -287,5 +286,17 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 	@Override
 	public double getExecutionTime() {
 		return ((double) stopTime-startTime)/1000.0;
+	}
+
+
+	@Override
+	public String getCalibrationPath() {
+		return folder+"\\results."+CalibrationIO.CALIB_EXT;
+	}
+
+
+	@Override
+	public Calibration getCalibration() {
+		return results;
 	}
 }
