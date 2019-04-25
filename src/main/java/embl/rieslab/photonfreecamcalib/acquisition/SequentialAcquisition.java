@@ -113,7 +113,19 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 			JacksonRoiO.write(new File(settings.folder_+"/roi.roi"), settings.getRoi());
 		}
 		
-		String base = settings.folder_;
+		// test if any acquisition already exists
+		boolean b = false;
+		for(int i=0;i<settings.exposures_.length;i++) {
+			String expName = settings.name_ + "_" + settings.exposures_[i] + "ms";
+			String expPath =  settings.folder_ + "/" + expName;
+			if(new File(expPath).exists()) {
+				b = true;
+			}
+		}
+		if(b) { // set the folder name with an increment
+			settings.folder_ = getFolderName(settings.folder_);
+		}
+		
 		for(int exposure: settings.exposures_) {
 			
 			// sets exposure time
@@ -122,12 +134,7 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 			// creates data store
 			Datastore currAcqStore = null;
 			String expName = settings.name_ + "_" + exposure + "ms";
-			String exppath = base + "/" + expName;
-			if(new File(exppath).exists()) {
-				base = getFolderName(settings.folder_);
-				exppath = base+"/"+expName;
-				settings.folder_ = base;
-			}
+			String exppath = settings.folder_ + "/" + expName;
 			
 			// sets SaveMode
 			if(settings.saveMode_ == SaveMode.MULTIPAGE_TIFF){

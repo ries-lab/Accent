@@ -111,23 +111,28 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		
 		// creates an array of stores
 		Datastore[] stores = new Datastore[settings.exposures_.length];
-		
-		// folder's name
-		String base = settings.folder_;
+				
+		// test if any acquisition already exists
+		boolean b = false;
+		for(int i=0;i<settings.exposures_.length;i++) {
+			String expName = settings.name_ + "_" + settings.exposures_[i] + "ms";
+			String expPath =  settings.folder_ + "/" + expName;
+			if(new File(expPath).exists()) {
+				b = true;
+			}
+		}
+		if(b) { // set the folder name with an increment
+			settings.folder_ = getFolderName(settings.folder_);
+		}
 		
 		for(int i=0;i<settings.exposures_.length;i++) {
 			String expName = settings.name_ + "_" + settings.exposures_[i] + "ms";
-			String exppath = base + "/" + expName;
-			if(new File(exppath).exists()) {
-				base = getFolderName(settings.folder_);
-				exppath = base + "/" + expName;
-				settings.folder_ = base;
-			}
-			
+			String expPath = settings.folder_ + "/" + expName;
+						
 			// sets the SaveMode
 			if (settings.saveMode_ == SaveMode.MULTIPAGE_TIFF) {
 				try {
-					stores[i] = studio.data().createMultipageTIFFDatastore(exppath, true, true);
+					stores[i] = studio.data().createMultipageTIFFDatastore(expPath, true, true);
 				} catch (IOException e) {
 					stop = true;
 					System.out.println("Failed to create multi page TIFF");
@@ -135,7 +140,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 				}
 			} else {
 				try {
-					stores[i] = studio.data().createSinglePlaneTIFFSeriesDatastore(exppath);
+					stores[i] = studio.data().createSinglePlaneTIFFSeriesDatastore(expPath);
 				} catch (IOException e) {
 					stop = true;
 					System.out.println("Failed to create single page TIFF");
