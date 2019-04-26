@@ -10,9 +10,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-public class JacksonRoiO {
+import main.java.embl.rieslab.photonfreecamcalib.data.SimpleRoi;
+
+public class SimpleRoiWriter {
 	
-	public static boolean write(File fileToWriteTo, JacksonRoi roi) {
+	public static boolean write(File fileToWriteTo, SimpleRoi roi) {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);

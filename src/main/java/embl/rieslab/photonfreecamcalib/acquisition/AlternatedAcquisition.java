@@ -16,7 +16,7 @@ import org.micromanager.data.Datastore.SaveMode;
 import org.micromanager.data.internal.DefaultCoords;
 
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
-import main.java.embl.rieslab.photonfreecamcalib.calibration.JacksonRoiO;
+import main.java.embl.rieslab.photonfreecamcalib.calibration.SimpleRoiWriter;
 import main.java.embl.rieslab.photonfreecamcalib.data.FloatImage;
 import main.java.embl.rieslab.photonfreecamcalib.utils.Dialogs;
 import main.java.embl.rieslab.photonfreecamcalib.utils.utils;
@@ -164,11 +164,11 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		// sets Roi
 		if(settings.roi_ != null) {
 			studio.getCMMCore().clearROI();
-			studio.getCMMCore().setROI((int) settings.roi_.getXBase(), (int) settings.roi_.getYBase(), 
-					(int) settings.roi_.getFloatWidth(), (int) settings.roi_.getFloatHeight());
+			studio.getCMMCore().setROI(settings.roi_.x0, settings.roi_.y0, 
+					settings.roi_.width, settings.roi_.height);
 			
 			// write roi to disk
-			JacksonRoiO.write(new File(settings.folder_+"/roi.roi"), settings.getRoi());
+			SimpleRoiWriter.write(new File(settings.folder_+"/roi.roi"), settings.roi_);
 		}
 
 		// prepares coordinates
@@ -186,7 +186,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 				studio.getCMMCore().setExposure(settings.exposures_[i]);
 				image = studio.live().snap(false).get(0);
 				image = image.copyAtCoords(builder.build());
-
+				image.getRawPixelsCopy();
 				try {
 					stores[i].putImage(image);
 					

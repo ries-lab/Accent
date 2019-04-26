@@ -1,9 +1,7 @@
 package main.java.embl.rieslab.photonfreecamcalib.acquisition;
 
 import org.micromanager.data.Datastore;
-
-import ij.gui.Roi;
-import main.java.embl.rieslab.photonfreecamcalib.calibration.JacksonRoi;
+import main.java.embl.rieslab.photonfreecamcalib.data.SimpleRoi;
 
 public class AcquisitionSettings {
 
@@ -15,7 +13,7 @@ public class AcquisitionSettings {
 	
 	public Integer[] exposures_ = {10,20,300};
 	
-	public Roi roi_ = null;
+	public SimpleRoi roi_ = null;
 	
 	public Datastore.SaveMode saveMode_ = Datastore.SaveMode.MULTIPAGE_TIFF;
 	
@@ -24,17 +22,5 @@ public class AcquisitionSettings {
 	public boolean parallelProcessing = true;
 
 	public int preRunTime_= 0;
-	
-	public JacksonRoi getRoi() {
-		if(roi_ != null) {
-			JacksonRoi roi = new JacksonRoi();
-			roi.x0 = (int) roi_.getXBase();
-			roi.y0 = (int) roi_.getYBase();
-			roi.width = (int) roi_.getFloatWidth();
-			roi.height = (int) roi_.getFloatHeight();
-			return roi;
-		}
-		return null;
-	}
-	
+		
 }
