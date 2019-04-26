@@ -18,6 +18,7 @@ import org.micromanager.data.internal.DefaultCoords;
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
 import main.java.embl.rieslab.photonfreecamcalib.calibration.JacksonRoiO;
 import main.java.embl.rieslab.photonfreecamcalib.data.FloatImage;
+import main.java.embl.rieslab.photonfreecamcalib.utils.Dialogs;
 import main.java.embl.rieslab.photonfreecamcalib.utils.utils;
 
 public class SequentialAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
@@ -104,6 +105,11 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 		}
 		prerun = false;
 		
+		if(stop) {
+			publish(STOP);
+			return 0;
+		}
+		
 		// clears ROIs and apply the ROI from the settings if non-null 
 		if(settings.roi_ != null) {
 			studio.getCMMCore().clearROI();
@@ -113,7 +119,7 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 			JacksonRoiO.write(new File(settings.folder_+"/roi.roi"), settings.getRoi());
 		}
 		
-		// test if any acquisition already exists
+		// tests if any acquisition already exists
 		boolean b = false;
 		for(int i=0;i<settings.exposures_.length;i++) {
 			String expName = settings.name_ + "_" + settings.exposures_[i] + "ms";
@@ -122,7 +128,7 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 				b = true;
 			}
 		}
-		if(b) { // set the folder name with an increment
+		if(b) { // sets the folder name with an increment
 			settings.folder_ = getFolderName(settings.folder_);
 		}
 		
@@ -142,7 +148,7 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 					currAcqStore = studio.data().createMultipageTIFFDatastore(exppath, true, true);
 				} catch (IOException e) {
 					stop = true;
-					System.out.println("Failed to create multi page TIFF");
+					Dialogs.showErrorMessage(e.getMessage());
 					e.printStackTrace();
 				}
 			} else {
@@ -150,44 +156,47 @@ public class SequentialAcquisition extends SwingWorker<Integer, Integer> impleme
 					currAcqStore = studio.data().createSinglePlaneTIFFSeriesDatastore(exppath);
 				} catch (IOException e) {
 					stop = true;
-					System.out.println("Failed to create single page TIFF");
+					Dialogs.showErrorMessage(e.getMessage());
 					e.printStackTrace();
 				}
 			}
-			
-			if(!stop) {			
-				int frame = 0;	
-				
-				Image image;
-				Coords.CoordsBuilder builder = new DefaultCoords.Builder();
-				builder.channel(0).z(0).stagePosition(0);
-					
-				while(!stop && frame < settings.numFrames_) {
-				
-					// snaps an image and adds it to the store
-					builder = builder.time(frame);
-					image = studio.live().snap(false).get(0);
-					image = image.copyAtCoords(builder.build());
-						
-					try {
-						currAcqStore.putImage(image);
-					} catch (IOException e) {
-						stop = true;
-						e.printStackTrace();
-					}
-					
-					publish(frame+settings.numFrames_*numExpo);
-					
-					
-					frame ++;
-				}
-			}
 
+			if (!stop) {
+				currAcqStore.close();
+				publish(STOP);
+				return 0;
+			}
+		
+			int frame = 0;	
+			
+			Image image;
+			Coords.CoordsBuilder builder = new DefaultCoords.Builder();
+			builder.channel(0).z(0).stagePosition(0);
+				
+			while(!stop && frame < settings.numFrames_) {
+			
+				// snaps an image and adds it to the store
+				builder = builder.time(frame);
+				image = studio.live().snap(false).get(0);
+				image = image.copyAtCoords(builder.build());
+					
+				try {
+					currAcqStore.putImage(image);
+				} catch (IOException e) {
+					stop = true;
+					e.printStackTrace();
+				}
+				
+				publish(frame+settings.numFrames_*numExpo);
+				
+				
+				frame ++;
+			}
+				
 			currAcqStore.close();
 			
 			numExpo ++;			
 		}
-		
 
 		stopTime = System.currentTimeMillis();
 		

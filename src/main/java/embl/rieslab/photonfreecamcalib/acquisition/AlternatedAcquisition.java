@@ -18,6 +18,7 @@ import org.micromanager.data.internal.DefaultCoords;
 import main.java.embl.rieslab.photonfreecamcalib.PipelineController;
 import main.java.embl.rieslab.photonfreecamcalib.calibration.JacksonRoiO;
 import main.java.embl.rieslab.photonfreecamcalib.data.FloatImage;
+import main.java.embl.rieslab.photonfreecamcalib.utils.Dialogs;
 import main.java.embl.rieslab.photonfreecamcalib.utils.utils;
 
 public class AlternatedAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
@@ -109,6 +110,11 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		}
 		prerun = false;
 		
+		if(stop) {
+			publish(STOP);
+			return 0;
+		}
+		
 		// creates an array of stores
 		Datastore[] stores = new Datastore[settings.exposures_.length];
 				
@@ -135,7 +141,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 					stores[i] = studio.data().createMultipageTIFFDatastore(expPath, true, true);
 				} catch (IOException e) {
 					stop = true;
-					System.out.println("Failed to create multi page TIFF");
+					Dialogs.showErrorMessage(e.getMessage());
 					e.printStackTrace();
 				}
 			} else {
@@ -143,71 +149,69 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 					stores[i] = studio.data().createSinglePlaneTIFFSeriesDatastore(expPath);
 				} catch (IOException e) {
 					stop = true;
-					System.out.println("Failed to create single page TIFF");
+					Dialogs.showErrorMessage(e.getMessage());
 					e.printStackTrace();
 				}
 			}
 		}
 
 		if (!stop) {
-			// sets Roi
-			if(settings.roi_ != null) {
-				studio.getCMMCore().clearROI();
-				studio.getCMMCore().setROI((int) settings.roi_.getXBase(), (int) settings.roi_.getYBase(), 
-						(int) settings.roi_.getFloatWidth(), (int) settings.roi_.getFloatHeight());
-				
-				// write roi to disk
-				JacksonRoiO.write(new File(settings.folder_+"/roi.roi"), settings.getRoi());
-			}
+			closeDatastores(stores);
+			publish(STOP);
+			return 0;
+		}
 			
-			int frame = 0;
+		// sets Roi
+		if(settings.roi_ != null) {
+			studio.getCMMCore().clearROI();
+			studio.getCMMCore().setROI((int) settings.roi_.getXBase(), (int) settings.roi_.getYBase(), 
+					(int) settings.roi_.getFloatWidth(), (int) settings.roi_.getFloatHeight());
+			
+			// write roi to disk
+			JacksonRoiO.write(new File(settings.folder_+"/roi.roi"), settings.getRoi());
+		}
 
-			// prepares coordinates
-			Image image;
-			Coords.CoordsBuilder builder = new DefaultCoords.Builder();
-			builder.channel(0).z(0).stagePosition(0);
+		// prepares coordinates
+		int frame = 0;
+		Image image;
+		Coords.CoordsBuilder builder = new DefaultCoords.Builder();
+		builder.channel(0).z(0).stagePosition(0);
 
-			while (!stop && frame < settings.numFrames_) {
+		while (!stop && frame < settings.numFrames_) {
 
-				builder = builder.time(frame);
-				
-				// for each exposure, sets the exposure, snaps an image and adds it to its respective store
-				for(int i=0;i<settings.exposures_.length; i++) {
-					studio.getCMMCore().setExposure(settings.exposures_[i]);
-					image = studio.live().snap(false).get(0);
-					image = image.copyAtCoords(builder.build());
-	
-					try {
-						stores[i].putImage(image);
-						
-						if(settings.parallelProcessing) {
-							// add to queue
-							queues.get(i).add(new FloatImage(image.getWidth(), image.getHeight(), studio.data().ij().createProcessor(image).getFloatArray(), settings.exposures_[i]));
-						}
-					} catch (IOException e) {
-						stop = true;
-						e.printStackTrace();
+			builder = builder.time(frame);
+			
+			// for each exposure, sets the exposure, snaps an image and adds it to its respective store
+			for(int i=0;i<settings.exposures_.length; i++) {
+				studio.getCMMCore().setExposure(settings.exposures_[i]);
+				image = studio.live().snap(false).get(0);
+				image = image.copyAtCoords(builder.build());
+
+				try {
+					stores[i].putImage(image);
+					
+					if(settings.parallelProcessing) {
+						// adds to queue
+						queues.get(i).add(new FloatImage(image.getWidth(), image.getHeight(), studio.data().ij().createProcessor(image).getFloatArray(), settings.exposures_[i]));
 					}
-					
-					
+				} catch (IOException e) {
+					stop = true;
+					e.printStackTrace();
 				}
-
-				publish(frame);
-
-				frame++;
 			}
-		} 
+
+			publish(frame);
+
+			frame++;
+		}
 		
 		stopTime = System.currentTimeMillis();
-
+		closeDatastores(stores);
+		
 		if(stop) {
 			publish(STOP);
 		} else {
 			publish(DONE);
-		}
-		
-		for(int i=0;i<settings.exposures_.length;i++) {
-			stores[i].close();
 		}
 		
 		return 0;
@@ -238,6 +242,17 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		}
 	}
 
+	private void closeDatastores(Datastore[] stores) {
+		for(int i=0;i<stores.length;i++) {
+			try {
+				if(stores[i] != null) {
+					stores[i].close();
+				}
+			} catch (IOException e) {
+				// do nothing
+			}
+		}
+	}
 
 	private String getFolderName(String folder) {
 		// check if the folder has _# 

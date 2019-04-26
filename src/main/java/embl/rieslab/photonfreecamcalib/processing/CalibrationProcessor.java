@@ -136,15 +136,13 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 					publish((int) (percentile * counter + percentile * z / stackSize));
 
 					for (int x = 0; x < width; x++) {
-
-						if (stop) {
-							break;
-						}
-
+						
 						for (int y = 0; y < height; y++) {
 
 							if (stop) {
-								break;
+								store.close();
+								publish(STOP);
+								return 0;
 							}
 
 							avg_im.setf(x, y, avg_im.getf(x, y) + improc.getf(x, y));
@@ -152,15 +150,6 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 						}
 					}
 
-					if (stop) {
-						break;
-					}
-
-				}
-
-				if (stop) {
-					store.close();
-					break;
 				}
 
 				// computes the variance image from the average square and the average values
@@ -189,19 +178,16 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 				// fills arrays
 				for (int y = 0; y < height; y++) {
 	
-					if (stop) {
-						break;
-					}
-	
 					for (int x = 0; x < width; x++) {
 	
 						if (stop) {
-							break;
+							publish(STOP);
+							return 0;
 						}
 	
-						avg_exp_list.get(x + width * y)[counter][0] = exposure;
+						avg_exp_list.get(x + width * y)[counter][0] = exposure*1000;
 						avg_exp_list.get(x + width * y)[counter][1] = avg_im.getf(x, y);
-						var_exp_list.get(x + width * y)[counter][0] = exposure;
+						var_exp_list.get(x + width * y)[counter][0] = exposure*1000;
 						var_exp_list.get(x + width * y)[counter][1] = var_im.getf(x, y);
 						var_avg_list.get(x + width * y)[counter][0] = avg_im.getf(x, y);
 						var_avg_list.get(x + width * y)[counter][1] = var_im.getf(x, y);
@@ -217,89 +203,80 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 			}	
 		}
 		
-		if(!stop) {
 			
-			// linear regression
-			SimpleRegression[] avg_exp_reg = new SimpleRegression[height * width];
-			SimpleRegression[] var_exp_reg = new SimpleRegression[height * width];
-			SimpleRegression[] var_avg_reg = new SimpleRegression[height * width];
-			double[] baseline = new double[height * width];
-			double[] dcpt = new double[height * width];
-			double[] rnsq = new double[height * width];
-			double[] tnsqpt = new double[height * width];
-			double[] gain = new double[height * width];
-						
-			for (int i = 0; i < totLength; i++) {
-				if (stop) {
-					break;
-				}
-				
-				avg_exp_reg[i] = new SimpleRegression();
-				avg_exp_reg[i].addData(avg_exp_list.get(i));
-				baseline[i] = avg_exp_reg[i].getIntercept();
-				dcpt[i] = avg_exp_reg[i].getSlope();
-				
-				var_exp_reg[i] = new SimpleRegression();
-				var_exp_reg[i].addData(var_exp_list.get(i));
-				rnsq[i] = var_exp_reg[i].getIntercept();
-				tnsqpt[i] = var_exp_reg[i].getSlope();
-
-				var_avg_reg[i] = new SimpleRegression();
-				var_avg_reg[i].addData(var_avg_list.get(i));
-				gain[i] = var_avg_reg[i].getSlope();
-
-				publish((int) (percentile * directories.length + percentile * i / totLength));
+		// linear regression
+		SimpleRegression[] avg_exp_reg = new SimpleRegression[height * width];
+		SimpleRegression[] var_exp_reg = new SimpleRegression[height * width];
+		SimpleRegression[] var_avg_reg = new SimpleRegression[height * width];
+		double[] baseline = new double[height * width];
+		double[] dcpt = new double[height * width];
+		double[] rnsq = new double[height * width];
+		double[] tnsqpt = new double[height * width];
+		double[] gain = new double[height * width];
+					
+		for (int i = 0; i < totLength; i++) {
+			if (stop) {
+				publish(STOP);
+				return 0;
 			}
+			
+			avg_exp_reg[i] = new SimpleRegression();
+			avg_exp_reg[i].addData(avg_exp_list.get(i));
+			baseline[i] = avg_exp_reg[i].getIntercept();
+			dcpt[i] = avg_exp_reg[i].getSlope();
+			
+			var_exp_reg[i] = new SimpleRegression();
+			var_exp_reg[i].addData(var_exp_list.get(i));
+			rnsq[i] = var_exp_reg[i].getIntercept();
+			tnsqpt[i] = var_exp_reg[i].getSlope();
 
-			if (!stop) {			
-				// sanity check on the median: replace negative gains by the median
-				double median = StatUtils.percentile(gain, 50);
-				for (int i = 0; i < totLength; i++) {
-					if(Double.isNaN(gain[i]) || Double.compare(gain[i], 0) <= 0.0) {
-						gain[i] = median;
-					}
-				}
-				// saves results in the calibration
-				results.width = width;
-				results.height = height;
-				results.baseline = baseline;
-				results.dc_per_sec = dcpt;
-				results.gain = gain;
-				results.rn_sq = rnsq;
-				results.tn_sq_per_sec = tnsqpt;
+			var_avg_reg[i] = new SimpleRegression();
+			var_avg_reg[i].addData(var_avg_list.get(i));
+			gain[i] = var_avg_reg[i].getSlope();
 
-				// Writes configuration to disk
-				String parentFolder = new File(directories[0]).getParentFile().getAbsolutePath();
-				calibPath = parentFolder+"\\results."+CalibrationIO.CALIB_EXT;
-				CalibrationIO.write(new File(calibPath), results);
-				
-				// Writes the results as images
-				FileSaver baselineim = new FileSaver(new ImagePlus("Baseline",new FloatProcessor(width, height, results.baseline))); 
-				baselineim.saveAsTiff(parentFolder+"\\"+"Baseline.tiff");
-
-				FileSaver dcpert = new FileSaver(new ImagePlus("DC_per_sec",new FloatProcessor(width, height, results.dc_per_sec))); 
-				dcpert.saveAsTiff(parentFolder+"\\"+"DC_per_sec.tiff");
-
-				FileSaver gainim = new FileSaver(new ImagePlus("Gain",new FloatProcessor(width, height, results.gain))); 
-				gainim.saveAsTiff(parentFolder+"\\"+"Gain.tiff");
-
-				FileSaver rnsqim = new FileSaver(new ImagePlus("RN_sq",new FloatProcessor(width, height, results.rn_sq))); 
-				rnsqim.saveAsTiff(parentFolder+"\\"+"RN_sq.tiff");
-
-				FileSaver tnsqpert = new FileSaver(new ImagePlus("TN_sq_per_sec",new FloatProcessor(width, height, results.tn_sq_per_sec))); 
-				tnsqpert.saveAsTiff(parentFolder+"\\"+"TN_sq_per_sec.tiff");
+			publish((int) (percentile * directories.length + percentile * i / totLength));
+		}
+			
+		// sanity check on the median: replace negative gains by the median
+		double median = StatUtils.percentile(gain, 50);
+		for (int i = 0; i < totLength; i++) {
+			if(Double.isNaN(gain[i]) || Double.compare(gain[i], 0) <= 0.0) {
+				gain[i] = median;
 			}
 		}
+		
+		// saves results in the calibration
+		results.width = width;
+		results.height = height;
+		results.baseline = baseline;
+		results.dc_per_sec = dcpt;
+		results.gain = gain;
+		results.rn_sq = rnsq;
+		results.tn_sq_per_sec = tnsqpt;
+
+		// Writes configuration to disk
+		String parentFolder = new File(directories[0]).getParentFile().getAbsolutePath();
+		calibPath = parentFolder+"\\results."+CalibrationIO.CALIB_EXT;
+		CalibrationIO.write(new File(calibPath), results);
+		
+		// Writes the results as images
+		FileSaver baselineim = new FileSaver(new ImagePlus("Baseline",new FloatProcessor(width, height, results.baseline))); 
+		baselineim.saveAsTiff(parentFolder+"\\"+"Baseline.tiff");
+
+		FileSaver dcpert = new FileSaver(new ImagePlus("DC_per_sec",new FloatProcessor(width, height, results.dc_per_sec))); 
+		dcpert.saveAsTiff(parentFolder+"\\"+"DC_per_sec.tiff");
+
+		FileSaver gainim = new FileSaver(new ImagePlus("Gain",new FloatProcessor(width, height, results.gain))); 
+		gainim.saveAsTiff(parentFolder+"\\"+"Gain.tiff");
+
+		FileSaver rnsqim = new FileSaver(new ImagePlus("RN_sq",new FloatProcessor(width, height, results.rn_sq))); 
+		rnsqim.saveAsTiff(parentFolder+"\\"+"RN_sq.tiff");
+
+		FileSaver tnsqpert = new FileSaver(new ImagePlus("TN_sq_per_sec",new FloatProcessor(width, height, results.tn_sq_per_sec))); 
+		tnsqpert.saveAsTiff(parentFolder+"\\"+"TN_sq_per_sec.tiff");
 
 		stopTime = System.currentTimeMillis();
-		
-		if(stop) {
-			publish(STOP);
-		} else {
-			publish(DONE);
-		}
-
-		running = false;
+		publish(DONE);
 		
 		return 0;
 	}
@@ -310,9 +287,11 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 			if(i == START) {
 				controller.processingHasStarted();
 			} else if(i == DONE) {
+				running = false;
 				controller.processingHasEnded();
 				controller.updateProcessorProgress("Done.",100);
 			} else if(i == STOP) {
+				running = false;
 				controller.processingHasStopped();
 				controller.updateProcessorProgress("Interrupted.",50);
 			} else {
