@@ -152,11 +152,6 @@ public class PipelineController {
 				gen.generate(new File(proc.getCalibrationPath()).getParentFile().getAbsolutePath(), 
 						proc.getCalibration(), exposures);
 			}
-		} else {
-			System.out.println("Acq : "+acq.isRunning());
-			System.out.println("Proc : "+isProcessingRunning());
-			System.out.println("Gen : "+isGenerationRunning());
-			System.out.println("2");
 		}
 	}
 
