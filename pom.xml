@@ -13,11 +13,11 @@
 	</parent>
 
 	<groupId>de.embl.rieslab</groupId>
-	<artifactId>PhotonFreeCalibration</artifactId>
+	<artifactId>Accent</artifactId>
 	<version>0.1</version>
 
-	<name>Photon-free Camera Calibration</name>
-	<description>sCMOS calibration tool.</description>
+	<name>Accent</name>
+	<description>Photon-free Camera Calibration tool for sCMOS, compatible with Micro-Manager2 and Fiji.</description>
 	<url>none</url>
 	<inceptionYear>2019</inceptionYear>
 	<organization>
@@ -44,23 +44,45 @@
 				<role>maintainer</role>
 			</roles>
 		</developer>
-		<developer>
-			<id>rdiekmann</id>
+	</developers>
+	
+	<contributors>
+		<contributor>
 			<name>Robin Diekmann</name>
 			<url>none</url>
 			<roles>
 				<role>founder</role>
 				<role>lead</role>
 				<role>reviewer</role>
-				<role>support</role>
-				<role>maintainer</role>
 			</roles>
-		</developer>
-	</developers>
+		</contributor>
+	</contributors>
+
+	<mailingLists>
+		<mailingList>
+			<name>None</name>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
+		<connection>scm:git:git://github.com/ries-lab/Accent</connection>
+		<developerConnection>scm:git:git@github.com:ries-lab/Accent</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/ries-lab/Accent</url>
+	</scm>
+	
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>None</url>
+	</issueManagement>
+	
+	<ciManagement>
+		<system>None</system>
+	</ciManagement>
 
 	<properties>
-		<package-name>embl.rieslab.photonfreecamcalib</package-name>
-		<main-class>embl.rieslab.photonfreecamcalib.PhotonFreeCalibFiji</main-class>
+		<package-name>embl.rieslab.accent</package-name>
+		<main-class>embl.rieslab.accent.AccentFiji</main-class>
 		<license.licenseName>LGPL</license.licenseName>
 		<license.copyrightOwners>EMBL</license.copyrightOwners>
 	</properties>
