@@ -71,6 +71,16 @@ public class FloatImage {
 		img = imgFactory.create(dims, new FloatType());
 
 		setPixels(width, height, pixels);
+	}	
+	
+	public FloatImage(int width, int height, float[] pixels, int exposure) {
+		this.exposure = exposure;
+		
+		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>();
+		long[] dims = {width,height};
+		img = imgFactory.create(dims, new FloatType());
+
+		setPixels(width, height, pixels);
 	}
 	
 	public FloatImage(FloatImage image) {
@@ -111,6 +121,18 @@ public class FloatImage {
 			y = cu.getIntPosition(1);
 			
 			cu.get().set((float) pixels[x+y*width]);
+		}
+	}
+
+	private void setPixels(int width, int height, float[] pixels) {
+		Cursor<FloatType> cu = img.localizingCursor();
+		int x,y;
+		while(cu.hasNext()) {
+			cu.fwd();
+			x = cu.getIntPosition(0);
+			y = cu.getIntPosition(1);
+			
+			cu.get().set(pixels[x+y*width]);
 		}
 	}
 	

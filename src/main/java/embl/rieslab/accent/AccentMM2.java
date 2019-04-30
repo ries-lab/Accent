@@ -49,10 +49,8 @@ public class AccentMM2 implements MenuPlugin, SciJavaPlugin {
 
 	@Override
 	public void onPluginSelected() {
-		//MainFrame frame = new MainFrame(studio);
-		//frame.setVisible(true);
-		
-		ImageConversions.testImage(studio);
+		MainFrame frame = new MainFrame(studio, false);
+		frame.setVisible(true);
 	}
 
 }

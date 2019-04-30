@@ -15,7 +15,7 @@ import main.java.embl.rieslab.accent.calibration.CalibrationIO;
 import main.java.embl.rieslab.accent.data.FloatImage;
 import main.java.embl.rieslab.accent.data.ImageExposurePair;
 
-public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Integer> implements Processor{
+public class ConcurrentCalibrationProcessor extends SwingWorker<Integer, Integer> implements Processor{
 
 	private PipelineController controller;
 	private boolean stop = false;
@@ -149,7 +149,6 @@ public class ConcurrentCalibrationProcessor  extends SwingWorker<Integer, Intege
 
 			// save images
 			avgs[q].saveAsTiff(folder + "/" + "Avg_" + avgs[q].getExposure() + "ms.tiff");
-
 			vars[q].saveAsTiff(folder + "/" + "Var_" + avgs[q].getExposure() + "ms.tiff");
 
 			

@@ -16,7 +16,7 @@ import main.java.embl.rieslab.accent.calibration.CalibrationIO;
 import main.java.embl.rieslab.accent.generator.AvgVarMapsGenerator;
 import main.java.embl.rieslab.accent.generator.GeneratePanelInterface;
 import main.java.embl.rieslab.accent.generator.Generator;
-import main.java.embl.rieslab.accent.processing.CalibrationProcessor;
+import main.java.embl.rieslab.accent.processing.SequentialCalibrationProcessor;
 import main.java.embl.rieslab.accent.processing.ConcurrentCalibrationProcessor;
 import main.java.embl.rieslab.accent.processing.ProcessingPanelInterface;
 import main.java.embl.rieslab.accent.processing.Processor;
@@ -33,21 +33,24 @@ public class PipelineController {
 	private Generator gen;
 	
 	private boolean acqDone;
-		
+	private boolean fiji;
+
+	public PipelineController() {
+		fiji = true;
+	}
 	
 	public PipelineController(Studio studio) {
-		
 		if(studio == null) {
 			throw new NullPointerException();
 		}
-		
+		fiji = false;
 		this.studio = studio;
 	}
 	
 	/////////////// Acquisition
 	
 	public boolean startAcquisition(AcquisitionSettings settings) {
-		if(isReady()) {
+		if(!fiji && isReady()) {
 			acqDone = false;
 			acqSettings = settings;
 			acq = AcquisitionFactory.getFactory().getAcquisition(studio, acqSettings, this);
@@ -106,7 +109,11 @@ public class PipelineController {
 			String[] directories = getExposureFolders(path);
 			
 			if(directories.length > 0) {
-				proc = new CalibrationProcessor(studio, directories, this);
+				if(!fiji) {
+					proc = new SequentialCalibrationProcessor(studio, directories, this);
+				} else {
+					proc = new SequentialCalibrationProcessor(studio, directories, this); // TODO change here
+				}
 				proc.start();
 				return true;
 			} else {

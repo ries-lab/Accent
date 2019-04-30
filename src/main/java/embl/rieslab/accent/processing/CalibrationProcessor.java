@@ -1,53 +1,41 @@
 package main.java.embl.rieslab.accent.processing;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
-import org.micromanager.Studio;
-import org.micromanager.data.Coords;
-import org.micromanager.data.Datastore;
-import org.micromanager.data.Image;
-import org.micromanager.data.internal.DefaultCoords;
 
 import main.java.embl.rieslab.accent.PipelineController;
 import main.java.embl.rieslab.accent.calibration.Calibration;
 import main.java.embl.rieslab.accent.calibration.CalibrationIO;
-import main.java.embl.rieslab.accent.utils.utils;
+import main.java.embl.rieslab.accent.data.FloatImage;
+import main.java.embl.rieslab.accent.loader.Loader;
 
-public class CalibrationProcessor extends SwingWorker<Integer, Integer> implements Processor{
-	
-	private Studio studio;
-	private String[] directories;
+public abstract class CalibrationProcessor<T> extends SwingWorker<Integer, Integer> implements Processor {
+
 	private PipelineController controller;
+	private Loader<T> loader;
 	private boolean stop = false;
 	private boolean running = false;
-
-	private long startTime, stopTime;
 	
 	private Calibration results;
 	private String calibPath;
+	private final String folder;
+
+	private long startTime, stopTime;
 	
 	private final static int START = 0;
 	private final static int DONE = -1;
 	private final static int STOP = -2;
 	
-	public CalibrationProcessor(Studio studio, String[] directories, PipelineController testPipelineController) {
-		if(studio == null || directories == null || testPipelineController == null) {
-			throw new NullPointerException();
-		}
-		
-		this.studio = studio;
-		this.directories = directories;
-		this.controller = testPipelineController;
-		
-		results = new Calibration();
+	public CalibrationProcessor(String folder, PipelineController controller, Loader<T> loader) {
+		this.folder = folder;
+		this.controller = controller;
+		this.loader = loader;
 		
 		startTime = 0;
 		stopTime = 0;
@@ -72,148 +60,133 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 	}
 
 	@Override
+	public double getExecutionTime() {
+		return ((double) stopTime-startTime)/1000.0;
+	}
+
+
+	@Override
+	public String getCalibrationPath() {
+		return calibPath;
+	}
+
+
+	@Override
+	public Calibration getCalibration() {
+		return results;
+	}
+	
+	@Override
 	protected Integer doInBackground() throws Exception {
-
 		startTime = System.currentTimeMillis();
-		publish(START);
+		publish(START);	
 
-		double percentile = 100./(directories.length+1);
+		FloatImage[] avgs = new FloatImage[loader.getSize()];
+		FloatImage[] vars = new FloatImage[loader.getSize()];
+		int[] stackSizes = new int[loader.getSize()];
 		
-		// extract width and height
-		Datastore store = studio.data().loadData(directories[0], true);
-		Coords.CoordsBuilder builder = new DefaultCoords.Builder();
-		builder.channel(0).z(0).stagePosition(0).time(0);
-		Image im = store.getImage(builder.build());
-		int height = im.getHeight();
-		int width = im.getWidth();
+		computeAvgAndVar(loader, avgs, vars, stackSizes);
+		
+		if(stop) {
+			publish(STOP);
+			return 0;
+		} else {
+			publish(1);
+		}
+		
+		for(int q=0;q<loader.getSize();q++) {
+			// save images
+			avgs[q].saveAsTiff(folder + "/" + "Avg_" + avgs[q].getExposure() + "ms.tiff");
+			vars[q].saveAsTiff(folder + "/" + "Var_" + avgs[q].getExposure() + "ms.tiff");
+		}
 
-		int totLength = width * height;
 		
-		// instantiate the arrays for the linear regression
+		if(stop) {
+			publish(STOP);
+			return 0;
+		} else {
+			publish(2);
+		}
+		
+		results = performLinearRegressions(folder, avgs, vars);
+		calibPath = writeCalibrationToFile();
+		writeCalibrationToImages();
+		
+		if(stop) {
+			publish(STOP);
+			return 0;
+		} else {
+			publish(3);
+		}
+		
+		stopTime = System.currentTimeMillis();
+		publish(DONE);
+		
+		return 0;
+	}
+	
+	@Override
+	protected void process(List<Integer> chunks) {
+		for(Integer i:chunks) {
+			if(i == START) {
+				controller.processingHasStarted();
+				controller.updateProcessorProgress("Processing ...",0);
+			} else if(i == DONE) {
+				running = false;
+				controller.processingHasEnded();
+				controller.updateProcessorProgress("Done.",100);
+			} else if(i == STOP) {
+				running = false;
+				controller.processingHasStopped();
+				controller.updateProcessorProgress("Interrupted.",50);
+			} else {
+				controller.updateProcessorProgress("Step: "+i+"/"+3, i*33);
+			}
+		}
+	}
+	
+	protected abstract void computeAvgAndVar(Loader<T> loader, FloatImage[] avgs, FloatImage[] vars, int[] stackSizes);
+	
+	protected Calibration performLinearRegressions(String folder, FloatImage[] avgs, FloatImage[] vars) {
+		int width = (int) avgs[0].getWidth();
+		int height = (int) avgs[0].getHeight();
+		int totalLength = height * width;
+		
+		// instantiates the arrays for the linear regression
 		ArrayList<double[][]> avg_exp_list = new ArrayList<double[][]>();
 		ArrayList<double[][]> var_exp_list = new ArrayList<double[][]>();
 		ArrayList<double[][]> var_avg_list = new ArrayList<double[][]>();
-		for (int k = 0; k < totLength; k++) {
-			avg_exp_list.add(new double[directories.length][2]);
-			var_exp_list.add(new double[directories.length][2]);
-			var_avg_list.add(new double[directories.length][2]);
-		}
+	
+		for (int k = 0; k < totalLength; k++) {
+			avg_exp_list.add(new double[avgs.length][2]);
+			var_exp_list.add(new double[avgs.length][2]);
+			var_avg_list.add(new double[avgs.length][2]);
+		}	
 		
-		for(int counter=0; counter<directories.length; counter++) {
-			String file = directories[counter];
-			
-			try {
-				store = studio.data().loadData(file, true);
-				float stackSize = (float) store.getNumImages();
-
-				// gets the first image of the stack
-				builder.channel(0).z(0).stagePosition(0).time(0);
-
-				ImageProcessor improc = store.getImage(builder.build());
-
-				FloatProcessor avg_im = new FloatProcessor(width, height);
-				FloatProcessor avgsq_im = new FloatProcessor(width, height);
-				avg_im.setFloatArray(improc.getFloatArray());
-				avgsq_im.setFloatArray(improc.getFloatArray());
-
-				FloatProcessor var_im = new FloatProcessor(width, height);
-
-				// loops over the stack and adds pixel-wise the value of each pixels and their
-				// square (normalized by the stack size)
-				for (int z = 1; z < stackSize; z++) {
-
-					// gets image at position z in the stack
-					builder.time(z);
-					improc = studio.data().ij().createProcessor(store.getImage(builder.build()));
-
-					// updates progress bar
-					publish((int) (percentile * counter + percentile * z / stackSize));
-
-					for (int x = 0; x < width; x++) {
-						
-						for (int y = 0; y < height; y++) {
-
-							if (stop) {
-								store.close();
-								publish(STOP);
-								return 0;
-							}
-
-							avg_im.setf(x, y, avg_im.getf(x, y) + improc.getf(x, y));
-							avgsq_im.setf(x, y, avgsq_im.getf(x, y) + improc.getf(x, y) * improc.getf(x, y));
-						}
-					}
-
-				}
-
-				// computes the variance image from the average square and the average values
+		for(int q=0;q<avgs.length;q++) {
+			// fills arrays for linear regression
+			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
-					for (int y = 0; y < height; y++) {
-						avg_im.setf(x, y, avg_im.getf(x, y) / stackSize);
-						float var = (float) (avgsq_im.getf(x, y) / stackSize - avg_im.getf(x, y) * avg_im.getf(x, y));
-						if (var <= 0.0) {
-							var = 65535; // 16bits unsigned max, for IJ
-						}
-						var_im.setf(x, y, var);
-					}
+					avg_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() * 1000;
+					avg_exp_list.get(x + width * y)[q][1] = avgs[q].getPixelValue(x, y);
+					var_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() * 1000;
+					var_exp_list.get(x + width * y)[q][1] = vars[q].getPixelValue(x, y);
+					var_avg_list.get(x + width * y)[q][0] = avgs[q].getPixelValue(x, y);
+					var_avg_list.get(x + width * y)[q][1] = vars[q].getPixelValue(x, y);
 				}
-
-				// save as images
-				int exposure = utils.extractExposurefromFolderName(file);
-
-				FileSaver avgsaver = new FileSaver(new ImagePlus("Avg_" + exposure + "ms", avg_im));
-				avgsaver.saveAsTiff(getParentPath(file) + "/" + "Avg_" + exposure + "ms.tiff");
-
-				FileSaver sdsaver = new FileSaver(new ImagePlus("Var_" + exposure + "ms", var_im));
-				sdsaver.saveAsTiff(getParentPath(file) + "/" + "Var_" + exposure + "ms.tiff");
-				
-				store.close();	
-				
-				// fills arrays
-				for (int y = 0; y < height; y++) {
-	
-					for (int x = 0; x < width; x++) {
-	
-						if (stop) {
-							publish(STOP);
-							return 0;
-						}
-	
-						avg_exp_list.get(x + width * y)[counter][0] = exposure*1000;
-						avg_exp_list.get(x + width * y)[counter][1] = avg_im.getf(x, y);
-						var_exp_list.get(x + width * y)[counter][0] = exposure*1000;
-						var_exp_list.get(x + width * y)[counter][1] = var_im.getf(x, y);
-						var_avg_list.get(x + width * y)[counter][0] = avg_im.getf(x, y);
-						var_avg_list.get(x + width * y)[counter][1] = var_im.getf(x, y);
-					}
-				}
-
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(null, "Unable to load:\n" + file + "\n\nWas it acquired with Micro-Manager?",
-						"Error", JOptionPane.INFORMATION_MESSAGE);
-
-				e.printStackTrace();
-				publish(STOP);
-			}	
+			}
 		}
 		
-			
-		// linear regression
-		SimpleRegression[] avg_exp_reg = new SimpleRegression[height * width];
-		SimpleRegression[] var_exp_reg = new SimpleRegression[height * width];
-		SimpleRegression[] var_avg_reg = new SimpleRegression[height * width];
-		double[] baseline = new double[height * width];
-		double[] dcpt = new double[height * width];
-		double[] rnsq = new double[height * width];
-		double[] tnsqpt = new double[height * width];
-		double[] gain = new double[height * width];
-					
-		for (int i = 0; i < totLength; i++) {
-			if (stop) {
-				publish(STOP);
-				return 0;
-			}
-			
+		SimpleRegression[] avg_exp_reg = new SimpleRegression[totalLength];
+		SimpleRegression[] var_exp_reg = new SimpleRegression[totalLength];
+		SimpleRegression[] var_avg_reg = new SimpleRegression[totalLength];
+		double[] baseline = new double[totalLength];
+		double[] dcpt = new double[totalLength];
+		double[] rnsq = new double[totalLength];
+		double[] tnsqpt = new double[totalLength];
+		double[] gain = new double[totalLength];
+		
+		for (int i = 0; i < totalLength; i++) {
 			avg_exp_reg[i] = new SimpleRegression();
 			avg_exp_reg[i].addData(avg_exp_list.get(i));
 			baseline[i] = avg_exp_reg[i].getIntercept();
@@ -228,17 +201,18 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 			var_avg_reg[i].addData(var_avg_list.get(i));
 			gain[i] = var_avg_reg[i].getSlope();
 
-			publish((int) (percentile * directories.length + percentile * i / totLength));
 		}
-			
+		
 		// sanity check on the median: replace negative gains by the median
 		double median = StatUtils.percentile(gain, 50);
-		for (int i = 0; i < totLength; i++) {
+		for (int i = 0; i < totalLength; i++) {
 			if(Double.isNaN(gain[i]) || Double.compare(gain[i], 0) <= 0.0) {
 				gain[i] = median;
 			}
 		}
 		
+
+		Calibration results = new Calibration();
 		// saves results in the calibration
 		results.width = width;
 		results.height = height;
@@ -248,76 +222,26 @@ public class CalibrationProcessor extends SwingWorker<Integer, Integer> implemen
 		results.rn_sq = rnsq;
 		results.tn_sq_per_sec = tnsqpt;
 
-		// Writes configuration to disk
-		String parentFolder = new File(directories[0]).getParentFile().getAbsolutePath();
-		calibPath = parentFolder+"\\results."+CalibrationIO.CALIB_EXT;
-		CalibrationIO.write(new File(calibPath), results);
-		
-		// Writes the results as images
-		FileSaver baselineim = new FileSaver(new ImagePlus("Baseline",new FloatProcessor(width, height, results.baseline))); 
-		baselineim.saveAsTiff(parentFolder+"\\"+"Baseline.tiff");
-
-		FileSaver dcpert = new FileSaver(new ImagePlus("DC_per_sec",new FloatProcessor(width, height, results.dc_per_sec))); 
-		dcpert.saveAsTiff(parentFolder+"\\"+"DC_per_sec.tiff");
-
-		FileSaver gainim = new FileSaver(new ImagePlus("Gain",new FloatProcessor(width, height, results.gain))); 
-		gainim.saveAsTiff(parentFolder+"\\"+"Gain.tiff");
-
-		FileSaver rnsqim = new FileSaver(new ImagePlus("RN_sq",new FloatProcessor(width, height, results.rn_sq))); 
-		rnsqim.saveAsTiff(parentFolder+"\\"+"RN_sq.tiff");
-
-		FileSaver tnsqpert = new FileSaver(new ImagePlus("TN_sq_per_sec",new FloatProcessor(width, height, results.tn_sq_per_sec))); 
-		tnsqpert.saveAsTiff(parentFolder+"\\"+"TN_sq_per_sec.tiff");
-
-		stopTime = System.currentTimeMillis();
-		publish(DONE);
-		
-		return 0;
-	}
-	
-	@Override
-	protected void process(List<Integer> chunks) {
-		for(Integer i:chunks) {
-			if(i == START) {
-				controller.processingHasStarted();
-			} else if(i == DONE) {
-				running = false;
-				controller.processingHasEnded();
-				controller.updateProcessorProgress("Done.",100);
-			} else if(i == STOP) {
-				running = false;
-				controller.processingHasStopped();
-				controller.updateProcessorProgress("Interrupted.",50);
-			} else {
-				int progress = i;
-				int step = (int) (progress * (directories.length+1) / 100)+1;
-				controller.updateProcessorProgress("Step: "+step+"/"+(directories.length+1), progress);
-			}
-		}
-	}
-	
-	
-	public static String getParentPath(String dataFolder) {
-		return new File(dataFolder).getParent();
-	}
-
-
-	@Override
-	public double getExecutionTime() {
-		return ((double) stopTime-startTime)/1000.0;
-	}
-
-
-	@Override
-	public String getCalibrationPath() {
-		String parentFolder = new File(directories[0]).getParentFile().getAbsolutePath();
-
-		return parentFolder+"\\results."+CalibrationIO.CALIB_EXT;
-	}
-
-
-	@Override
-	public Calibration getCalibration() {
 		return results;
+	}
+
+	protected String writeCalibrationToFile() {
+		// Writes configuration to disk
+		String calibPath = folder+"\\results."+CalibrationIO.CALIB_EXT;
+		CalibrationIO.write(new File(calibPath), results);
+		return calibPath;
+	}
+	
+	protected void writeCalibrationToImages() {
+		// Writes the results as images
+		new FloatImage(results.width, results.height, results.baseline, 0).saveAsTiff(folder+"\\"+"Baseline.tiff");
+		new FloatImage(results.width, results.height, results.dc_per_sec, 0).saveAsTiff(folder+"\\"+"DC_per_sec.tiff");
+		new FloatImage(results.width, results.height, results.gain, 0).saveAsTiff(folder+"\\"+"Gain.tiff");
+		new FloatImage(results.width, results.height, results.rn_sq, 0).saveAsTiff(folder+"\\"+"RN_sq.tiff");
+		new FloatImage(results.width, results.height, results.tn_sq_per_sec, 0).saveAsTiff(folder+"\\"+"TN_sq_per_sec.tiff");
+	}
+	
+	protected PipelineController getController() {
+		return controller;
 	}
 }

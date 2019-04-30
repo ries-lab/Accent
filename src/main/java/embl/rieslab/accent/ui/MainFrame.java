@@ -21,7 +21,7 @@ public class MainFrame extends JFrame{
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame(Studio studio) {
+	public MainFrame(Studio studio, boolean fiji) {
 
 		// controller 
 		PipelineController controller = new PipelineController(studio);
@@ -37,17 +37,20 @@ public class MainFrame extends JFrame{
 		gbl_content.rowWeights = new double[] { 0.0, 0.0, 0.0 };
 		content.setLayout(gbl_content);
 
-		AcqPanel acqpane = new AcqPanel(studio.getCMMCore().getCameraDevice(), controller);
-
-		controller.setAcquisitionPanel(acqpane);
-
-		GridBagConstraints gbc_acqpane = new GridBagConstraints();
-		gbc_acqpane.weighty = 0.2;
-		gbc_acqpane.weightx = 0.2;
-		gbc_acqpane.fill = GridBagConstraints.HORIZONTAL;
-		gbc_acqpane.gridx = 0;
-		gbc_acqpane.gridy = 0;
-		content.add(acqpane, gbc_acqpane);
+		int counter = 0;
+		
+		if(fiji) {		
+			AcqPanel acqpane = new AcqPanel(studio.getCMMCore().getCameraDevice(), controller);
+			controller.setAcquisitionPanel(acqpane);
+			GridBagConstraints gbc_acqpane = new GridBagConstraints();
+			gbc_acqpane.weighty = 0.2;
+			gbc_acqpane.weightx = 0.2;
+			gbc_acqpane.fill = GridBagConstraints.HORIZONTAL;
+			gbc_acqpane.gridx = 0;
+			gbc_acqpane.gridy = counter++;
+			content.add(acqpane, gbc_acqpane);
+		}
+		
 		ProcPanel procpane = new ProcPanel(controller);
 		controller.setProcessingPanel(procpane);
 		GridBagConstraints gbc_procpane = new GridBagConstraints();
@@ -55,8 +58,9 @@ public class MainFrame extends JFrame{
 		gbc_procpane.weightx = 0.2;
 		gbc_procpane.fill = GridBagConstraints.HORIZONTAL;
 		gbc_procpane.gridx = 0;
-		gbc_procpane.gridy = 1;
+		gbc_procpane.gridy = counter++;
 		content.add(procpane, gbc_procpane);
+		
 		GenPanel genpane = new GenPanel(controller);
 		controller.setGeneratePanel(genpane);
 		GridBagConstraints gbc_genpane = new GridBagConstraints();
@@ -64,7 +68,7 @@ public class MainFrame extends JFrame{
 		gbc_genpane.weightx = 0.2;
 		gbc_genpane.fill = GridBagConstraints.HORIZONTAL;
 		gbc_genpane.gridx = 0;
-		gbc_genpane.gridy = 2;
+		gbc_genpane.gridy = counter++;
 		content.add(genpane, gbc_genpane);
 		
 		this.setContentPane(content);
