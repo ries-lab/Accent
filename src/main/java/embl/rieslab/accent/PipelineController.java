@@ -16,10 +16,14 @@ import main.java.embl.rieslab.accent.calibration.CalibrationIO;
 import main.java.embl.rieslab.accent.generator.AvgVarMapsGenerator;
 import main.java.embl.rieslab.accent.generator.GeneratePanelInterface;
 import main.java.embl.rieslab.accent.generator.Generator;
-import main.java.embl.rieslab.accent.processing.SequentialCalibrationProcessor;
-import main.java.embl.rieslab.accent.processing.ConcurrentCalibrationProcessor;
+import main.java.embl.rieslab.accent.loader.IJLoader;
+import main.java.embl.rieslab.accent.loader.MMStacksLoader;
+import main.java.embl.rieslab.accent.loader.QueuesLoader;
+import main.java.embl.rieslab.accent.processing.IJProcessor;
+import main.java.embl.rieslab.accent.processing.MMStacksProcessor;
 import main.java.embl.rieslab.accent.processing.ProcessingPanelInterface;
 import main.java.embl.rieslab.accent.processing.Processor;
+import main.java.embl.rieslab.accent.processing.QueuesProcessor;
 
 public class PipelineController {
 
@@ -57,7 +61,7 @@ public class PipelineController {
 			acq.start();
 			
 			if(acqSettings.parallelProcessing) {
-				proc = new ConcurrentCalibrationProcessor(acqSettings.folder_, acq.getQueues(), this);
+				proc = new QueuesProcessor(acqSettings.folder_, this, new QueuesLoader(acq.getQueues()));
 				proc.start();
 			} 
 			
@@ -110,9 +114,9 @@ public class PipelineController {
 			
 			if(directories.length > 0) {
 				if(!fiji) {
-					proc = new SequentialCalibrationProcessor(studio, directories, this);
+					proc = new MMStacksProcessor(path, this, new MMStacksLoader(studio, directories));
 				} else {
-					proc = new SequentialCalibrationProcessor(studio, directories, this); // TODO change here
+					proc = new IJProcessor(path, this, new IJLoader(directories)); 
 				}
 				proc.start();
 				return true;

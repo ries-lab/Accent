@@ -65,7 +65,7 @@ public class ImageConversions {
 			/////// imglib2
 			
 			start = System.currentTimeMillis();
-			floatim.addPixels(mm_im.getWidth(), mm_im.getHeight(), (byte[]) mm_im.getRawPixels());
+			floatim.addPixels((byte[]) mm_im.getRawPixels());
 			avg_im.setFloatArray(improc.getFloatArray());
 			
 			end = System.currentTimeMillis();

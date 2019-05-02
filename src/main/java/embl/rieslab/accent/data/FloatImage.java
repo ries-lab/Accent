@@ -2,39 +2,32 @@ package main.java.embl.rieslab.accent.data;
 
 import org.micromanager.data.Image;
 
-import io.scif.img.ImgSaver;
-import net.imglib2.Cursor;
-import net.imglib2.RandomAccess;
-import net.imglib2.img.Img;
-import net.imglib2.img.ImgFactory;
-import net.imglib2.img.array.ArrayImgFactory;
-import net.imglib2.type.numeric.real.FloatType;
+import ij.ImagePlus;
+import ij.io.FileSaver;
+import ij.process.FloatProcessor;
 
 public class FloatImage {
 
 	private final int exposure;
-	private Img<FloatType> img;
+	private FloatProcessor img;
 	
 	public FloatImage(ImageExposurePair impair) {
 		this.exposure = impair.getExposure();
 
-		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>(new FloatType());
-		long[] dims = {impair.getImage().getWidth(),impair.getImage().getHeight()};
-		img = imgFactory.create(dims);
+		Image im = impair.getImage();
+		img = new FloatProcessor(im.getWidth(), im.getHeight());
 		
-		if(impair.getImage().getBytesPerPixel() == 1) {
-			setPixels(impair.getImage().getWidth(),impair.getImage().getHeight(), (byte[]) impair.getImage().getRawPixels());
+		if(im.getBytesPerPixel() == 1) {
+			setPixels(im.getWidth(),im.getHeight(), (byte[]) im.getRawPixels());
 		} else {
-			setPixels(impair.getImage().getWidth(),impair.getImage().getHeight(), (short[]) impair.getImage().getRawPixels());
+			setPixels(im.getWidth(),im.getHeight(), (short[]) im.getRawPixels());
 		}
 	}	
 	
 	public FloatImage(Image im, int exposure) {
 		this.exposure = exposure;
 
-		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>(new FloatType());
-		long[] dims = {im.getWidth(),im.getHeight()};
-		img = imgFactory.create(dims);
+		img = new FloatProcessor(im.getWidth(), im.getHeight());
 		
 		if(im.getBytesPerPixel() == 1) {
 			setPixels(im.getWidth(),im.getHeight(), (byte[]) im.getRawPixels());
@@ -45,123 +38,101 @@ public class FloatImage {
 
 	public FloatImage(int width, int height, byte[] pixels, int exposure) {
 		this.exposure = exposure;
-		
-		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>(new FloatType());
-		long[] dims = {width,height};
-		img = imgFactory.create(dims);
+
+		img = new FloatProcessor(width, height);
 
 		setPixels(width, height, pixels);
 	}
 
 	public FloatImage(int width, int height, short[] pixels, int exposure) {
 		this.exposure = exposure;
-		
-		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>(new FloatType());
-		long[] dims = {width,height};
-		img = imgFactory.create(dims);
+
+		img = new FloatProcessor(width, height);
 
 		setPixels(width, height, pixels);
 	}
 	
 	public FloatImage(int width, int height, double[] pixels, int exposure) {
 		this.exposure = exposure;
-		
-		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>(new FloatType());
-		long[] dims = {width,height};
-		img = imgFactory.create(dims);
+
+		img = new FloatProcessor(width, height);
 
 		setPixels(width, height, pixels);
 	}	
 	
 	public FloatImage(int width, int height, float[] pixels, int exposure) {
 		this.exposure = exposure;
-		
-		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>(new FloatType());
-		long[] dims = {width,height};
-		img = imgFactory.create(dims);
+
+		img = new FloatProcessor(width, height);
 
 		setPixels(width, height, pixels);
 	}
-	
+
 	public FloatImage(FloatImage image) {
 		this.exposure = image.getExposure();
 		
-		img = image.getImage().factory().create(image.getImage());
-		
-		// create a cursor for both images
-		Cursor<FloatType> cursorInput = image.getImage().cursor();
-		Cursor<FloatType> cursorOutput = img.cursor();
+		img = new FloatProcessor(image.getImage().getFloatArray());
+	}
 
-		while (cursorInput.hasNext()) {
-			cursorInput.fwd();
-			cursorOutput.fwd();
-			
-			cursorOutput.get().set(cursorInput.get());
-		}
+	public FloatImage(ImageProcessorExposurePair image) {
+		this.exposure = image.getExposure();
+		
+		img = new FloatProcessor(image.getImage().getFloatArray());
 	}
 
 	private void setPixels(int width, int height, byte[] pixels) {
-		Cursor<FloatType> cu = img.localizingCursor();
-		int x,y;
-		while(cu.hasNext()) {
-			cu.fwd();
-			x = cu.getIntPosition(0);
-			y = cu.getIntPosition(1);
-			
-			cu.get().set(Byte.toUnsignedInt(pixels[x+y*width]));
+		if(img != null) {
+			for(int x=0;x<width;x++) {
+				for(int y=0;y<height;y++) {
+					img.setf(x, y, Byte.toUnsignedInt(pixels[x+width*y]));
+				}
+			}
 		}
 	}
 
 	private void setPixels(int width, int height, double[] pixels) {
-		Cursor<FloatType> cu = img.localizingCursor();
-		int x,y;
-		while(cu.hasNext()) {
-			cu.fwd();
-			x = cu.getIntPosition(0);
-			y = cu.getIntPosition(1);
-			
-			cu.get().set((float) pixels[x+y*width]);
+		if(img != null) {
+			for(int x=0;x<width;x++) {
+				for(int y=0;y<height;y++) {
+					img.setf(x, y, (float) pixels[x+width*y]);
+				}
+			}
 		}
 	}
 
 	private void setPixels(int width, int height, float[] pixels) {
-		Cursor<FloatType> cu = img.localizingCursor();
-		int x,y;
-		while(cu.hasNext()) {
-			cu.fwd();
-			x = cu.getIntPosition(0);
-			y = cu.getIntPosition(1);
-			
-			cu.get().set(pixels[x+y*width]);
+		if(img != null) {
+			for(int x=0;x<width;x++) {
+				for(int y=0;y<height;y++) {
+					img.setf(x, y, pixels[x+width*y]);
+				}
+			}
 		}
 	}
 	
 	private void setPixels(int width, int height, short[] pixels) {
-		Cursor<FloatType> cu = img.localizingCursor();
-		int x,y;
-		while(cu.hasNext()) {
-			cu.fwd();
-			x = cu.getIntPosition(0);
-			y = cu.getIntPosition(1);
-			
-			cu.get().set(Short.toUnsignedInt(pixels[x+y*width]));
+		if(img != null) {
+			for(int x=0;x<width;x++) {
+				for(int y=0;y<height;y++) {
+					img.setf(x, y, Short.toUnsignedInt(pixels[x+width*y]));
+				}
+			}
 		}
 	}
-	
 	
 	public int getExposure() {
 		return exposure;
 	}
 	
-	public long getWidth() {
-		return img.dimension(0);
+	public int getWidth() {
+		return img.getWidth();
 	}
 	
-	public long getHeight() {
-		return  img.dimension(1);
+	public int getHeight() {
+		return  img.getHeight();
 	}
 	
-	public Img<FloatType> getImage() {
+	public FloatProcessor getImage() {
 		return img;
 	}
 
@@ -175,46 +146,67 @@ public class FloatImage {
 		}
 
 		if(image.getBytesPerPixel() == 1) {
-			addPixels(image.getWidth(), image.getHeight(), (byte[]) image.getRawPixels());
+			addPixels((byte[]) image.getRawPixels());
 		} else {
-			addPixels(image.getWidth(), image.getHeight(), (short[]) image.getRawPixels());
+			addPixels((short[]) image.getRawPixels());
 		}
-
 	}
 
-	public void addPixels(int width, int height, byte[] pixels) {
-		Cursor<FloatType> cu = img.localizingCursor();
-		int x,y;
-		while(cu.hasNext()) {
-			cu.fwd();
-			x = cu.getIntPosition(0);
-			y = cu.getIntPosition(1);
-			
-			cu.get().set(cu.get().get()+Byte.toUnsignedInt(pixels[x+y*width]));
+	public void addPixels(byte[] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
 		}
 		
+		if(pixels.length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)+Byte.toUnsignedInt(pixels[x+getWidth()*y]));
+			}
+		}
+	}
+
+	public void addPixels(float[][] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		if(pixels.length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)+pixels[x][y]);
+			}
+		}
 	}
 	
-	private void addPixels(int width, int height, short[] pixels) {
-		Cursor<FloatType> cu = img.localizingCursor();
-		int x,y;
-		while(cu.hasNext()) {
-			cu.fwd();
-			x = cu.getIntPosition(0);
-			y = cu.getIntPosition(1);
-			
-			cu.get().set(cu.get().get()+Short.toUnsignedInt(pixels[x+y*width]));
+	private void addPixels(short[] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
 		}
 		
+		if(pixels.length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)+Short.toUnsignedInt(pixels[x+getWidth()*y]));
+			}
+		}
 	}
+	
 	
 	public void dividePixels(float d) {
 		if(Math.abs(d) > 0.01) {
-			Cursor<FloatType> curs = img.cursor();
-			
-			while(curs.hasNext()) {
-				curs.fwd();
-				curs.get().set(curs.get().get() / d);
+			for(int x=0;x<getWidth();x++) {
+				for(int y=0;y<getHeight();y++) {
+					img.setf(x, y, img.getf(x,y)/d);
+				}
 			}
 		}
 	}
@@ -229,80 +221,92 @@ public class FloatImage {
 		}
 
 		if(image.getBytesPerPixel() == 1) {
-			addSqPixels(image.getWidth(), image.getHeight(), (byte[]) image.getRawPixels());
+			addSquarePixels((byte[]) image.getRawPixels());
 		} else {
-			addSqPixels(image.getWidth(), image.getHeight(), (short[]) image.getRawPixels());
+			addSquarePixels((short[]) image.getRawPixels());
 		}
 	}
 
-	private void addSqPixels(int width, int height, byte[] pixels) {
-		Cursor<FloatType> cu = img.localizingCursor();
-		int x,y;
-		while(cu.hasNext()) {
-			cu.fwd();
-			x = cu.getIntPosition(0);
-			y = cu.getIntPosition(1);
-			
-			int val = Byte.toUnsignedInt(pixels[x+y*width]);
-			cu.get().set(cu.get().get()+val*val);
+	private void addSquarePixels(byte[] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		if(pixels.length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				int pix = Byte.toUnsignedInt(pixels[x+getWidth()*y]);
+				img.setf(x, y, img.getf(x,y)+pix*pix);
+			}
 		}
 	}
 	
-	private void addSqPixels(int width, int height, short[] pixels) {
-		Cursor<FloatType> cu = img.localizingCursor();
-		int x,y;
-		while(cu.hasNext()) {
-			cu.fwd();
-			x = cu.getIntPosition(0);
-			y = cu.getIntPosition(1);
-			
-			int val = Short.toUnsignedInt(pixels[x+y*width]);
-			cu.get().set(cu.get().get()+val*val);
+	private void addSquarePixels(short[] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		if(pixels.length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				int pix = Short.toUnsignedInt(pixels[x+getWidth()*y]);
+				img.setf(x, y, img.getf(x,y)+pix*pix);
+			}
+		}
+	}
+	
+	public void addSquarePixels(float[][] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		if(pixels.length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)+pixels[x][y]*pixels[x][y]);
+			}
 		}
 	}
 	
 	public void square() {
-		Cursor<FloatType> curs = img.cursor();
-		
-		while(curs.hasNext()) {
-			curs.fwd();
-			curs.get().set(curs.get().get() * curs.get().get());
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)*img.getf(x,y));
+			}
 		}
 	}
 	
-	public void toVariance(Img<FloatType> meanImg, float size) {
-		if(meanImg == null) {
+	public void toVariance(FloatProcessor imp, float size) {
+		if(imp == null) {
 			throw new NullPointerException();
 		}
 		
-		if(meanImg.dimension(0) != getWidth() || meanImg.dimension(1) != getHeight()) {
+		if(imp.getWidth() != getWidth() || imp.getHeight() != getHeight()) {
 			throw new IllegalArgumentException();
 		}
-
-		Cursor<FloatType> curs = img.cursor();
-		RandomAccess<FloatType> randomAccess = meanImg.randomAccess();
-
-		while (curs.hasNext()) {
-			curs.fwd();
-			randomAccess.setPosition(curs);
-			float mean = randomAccess.get().get();
-			curs.get().set(curs.get().get() / size - mean*mean);
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)/size-imp.getf(x, y)*imp.getf(x, y));
+			}
 		}
 	}
 	
 	public void saveAsTiff(String path) {
-		ImgSaver saver = new ImgSaver();
-		try {
-			saver.saveImg(path, img);
-		} catch (Exception exc) {
-			exc.printStackTrace();
-		}
+		FileSaver fs = new FileSaver(new ImagePlus("", img)); 
+		fs.saveAsTiff(path);
 	}
 	
-	public float getPixelValue(int x, int y) { // what are the performances of such access?
-		RandomAccess<FloatType> ra = img.randomAccess();
-		ra.setPosition(x, 0);
-		ra.setPosition(y, 1);
-		return ra.get().get();
+	public float getPixelValue(int x, int y) { 
+		return img.getf(x, y);
 	}
 }
