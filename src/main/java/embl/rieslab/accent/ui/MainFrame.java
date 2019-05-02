@@ -24,7 +24,12 @@ public class MainFrame extends JFrame{
 	public MainFrame(Studio studio, boolean fiji) {
 
 		// controller 
-		PipelineController controller = new PipelineController(studio);
+		PipelineController controller;
+		if(fiji) {
+			controller = new PipelineController();
+		} else {
+			controller = new PipelineController(studio);
+		}
 		
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setTitle("Accent");
@@ -39,7 +44,7 @@ public class MainFrame extends JFrame{
 
 		int counter = 0;
 		
-		if(fiji) {		
+		if(!fiji) {		
 			AcqPanel acqpane = new AcqPanel(studio.getCMMCore().getCameraDevice(), controller);
 			controller.setAcquisitionPanel(acqpane);
 			GridBagConstraints gbc_acqpane = new GridBagConstraints();
