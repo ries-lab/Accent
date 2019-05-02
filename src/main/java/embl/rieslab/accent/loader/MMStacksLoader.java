@@ -27,14 +27,14 @@ public class MMStacksLoader implements Loader<ImageExposurePair>{
 
 	@Override
 	public boolean isDone() {
-		return (currentDirectory == directories.length && currentPlane >= store.getNumImages());
+		return (currentDirectory == directories.length-1 && currentPlane == store.getNumImages());
 	}
 
 	@Override
 	public ImageExposurePair getNext(int channel) {
 		Coords.CoordsBuilder builder = new DefaultCoords.Builder();
 		builder.channel(0).z(currentPlane++).stagePosition(0).time(0);
-	
+
 		try {
 			Image im = store.getImage(builder.build());
 			
@@ -74,7 +74,7 @@ public class MMStacksLoader implements Loader<ImageExposurePair>{
 	@Override
 	public boolean openChannel(int channel) {
 		if(channel < currentDirectory && channel == currentDirectory+1) {
-			currentDirectory++;
+			currentDirectory = channel;
 			currentPlane = 0;
 			
 			try {

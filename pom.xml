@@ -99,6 +99,11 @@
 			<groupId>net.imagej</groupId>
 			<artifactId>imagej</artifactId>
 		</dependency>
+		<dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij</artifactId>
+	    	<version>1.52b</version>
+        </dependency>
 				<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>

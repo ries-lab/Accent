@@ -18,9 +18,9 @@ public class FloatImage {
 	public FloatImage(ImageExposurePair impair) {
 		this.exposure = impair.getExposure();
 
-		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>();
+		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>(new FloatType());
 		long[] dims = {impair.getImage().getWidth(),impair.getImage().getHeight()};
-		img = imgFactory.create(dims, new FloatType());
+		img = imgFactory.create(dims);
 		
 		if(impair.getImage().getBytesPerPixel() == 1) {
 			setPixels(impair.getImage().getWidth(),impair.getImage().getHeight(), (byte[]) impair.getImage().getRawPixels());
@@ -32,9 +32,9 @@ public class FloatImage {
 	public FloatImage(Image im, int exposure) {
 		this.exposure = exposure;
 
-		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>();
+		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>(new FloatType());
 		long[] dims = {im.getWidth(),im.getHeight()};
-		img = imgFactory.create(dims, new FloatType());
+		img = imgFactory.create(dims);
 		
 		if(im.getBytesPerPixel() == 1) {
 			setPixels(im.getWidth(),im.getHeight(), (byte[]) im.getRawPixels());
@@ -46,9 +46,9 @@ public class FloatImage {
 	public FloatImage(int width, int height, byte[] pixels, int exposure) {
 		this.exposure = exposure;
 		
-		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>();
+		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>(new FloatType());
 		long[] dims = {width,height};
-		img = imgFactory.create(dims, new FloatType());
+		img = imgFactory.create(dims);
 
 		setPixels(width, height, pixels);
 	}
@@ -56,9 +56,9 @@ public class FloatImage {
 	public FloatImage(int width, int height, short[] pixels, int exposure) {
 		this.exposure = exposure;
 		
-		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>();
+		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>(new FloatType());
 		long[] dims = {width,height};
-		img = imgFactory.create(dims, new FloatType());
+		img = imgFactory.create(dims);
 
 		setPixels(width, height, pixels);
 	}
@@ -66,9 +66,9 @@ public class FloatImage {
 	public FloatImage(int width, int height, double[] pixels, int exposure) {
 		this.exposure = exposure;
 		
-		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>();
+		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>(new FloatType());
 		long[] dims = {width,height};
-		img = imgFactory.create(dims, new FloatType());
+		img = imgFactory.create(dims);
 
 		setPixels(width, height, pixels);
 	}	
@@ -76,9 +76,9 @@ public class FloatImage {
 	public FloatImage(int width, int height, float[] pixels, int exposure) {
 		this.exposure = exposure;
 		
-		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>();
+		final ImgFactory< FloatType > imgFactory = new ArrayImgFactory<FloatType>(new FloatType());
 		long[] dims = {width,height};
-		img = imgFactory.create(dims, new FloatType());
+		img = imgFactory.create(dims);
 
 		setPixels(width, height, pixels);
 	}
@@ -86,7 +86,7 @@ public class FloatImage {
 	public FloatImage(FloatImage image) {
 		this.exposure = image.getExposure();
 		
-		img = image.getImage().factory().create(image.getImage(), new FloatType());
+		img = image.getImage().factory().create(image.getImage());
 		
 		// create a cursor for both images
 		Cursor<FloatType> cursorInput = image.getImage().cursor();
