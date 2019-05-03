@@ -19,10 +19,10 @@ import main.java.embl.rieslab.accent.generator.Generator;
 import main.java.embl.rieslab.accent.loader.IJLoader;
 import main.java.embl.rieslab.accent.loader.MMStacksLoader;
 import main.java.embl.rieslab.accent.loader.QueuesLoader;
+import main.java.embl.rieslab.accent.processing.CalibrationProcessor;
 import main.java.embl.rieslab.accent.processing.IJProcessor;
 import main.java.embl.rieslab.accent.processing.MMStacksProcessor;
 import main.java.embl.rieslab.accent.processing.ProcessingPanelInterface;
-import main.java.embl.rieslab.accent.processing.Processor;
 import main.java.embl.rieslab.accent.processing.QueuesProcessor;
 
 public class PipelineController {
@@ -32,7 +32,7 @@ public class PipelineController {
 	private Acquisition acq;
 	private AcquisitionSettings acqSettings;
 	private ProcessingPanelInterface procPanel;
-	private Processor proc;
+	private CalibrationProcessor<?> proc;
 	private GeneratePanelInterface genPanel;
 	private Generator gen;
 	
@@ -62,7 +62,7 @@ public class PipelineController {
 			
 			if(acqSettings.parallelProcessing) {
 				proc = new QueuesProcessor(acqSettings.folder_, this, new QueuesLoader(acq.getQueues()));
-				proc.start();
+				proc.startProcess();
 			} 
 			
 			return true;
@@ -118,7 +118,7 @@ public class PipelineController {
 				} else {
 					proc = new IJProcessor(path, this, new IJLoader(directories)); 
 				}
-				proc.start();
+				proc.startProcess();
 				return true;
 			} else {
 				JOptionPane.showMessageDialog(null, "No experimental folder found in:\n" + path + 
@@ -133,7 +133,7 @@ public class PipelineController {
 
 	public void stopProcessor() {
 		if(proc != null) {
-			proc.stop();
+			proc.stopProcess();
 		}
 	}
 	

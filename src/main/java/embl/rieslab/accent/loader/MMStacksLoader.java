@@ -107,4 +107,9 @@ public class MMStacksLoader implements Loader<ImageExposurePair>{
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public int getChannelLength() {
+		return store.getNumImages();
+	}
 }

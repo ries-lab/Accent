@@ -4,9 +4,9 @@ import main.java.embl.rieslab.accent.calibration.Calibration;
 
 public interface Processor {
 	
-	public void start();
+	public boolean startProcess();
 	
-	public void stop();
+	public void stopProcess();
 	
 	public boolean isRunning();
 	

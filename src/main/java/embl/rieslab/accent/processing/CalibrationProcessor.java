@@ -2,9 +2,8 @@ package main.java.embl.rieslab.accent.processing;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.SwingWorker;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
@@ -15,7 +14,7 @@ import main.java.embl.rieslab.accent.calibration.CalibrationIO;
 import main.java.embl.rieslab.accent.data.FloatImage;
 import main.java.embl.rieslab.accent.loader.Loader;
 
-public abstract class CalibrationProcessor<T> extends SwingWorker<Integer, Integer> implements Processor {
+public abstract class CalibrationProcessor<T> extends Thread {
 
 	private PipelineController controller;
 	private Loader<T> loader;
@@ -28,9 +27,10 @@ public abstract class CalibrationProcessor<T> extends SwingWorker<Integer, Integ
 
 	private long startTime, stopTime;
 	
-	private final static int START = 0;
-	private final static int DONE = -1;
-	private final static int STOP = -2;
+	public final static int START = 0;
+	public final static int DONE = -1;
+	public final static int STOP = -2;
+	public final static int PROGRESS = -3;
 	
 	public CalibrationProcessor(String folder, PipelineController controller, Loader<T> loader) {
 		this.folder = folder;
@@ -42,44 +42,44 @@ public abstract class CalibrationProcessor<T> extends SwingWorker<Integer, Integ
 	}
 	
 	@Override
-	public void start() {
+	public void run() {
 		stop = false;
 		running = true;
-		this.execute();
+		runProcess();
+
 	}
 
-	@Override
-	public void stop() {
+	public boolean startProcess() {
+		this.start();
+		return true;
+	}
+	
+	public void stopProcess() {
 		stop = true;
 		running = false;
 	}
 
-	@Override
 	public boolean isRunning() {
 		return running;
 	}
 
-	@Override
 	public double getExecutionTime() {
 		return ((double) stopTime-startTime)/1000.0;
 	}
 
 
-	@Override
 	public String getCalibrationPath() {
 		return calibPath;
 	}
 
 
-	@Override
 	public Calibration getCalibration() {
 		return results;
 	}
 	
-	@Override
-	protected Integer doInBackground() throws Exception {
+	protected Integer runProcess() {
 		startTime = System.currentTimeMillis();
-		publish(START);	
+		showProgressOnEDT(START, null, 0, 0, 0);
 
 		FloatImage[] avgs = new FloatImage[loader.getSize()];
 		FloatImage[] vars = new FloatImage[loader.getSize()];
@@ -88,10 +88,10 @@ public abstract class CalibrationProcessor<T> extends SwingWorker<Integer, Integ
 		computeAvgAndVar(loader, avgs, vars, stackSizes);
 		
 		if(stop) {
-			publish(STOP);
+			showProgressOnEDT(STOP, null, 0, 0, 0);
 			return 0;
 		} else {
-			publish(1);
+			showProgressOnEDT(PROGRESS, "", 80);
 		}
 		
 		for(int q=0;q<loader.getSize();q++) {
@@ -102,47 +102,87 @@ public abstract class CalibrationProcessor<T> extends SwingWorker<Integer, Integ
 
 		
 		if(stop) {
-			publish(STOP);
+			showProgressOnEDT(STOP, null, 0, 0, 0);
 			return 0;
 		} else {
-			publish(2);
+			showProgressOnEDT(PROGRESS, "Regression", 85);
 		}
 		
 		results = performLinearRegressions(folder, avgs, vars);
-		calibPath = writeCalibrationToFile();
-		writeCalibrationToImages();
 		
 		if(stop) {
-			publish(STOP);
+			showProgressOnEDT(STOP, null, 0, 0, 0);
 			return 0;
 		} else {
-			publish(3);
+			showProgressOnEDT(PROGRESS, "Regression", 90);
+		}
+		
+		calibPath = writeCalibrationToFile();
+		
+		if(calibPath != null) {
+			writeCalibrationToImages();
+		}
+		
+		if(stop) {
+			showProgressOnEDT(STOP, null, 0, 0, 0);
+			return 0;
 		}
 		
 		stopTime = System.currentTimeMillis();
-		publish(DONE);
+		showProgressOnEDT(DONE, null, 0, 0, 0);
 		
 		return 0;
 	}
 	
-	@Override
-	protected void process(List<Integer> chunks) {
-		for(Integer i:chunks) {
-			if(i == START) {
-				controller.processingHasStarted();
-				controller.updateProcessorProgress("Processing ...",0);
-			} else if(i == DONE) {
-				running = false;
-				controller.processingHasEnded();
-				controller.updateProcessorProgress("Done.",100);
-			} else if(i == STOP) {
-				running = false;
-				controller.processingHasStopped();
-				controller.updateProcessorProgress("Interrupted.",50);
-			} else {
-				controller.updateProcessorProgress("Step: "+i+"/"+3, i*33);
-			}
-		}
+	protected void showProgressOnEDT(int flag, String message, int step, int totalSteps, int percentage) {
+		SwingUtilities.invokeLater(new Runnable() {
+	        public void run() {
+	        	showProgress(flag, message, step, totalSteps, percentage);
+	        }
+	    });
+	}	
+	
+	
+	protected void showProgressOnEDT(int flag, String message, int percentage) {
+		SwingUtilities.invokeLater(new Runnable() {
+	        public void run() {
+	        	showProgress(flag, message, percentage);
+	        }
+	    });
+	}
+	
+	private void showProgress(int flag, String message, int step, int totalSteps, int percentage) {
+		if(flag == START) {
+			controller.processingHasStarted();
+			controller.updateProcessorProgress("Processing ...",0);
+		} else if(flag == DONE) {
+			running = false;
+			controller.processingHasEnded();
+			controller.updateProcessorProgress("Done.",100);
+		} else if(flag == STOP) {
+			running = false;
+			controller.processingHasStopped();
+			controller.updateProcessorProgress("Interrupted.",50);
+		} else if(flag == PROGRESS) {
+			controller.updateProcessorProgress(message+step+"/"+totalSteps, percentage);
+		}	
+	}
+	
+	private void showProgress(int flag, String message, int percentage) {
+		if(flag == START) {
+			controller.processingHasStarted();
+			controller.updateProcessorProgress("Processing ...",0);
+		} else if(flag == DONE) {
+			running = false;
+			controller.processingHasEnded();
+			controller.updateProcessorProgress("Done.",100);
+		} else if(flag == STOP) {
+			running = false;
+			controller.processingHasStopped();
+			controller.updateProcessorProgress("Interrupted.",50);
+		} else if(flag == PROGRESS) {
+			controller.updateProcessorProgress(message, percentage);
+		}	
 	}
 	
 	protected abstract void computeAvgAndVar(Loader<T> loader, FloatImage[] avgs, FloatImage[] vars, int[] stackSizes);
@@ -167,6 +207,11 @@ public abstract class CalibrationProcessor<T> extends SwingWorker<Integer, Integ
 			// fills arrays for linear regression
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
+					if(stop) {
+						return null;
+					}
+					
+					
 					avg_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() * 1000;
 					avg_exp_list.get(x + width * y)[q][1] = avgs[q].getPixelValue(x, y);
 					var_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() * 1000;
@@ -187,6 +232,10 @@ public abstract class CalibrationProcessor<T> extends SwingWorker<Integer, Integ
 		double[] gain = new double[totalLength];
 		
 		for (int i = 0; i < totalLength; i++) {
+			if(stop) {
+				return null;
+			}
+			
 			avg_exp_reg[i] = new SimpleRegression();
 			avg_exp_reg[i].addData(avg_exp_list.get(i));
 			baseline[i] = avg_exp_reg[i].getIntercept();

@@ -14,6 +14,7 @@ public class IJProcessor extends CalibrationProcessor<ImageProcessorExposurePair
 	@Override
 	protected void computeAvgAndVar(Loader<ImageProcessorExposurePair> loader, FloatImage[] avgs, FloatImage[] vars, int[] stackSizes) {
 		
+		double percentile = 75./(loader.getSize()+1);
 		
 		for(int q=0; q<loader.getSize(); q++) {
 			
@@ -34,6 +35,9 @@ public class IJProcessor extends CalibrationProcessor<ImageProcessorExposurePair
 					vars[q].addSquarePixels(im.getImage().getFloatArray());
 					stackSizes[q]++;
 				}
+				
+				int progress = (int) (percentile * loader.getSize() + percentile * stackSizes[q] / loader.getChannelLength());
+				showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+q+"/"+loader.getSize()+" ", stackSizes[q], loader.getChannelLength(), progress);
 				
 			}
 			

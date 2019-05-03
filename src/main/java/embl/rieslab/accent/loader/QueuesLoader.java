@@ -53,4 +53,9 @@ public class QueuesLoader implements Loader<ImageExposurePair>{
 		return true;
 	}
 
+	@Override
+	public int getChannelLength() {
+		return 0;
+	}
+
 }

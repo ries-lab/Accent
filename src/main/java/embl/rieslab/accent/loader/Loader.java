@@ -16,4 +16,6 @@ public interface Loader<T> {
 	public boolean isOpen(int channel);
 	
 	public boolean openChannel(int channel);
+	
+	public int getChannelLength();
 }

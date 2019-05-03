@@ -36,6 +36,9 @@ public class QueuesProcessor extends CalibrationProcessor<ImageExposurePair> {
 						vars[q].addSquarePixels(im.getImage());
 						stackSizes[q]++;
 					}
+					
+					showProgressOnEDT(CalibrationProcessor.PROGRESS, "Processing frame: "+stackSizes[q], 0);
+
 				}
 			}
 			

@@ -70,4 +70,9 @@ public class IJLoader implements Loader<ImageProcessorExposurePair>{
 		return false;
 	}
 
+	@Override
+	public int getChannelLength() {
+		return image.getSize();
+	}
+
 }
