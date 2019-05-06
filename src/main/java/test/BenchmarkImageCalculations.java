@@ -5,7 +5,7 @@ import org.micromanager.data.Image;
 
 import main.java.embl.rieslab.accent.data.images.FloatImage;
 
-public class BenchmarkDataTypes {
+public class BenchmarkImageCalculations {
 
 	public static void testPerformancesImageToFloatImage(Studio studio) {
 		double length = 200.;
