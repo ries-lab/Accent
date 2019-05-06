@@ -50,8 +50,10 @@ public class QueuesProcessor extends CalibrationProcessor<ImageExposurePair> {
 		
 		// renormalizes and computes vars
 		for(int q=0;q<loader.getSize();q++) {
-			avgs[q].dividePixels(stackSizes[q]);
-			vars[q].toVariance(avgs[q].getImage(), stackSizes[q]);
+			if(avgs[q] != null && vars[q] != null) {
+				avgs[q].dividePixels(stackSizes[q]);
+				vars[q].toVariance(avgs[q].getImage(), stackSizes[q]);
+			}
 		}
 	}
 

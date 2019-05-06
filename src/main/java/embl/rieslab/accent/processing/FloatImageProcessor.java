@@ -2,17 +2,16 @@ package main.java.embl.rieslab.accent.processing;
 
 import main.java.embl.rieslab.accent.PipelineController;
 import main.java.embl.rieslab.accent.data.FloatImage;
-import main.java.embl.rieslab.accent.data.ImageProcessorExposurePair;
 import main.java.embl.rieslab.accent.loader.Loader;
 
-public class IJProcessor extends CalibrationProcessor<ImageProcessorExposurePair>{
+public class FloatImageProcessor extends CalibrationProcessor<FloatImage>{
 
-	public IJProcessor(String folder, PipelineController controller, Loader<ImageProcessorExposurePair> loader) {
+	public FloatImageProcessor(String folder, PipelineController controller, Loader<FloatImage> loader) {
 		super(folder, controller, loader);
 	}
 
 	@Override
-	protected void computeAvgAndVar(Loader<ImageProcessorExposurePair> loader, FloatImage[] avgs, FloatImage[] vars, int[] stackSizes) {
+	protected void computeAvgAndVar(Loader<FloatImage> loader, FloatImage[] avgs, FloatImage[] vars, int[] stackSizes) {
 		
 		double percentile = 75./(loader.getSize()+1);
 		
@@ -20,6 +19,8 @@ public class IJProcessor extends CalibrationProcessor<ImageProcessorExposurePair
 			
 			boolean b = loader.openChannel(q);
 			if(b) {
+				System.out.println("b is "+b);
+				System.out.println("loader has next "+loader.hasNext(q));
 				while(loader.hasNext(q)) {
 					
 					// first round
@@ -30,7 +31,7 @@ public class IJProcessor extends CalibrationProcessor<ImageProcessorExposurePair
 						vars[q].square();
 					} else {
 						// poll the newest image
-						ImageProcessorExposurePair im = loader.getNext(q);
+						FloatImage im = loader.getNext(q);
 						avgs[q].addPixels(im.getImage().getFloatArray());
 						vars[q].addSquarePixels(im.getImage().getFloatArray());
 						stackSizes[q]++;

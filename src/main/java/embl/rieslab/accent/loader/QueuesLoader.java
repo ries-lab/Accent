@@ -25,7 +25,7 @@ public class QueuesLoader implements Loader<ImageExposurePair>{
 
 	@Override
 	public boolean hasNext(int q) {
-		return queues.get(q).isEmpty();
+		return !queues.get(q).isEmpty();
 	}
 
 	@Override

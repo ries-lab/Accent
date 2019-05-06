@@ -6,7 +6,6 @@ import org.scijava.plugin.Plugin;
 import org.scijava.plugin.SciJavaPlugin;
 
 import main.java.embl.rieslab.accent.ui.MainFrame;
-import main.java.test.ImageConversions;
 
 @Plugin(type = MenuPlugin.class)
 public class AccentMM2 implements MenuPlugin, SciJavaPlugin {
@@ -49,7 +48,7 @@ public class AccentMM2 implements MenuPlugin, SciJavaPlugin {
 
 	@Override
 	public void onPluginSelected() {
-		MainFrame frame = new MainFrame(studio, false);
+		MainFrame frame = new MainFrame(studio, false, null);
 		frame.setVisible(true);
 	}
 

@@ -76,7 +76,6 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 
 	@Override
 	protected Integer doInBackground() throws Exception {
-		
 		// check if camera is running
 		if(studio.getCMMCore().isSequenceRunning()){
 			studio.getCMMCore().stopSequenceAcquisition();
@@ -86,6 +85,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		
 		// pre-run
 		if(settings.preRunTime_ > 0) {
+			System.out.println("3");
 			prerun = true;
 			
 			int tot_expo = 0;
@@ -96,6 +96,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 
 			int frame = 0;
 			while (!stop && frame < prerunFrames) {
+				System.out.println(frame);
 
 				// for each exposure, sets the exposure, snaps an image
 				for (int i = 0; i < settings.exposures_.length; i++) {
@@ -155,7 +156,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 			}
 		}
 
-		if (!stop) {
+		if (stop) {
 			closeDatastores(stores);
 			publish(STOP);
 			return 0;
@@ -186,7 +187,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 				studio.getCMMCore().setExposure(settings.exposures_[i]);
 				image = studio.live().snap(false).get(0);
 				image = image.copyAtCoords(builder.build());
-				image.getRawPixelsCopy();
+
 				try {
 					stores[i].putImage(image);
 					

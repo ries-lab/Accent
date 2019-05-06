@@ -2,6 +2,7 @@ package main.java.embl.rieslab.accent;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -13,13 +14,16 @@ import main.java.embl.rieslab.accent.acquisition.AcquisitionPanelInterface;
 import main.java.embl.rieslab.accent.acquisition.AcquisitionSettings;
 import main.java.embl.rieslab.accent.calibration.Calibration;
 import main.java.embl.rieslab.accent.calibration.CalibrationIO;
+import main.java.embl.rieslab.accent.data.DatasetExposurePair;
 import main.java.embl.rieslab.accent.generator.AvgVarMapsGenerator;
 import main.java.embl.rieslab.accent.generator.GeneratePanelInterface;
 import main.java.embl.rieslab.accent.generator.Generator;
+import main.java.embl.rieslab.accent.loader.CurrentImgsLoader;
 import main.java.embl.rieslab.accent.loader.IJLoader;
 import main.java.embl.rieslab.accent.loader.MMStacksLoader;
 import main.java.embl.rieslab.accent.loader.QueuesLoader;
 import main.java.embl.rieslab.accent.processing.CalibrationProcessor;
+import main.java.embl.rieslab.accent.processing.FloatImageProcessor;
 import main.java.embl.rieslab.accent.processing.IJProcessor;
 import main.java.embl.rieslab.accent.processing.MMStacksProcessor;
 import main.java.embl.rieslab.accent.processing.ProcessingPanelInterface;
@@ -130,6 +134,27 @@ public class PipelineController {
 		} 
 		return false;
 	}
+	
+	public boolean startProcessor(String path, List<DatasetExposurePair> extractedDatasets) {
+		if(isReady() && path != null &&
+				(isAcqPathKnown(path) || new File(path).exists())) {
+			
+			if(extractedDatasets.size() > 0) {
+				if(fiji) {
+					proc = new FloatImageProcessor(path, this, new CurrentImgsLoader(extractedDatasets));
+					proc.startProcess();
+					return true;
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "No dataset selected.",
+						"Error", JOptionPane.INFORMATION_MESSAGE);
+				processingHasStopped();
+				return false;
+			}
+		} 
+		
+		return false;
+	}
 
 	public void stopProcessor() {
 		if(proc != null) {
@@ -228,7 +253,7 @@ public class PipelineController {
 	}
 		
 	public boolean isReady() {
-		if(acqPanel == null || procPanel == null || genPanel == null) {
+		if((acqPanel == null && !fiji) || procPanel == null || genPanel == null) {
 			return false;
 		}
 		
@@ -267,5 +292,6 @@ public class PipelineController {
 		}
 		return false;
 	}
+
 
 }

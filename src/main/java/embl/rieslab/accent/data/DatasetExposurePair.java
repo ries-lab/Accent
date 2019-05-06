@@ -1,13 +1,13 @@
 package main.java.embl.rieslab.accent.data;
 
-import org.micromanager.data.Image;
+import net.imagej.Dataset;
 
-public class ImageExposurePair {
+public class DatasetExposurePair {
 
-	private Image im;
+	private Dataset im;
 	private int exposure;
 	
-	public ImageExposurePair(Image im, int exposure) {
+	public DatasetExposurePair(Dataset im, int exposure) {
 		if(im == null) {
 			throw new NullPointerException();
 		}
@@ -16,7 +16,7 @@ public class ImageExposurePair {
 		this.exposure = exposure;
 	}
 	
-	public Image getImage() {
+	public Dataset getImage() {
 		return im;
 	}
 	

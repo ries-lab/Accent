@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import org.micromanager.Studio;
 
 import main.java.embl.rieslab.accent.PipelineController;
+import net.imagej.DatasetService;
 
 public class MainFrame extends JFrame{
 
@@ -21,7 +22,7 @@ public class MainFrame extends JFrame{
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame(Studio studio, boolean fiji) {
+	public MainFrame(Studio studio, boolean fiji, DatasetService dataservice) {
 
 		// controller 
 		PipelineController controller;
@@ -53,19 +54,31 @@ public class MainFrame extends JFrame{
 			gbc_acqpane.fill = GridBagConstraints.HORIZONTAL;
 			gbc_acqpane.gridx = 0;
 			gbc_acqpane.gridy = counter++;
-			content.add(acqpane, gbc_acqpane);
+			content.add(acqpane, gbc_acqpane);		
+			
+			ProcPanel procpane = new ProcPanel(controller);
+			controller.setProcessingPanel(procpane);
+			GridBagConstraints gbc_procpane = new GridBagConstraints();
+			gbc_procpane.weighty = 0.2;
+			gbc_procpane.weightx = 0.2;
+			gbc_procpane.fill = GridBagConstraints.HORIZONTAL;
+			gbc_procpane.gridx = 0;
+			gbc_procpane.gridy = counter++;
+			content.add(procpane, gbc_procpane);
+		
+		} else {
+			TableProcPanel procpane = new TableProcPanel(controller, dataservice);
+			controller.setProcessingPanel(procpane);
+			GridBagConstraints gbc_procpane = new GridBagConstraints();
+			gbc_procpane.weighty = 0.2;
+			gbc_procpane.weightx = 0.2;
+			gbc_procpane.fill = GridBagConstraints.HORIZONTAL;
+			gbc_procpane.gridx = 0;
+			gbc_procpane.gridy = counter++;
+			content.add(procpane, gbc_procpane);
 		}
 		
-		ProcPanel procpane = new ProcPanel(controller);
-		controller.setProcessingPanel(procpane);
-		GridBagConstraints gbc_procpane = new GridBagConstraints();
-		gbc_procpane.weighty = 0.2;
-		gbc_procpane.weightx = 0.2;
-		gbc_procpane.fill = GridBagConstraints.HORIZONTAL;
-		gbc_procpane.gridx = 0;
-		gbc_procpane.gridy = counter++;
-		content.add(procpane, gbc_procpane);
-		
+
 		GenPanel genpane = new GenPanel(controller);
 		controller.setGeneratePanel(genpane);
 		GridBagConstraints gbc_genpane = new GridBagConstraints();

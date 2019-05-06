@@ -22,6 +22,7 @@ public class FloatImage {
 		} else {
 			setPixels(im.getWidth(),im.getHeight(), (short[]) im.getRawPixels());
 		}
+		
 	}	
 	
 	public FloatImage(Image im, int exposure) {

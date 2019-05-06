@@ -13,7 +13,7 @@ public class IJLoader implements Loader<ImageProcessorExposurePair>{
 	
 	public IJLoader(String[] directories) {
 		this.directories = directories;
-		currentDirectory = 0;
+		currentDirectory = -1;
 		currentPlane = 1;
 	}
 	
@@ -58,9 +58,13 @@ public class IJLoader implements Loader<ImageProcessorExposurePair>{
 
 	@Override
 	public boolean openChannel(int channel) {
+		System.out.println(channel < directories.length);
+		System.out.println(channel == currentDirectory+1);
 		if(channel < directories.length && channel == currentDirectory+1) {
 
 			image = IJ.openVirtual(directories[channel]).getImageStack();
+			System.out.println(image.getHeight()+" x "+image.getWidth()+" x "+image.getSize());
+			
 			currentExposure = utils.extractExposurefromFolderName(directories[currentDirectory]);
 
 			currentDirectory = channel;

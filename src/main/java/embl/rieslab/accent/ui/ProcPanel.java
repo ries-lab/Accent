@@ -133,10 +133,10 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 
 
 	protected void startProcessing() {
-		if(controller.isProcessingRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
+		if(!controller.isProcessingRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
 			boolean b = controller.startProcessor(folderField.getText());
 			if(!b) {
-				processButton.setText(START);
+				processButton.setText(STOP);
 				processButton.setSelected(true);
 			}
 		} else {

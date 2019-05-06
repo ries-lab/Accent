@@ -73,7 +73,7 @@ public class MMStacksLoader implements Loader<ImageExposurePair>{
 
 	@Override
 	public boolean openChannel(int channel) {
-		if(channel < currentDirectory && channel == currentDirectory+1) {
+		if(channel == currentDirectory+1) {
 			currentDirectory = channel;
 			currentPlane = 0;
 			
