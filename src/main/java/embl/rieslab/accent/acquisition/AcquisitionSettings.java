@@ -2,7 +2,7 @@ package main.java.embl.rieslab.accent.acquisition;
 
 import org.micromanager.data.Datastore;
 
-import main.java.embl.rieslab.accent.data.SimpleRoi;
+import main.java.embl.rieslab.accent.data.roi.SimpleRoi;
 
 public class AcquisitionSettings {
 

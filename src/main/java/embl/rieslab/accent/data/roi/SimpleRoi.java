@@ -1,5 +1,5 @@
 
-package main.java.embl.rieslab.accent.data;
+package main.java.embl.rieslab.accent.data.roi;
 
 public class SimpleRoi {
 

@@ -1,6 +1,6 @@
-package main.java.embl.rieslab.accent.calibration;
+package main.java.embl.rieslab.accent.data.calibration;
 
-import main.java.embl.rieslab.accent.data.FloatImage;
+import main.java.embl.rieslab.accent.data.images.FloatImage;
 
 public class CalibrationMap {
 

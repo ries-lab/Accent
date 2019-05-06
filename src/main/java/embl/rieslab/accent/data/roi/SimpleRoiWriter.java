@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.calibration;
+package main.java.embl.rieslab.accent.data.roi;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,8 +9,6 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-
-import main.java.embl.rieslab.accent.data.SimpleRoi;
 
 public class SimpleRoiWriter {
 	

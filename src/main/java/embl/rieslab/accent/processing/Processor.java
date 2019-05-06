@@ -1,6 +1,6 @@
 package main.java.embl.rieslab.accent.processing;
 
-import main.java.embl.rieslab.accent.calibration.Calibration;
+import main.java.embl.rieslab.accent.data.calibration.Calibration;
 
 public interface Processor {
 	

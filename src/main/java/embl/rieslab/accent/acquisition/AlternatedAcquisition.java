@@ -16,8 +16,8 @@ import org.micromanager.data.Datastore.SaveMode;
 import org.micromanager.data.internal.DefaultCoords;
 
 import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.calibration.SimpleRoiWriter;
-import main.java.embl.rieslab.accent.data.ImageExposurePair;
+import main.java.embl.rieslab.accent.data.images.ImageExposurePair;
+import main.java.embl.rieslab.accent.data.roi.SimpleRoiWriter;
 import main.java.embl.rieslab.accent.utils.Dialogs;
 import main.java.embl.rieslab.accent.utils.utils;
 

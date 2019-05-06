@@ -50,6 +50,8 @@ public class AccentMM2 implements MenuPlugin, SciJavaPlugin {
 	public void onPluginSelected() {
 		MainFrame frame = new MainFrame(studio, false, null);
 		frame.setVisible(true);
+		//BenchmarkDataTypes.testPerformancesImageToFloatImage(studio);
+		//BenchmarkDataTypes.testPerformancesBytesArrayToFloatImage();
 	}
 
 }

@@ -8,7 +8,7 @@ import org.micromanager.data.Datastore;
 import org.micromanager.data.Image;
 import org.micromanager.data.internal.DefaultCoords;
 
-import main.java.embl.rieslab.accent.data.ImageExposurePair;
+import main.java.embl.rieslab.accent.data.images.ImageExposurePair;
 import main.java.embl.rieslab.accent.utils.utils;
 
 public class MMStacksLoader implements Loader<ImageExposurePair>{

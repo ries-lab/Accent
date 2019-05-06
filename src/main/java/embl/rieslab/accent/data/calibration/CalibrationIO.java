@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.calibration;
+package main.java.embl.rieslab.accent.data.calibration;
 
 import java.io.File;
 import java.io.FileInputStream;

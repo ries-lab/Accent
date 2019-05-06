@@ -2,8 +2,8 @@ package main.java.embl.rieslab.accent.loader;
 
 import java.util.List;
 
-import main.java.embl.rieslab.accent.data.DatasetExposurePair;
-import main.java.embl.rieslab.accent.data.FloatImage;
+import main.java.embl.rieslab.accent.data.images.DatasetExposurePair;
+import main.java.embl.rieslab.accent.data.images.FloatImage;
 
 public class CurrentImgsLoader implements Loader<FloatImage>{
 

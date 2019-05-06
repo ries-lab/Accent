@@ -23,7 +23,7 @@ import javax.swing.border.TitledBorder;
 
 import ij.gui.Roi;
 import ij.plugin.frame.RoiManager;
-import main.java.embl.rieslab.accent.data.SimpleRoi;
+import main.java.embl.rieslab.accent.data.roi.SimpleRoi;
 import main.java.embl.rieslab.accent.ui.interfaces.AcquisitionPanelInterface;
 import main.java.embl.rieslab.accent.utils.utils;
 

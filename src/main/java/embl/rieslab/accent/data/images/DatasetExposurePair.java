@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.data;
+package main.java.embl.rieslab.accent.data.images;
 
 import net.imagej.Dataset;
 

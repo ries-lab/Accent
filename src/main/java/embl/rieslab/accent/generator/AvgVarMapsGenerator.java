@@ -6,9 +6,9 @@ import java.util.List;
 import javax.swing.SwingWorker;
 
 import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.calibration.Calibration;
-import main.java.embl.rieslab.accent.calibration.CalibrationMap;
-import main.java.embl.rieslab.accent.data.FloatImage;
+import main.java.embl.rieslab.accent.data.calibration.Calibration;
+import main.java.embl.rieslab.accent.data.calibration.CalibrationMap;
+import main.java.embl.rieslab.accent.data.images.FloatImage;
 
 public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implements Generator {
 
@@ -53,10 +53,10 @@ public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implement
 			publish(counter ++);
 			
 			FloatImage avg_im = CalibrationMap.generateAvgMap(calib, exp);
-			avg_im.saveAsTiff(path+"\\"+"generated_Avg_"+exp+"ms.tiff");
+			avg_im.saveAsTiff(path+"\\library\\"+"generated_Avg_"+exp+"ms.tiff");
 			
 			FloatImage var_im = CalibrationMap.generateVarMap(calib, exp);
-			var_im.saveAsTiff(path+"\\"+"generated_Var_"+exp+"ms.tiff");
+			var_im.saveAsTiff(path+"\\library\\"+"generated_Var_"+exp+"ms.tiff");
 			
 		}
 		

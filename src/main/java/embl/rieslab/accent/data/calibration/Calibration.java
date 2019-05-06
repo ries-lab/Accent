@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.calibration;
+package main.java.embl.rieslab.accent.data.calibration;
 
 public class Calibration {
 
@@ -7,10 +7,13 @@ public class Calibration {
 	
 	public double[] baseline;
 	public double[] dc_per_sec;
+	public double[] r_sq_avg;
 	
 	public double[] rn_sq;
 	public double[] tn_sq_per_sec;
+	public double[] r_sq_var;
 	
-	public double[] gain;
+	public double[] gain;	
+	public double[] r_sq_gain;
 
 }

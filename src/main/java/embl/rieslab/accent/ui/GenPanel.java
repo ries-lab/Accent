@@ -20,7 +20,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.calibration.CalibrationIO;
+import main.java.embl.rieslab.accent.data.calibration.CalibrationIO;
 import main.java.embl.rieslab.accent.ui.interfaces.GeneratePanelInterface;
 import main.java.embl.rieslab.accent.utils.utils;
 

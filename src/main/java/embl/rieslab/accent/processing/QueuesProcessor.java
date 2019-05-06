@@ -1,8 +1,8 @@
 package main.java.embl.rieslab.accent.processing;
 
 import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.data.FloatImage;
-import main.java.embl.rieslab.accent.data.ImageExposurePair;
+import main.java.embl.rieslab.accent.data.images.FloatImage;
+import main.java.embl.rieslab.accent.data.images.ImageExposurePair;
 import main.java.embl.rieslab.accent.loader.Loader;
 import main.java.embl.rieslab.accent.loader.QueuesLoader;
 

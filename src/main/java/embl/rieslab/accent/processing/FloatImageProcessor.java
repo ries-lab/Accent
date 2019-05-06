@@ -1,7 +1,7 @@
 package main.java.embl.rieslab.accent.processing;
 
 import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.data.FloatImage;
+import main.java.embl.rieslab.accent.data.images.FloatImage;
 import main.java.embl.rieslab.accent.loader.Loader;
 
 public class FloatImageProcessor extends CalibrationProcessor<FloatImage>{

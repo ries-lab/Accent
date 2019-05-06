@@ -3,7 +3,7 @@ package main.java.embl.rieslab.accent.loader;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import main.java.embl.rieslab.accent.data.ImageExposurePair;
+import main.java.embl.rieslab.accent.data.images.ImageExposurePair;
 
 public class QueuesLoader implements Loader<ImageExposurePair>{
 

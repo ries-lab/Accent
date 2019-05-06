@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.data;
+package main.java.embl.rieslab.accent.data.images;
 
 import org.micromanager.data.Image;
 

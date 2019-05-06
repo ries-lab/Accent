@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.data;
+package main.java.embl.rieslab.accent.data.images;
 
 import org.micromanager.data.Image;
 
@@ -70,12 +70,6 @@ public class FloatImage {
 	}
 
 	public FloatImage(FloatImage image) {
-		this.exposure = image.getExposure();
-		
-		img = new FloatProcessor(image.getImage().getFloatArray());
-	}
-
-	public FloatImage(ImageProcessorExposurePair image) {
 		this.exposure = image.getExposure();
 		
 		img = new FloatProcessor(image.getImage().getFloatArray());
@@ -185,7 +179,7 @@ public class FloatImage {
 		}
 	}
 	
-	private void addPixels(short[] pixels) {
+	public void addPixels(short[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
 		}
@@ -228,7 +222,7 @@ public class FloatImage {
 		}
 	}
 
-	private void addSquarePixels(byte[] pixels) {
+	public void addSquarePixels(byte[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
 		}
@@ -245,7 +239,7 @@ public class FloatImage {
 		}
 	}
 	
-	private void addSquarePixels(short[] pixels) {
+	public void addSquarePixels(short[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
 		}

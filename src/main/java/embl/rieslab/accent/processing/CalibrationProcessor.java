@@ -9,9 +9,9 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.calibration.Calibration;
-import main.java.embl.rieslab.accent.calibration.CalibrationIO;
-import main.java.embl.rieslab.accent.data.FloatImage;
+import main.java.embl.rieslab.accent.data.calibration.Calibration;
+import main.java.embl.rieslab.accent.data.calibration.CalibrationIO;
+import main.java.embl.rieslab.accent.data.images.FloatImage;
 import main.java.embl.rieslab.accent.loader.Loader;
 
 public abstract class CalibrationProcessor<T> extends Thread {
@@ -96,8 +96,8 @@ public abstract class CalibrationProcessor<T> extends Thread {
 		
 		for(int q=0;q<loader.getSize();q++) {
 			// save images
-			avgs[q].saveAsTiff(folder + "/" + "Avg_" + avgs[q].getExposure() + "ms.tiff");
-			vars[q].saveAsTiff(folder + "/" + "Var_" + avgs[q].getExposure() + "ms.tiff");
+			avgs[q].saveAsTiff(folder + "\\results\\" + "Avg_" + avgs[q].getExposure() + "ms.tiff");
+			vars[q].saveAsTiff(folder + "\\results\\" + "Var_" + avgs[q].getExposure() + "ms.tiff");
 		}
 
 		
@@ -230,6 +230,9 @@ public abstract class CalibrationProcessor<T> extends Thread {
 		double[] rnsq = new double[totalLength];
 		double[] tnsqpt = new double[totalLength];
 		double[] gain = new double[totalLength];
+		double[] rsq_avg = new double[totalLength];
+		double[] rsq_var = new double[totalLength];
+		double[] rsq_gain = new double[totalLength];
 		
 		for (int i = 0; i < totalLength; i++) {
 			if(stop) {
@@ -240,15 +243,18 @@ public abstract class CalibrationProcessor<T> extends Thread {
 			avg_exp_reg[i].addData(avg_exp_list.get(i));
 			baseline[i] = avg_exp_reg[i].getIntercept();
 			dcpt[i] = avg_exp_reg[i].getSlope();
+			rsq_avg[i] = avg_exp_reg[i].getRSquare();
 			
 			var_exp_reg[i] = new SimpleRegression();
 			var_exp_reg[i].addData(var_exp_list.get(i));
 			rnsq[i] = var_exp_reg[i].getIntercept();
 			tnsqpt[i] = var_exp_reg[i].getSlope();
+			rsq_var[i] = var_exp_reg[i].getRSquare();
 
 			var_avg_reg[i] = new SimpleRegression();
 			var_avg_reg[i].addData(var_avg_list.get(i));
 			gain[i] = var_avg_reg[i].getSlope();
+			rsq_gain[i] = var_avg_reg[i].getRSquare();
 
 		}
 		
@@ -262,6 +268,7 @@ public abstract class CalibrationProcessor<T> extends Thread {
 		
 
 		Calibration results = new Calibration();
+		
 		// saves results in the calibration
 		results.width = width;
 		results.height = height;
@@ -270,6 +277,9 @@ public abstract class CalibrationProcessor<T> extends Thread {
 		results.gain = gain;
 		results.rn_sq = rnsq;
 		results.tn_sq_per_sec = tnsqpt;
+		results.r_sq_avg = rsq_avg;
+		results.r_sq_var = rsq_var;
+		results.r_sq_gain = rsq_gain;
 
 		return results;
 	}
@@ -283,11 +293,14 @@ public abstract class CalibrationProcessor<T> extends Thread {
 	
 	protected void writeCalibrationToImages() {
 		// Writes the results as images
-		new FloatImage(results.width, results.height, results.baseline, 0).saveAsTiff(folder+"\\"+"Baseline.tiff");
-		new FloatImage(results.width, results.height, results.dc_per_sec, 0).saveAsTiff(folder+"\\"+"DC_per_sec.tiff");
-		new FloatImage(results.width, results.height, results.gain, 0).saveAsTiff(folder+"\\"+"Gain.tiff");
-		new FloatImage(results.width, results.height, results.rn_sq, 0).saveAsTiff(folder+"\\"+"RN_sq.tiff");
-		new FloatImage(results.width, results.height, results.tn_sq_per_sec, 0).saveAsTiff(folder+"\\"+"TN_sq_per_sec.tiff");
+		new FloatImage(results.width, results.height, results.baseline, 0).saveAsTiff(folder+"\\results\\Baseline.tiff");
+		new FloatImage(results.width, results.height, results.dc_per_sec, 0).saveAsTiff(folder+"\\results\\DC_per_sec.tiff");
+		new FloatImage(results.width, results.height, results.gain, 0).saveAsTiff(folder+"\\results\\Gain.tiff");
+		new FloatImage(results.width, results.height, results.rn_sq, 0).saveAsTiff(folder+"\\results\\RN_sq.tiff");
+		new FloatImage(results.width, results.height, results.tn_sq_per_sec, 0).saveAsTiff(folder+"\\restults\\TN_sq_per_sec.tiff");
+		new FloatImage(results.width, results.height, results.r_sq_avg, 0).saveAsTiff(folder+"\\results\\R_sq_avg.tiff");
+		new FloatImage(results.width, results.height, results.r_sq_var, 0).saveAsTiff(folder+"\\results\\R_sq_var.tiff");
+		new FloatImage(results.width, results.height, results.r_sq_gain, 0).saveAsTiff(folder+"\\results\\R_sq_gain.tiff");
 	}
 	
 	protected PipelineController getController() {
