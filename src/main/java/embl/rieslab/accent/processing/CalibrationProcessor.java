@@ -8,6 +8,8 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
+import ij.ImagePlus;
+import ij.gui.HistogramWindow;
 import main.java.embl.rieslab.accent.PipelineController;
 import main.java.embl.rieslab.accent.data.calibration.Calibration;
 import main.java.embl.rieslab.accent.data.calibration.CalibrationIO;
@@ -90,6 +92,7 @@ public abstract class CalibrationProcessor<T> extends Thread {
 		FloatImage[] vars = new FloatImage[loader.getSize()];
 		int[] stackSizes = new int[loader.getSize()];
 		
+		// compute avg and var images
 		computeAvgAndVar(loader, avgs, vars, stackSizes);
 		
 		if(stop) {
@@ -99,8 +102,8 @@ public abstract class CalibrationProcessor<T> extends Thread {
 			showProgressOnEDT(PROGRESS, "", 80);
 		}
 		
+		// saves images
 		for(int q=0;q<loader.getSize();q++) {
-			// save images
 			avgs[q].saveAsTiff(folder + "\\results\\" + "Avg_" + avgs[q].getExposure() + "ms.tiff");
 			vars[q].saveAsTiff(folder + "\\results\\" + "Var_" + avgs[q].getExposure() + "ms.tiff");
 		}
@@ -113,8 +116,9 @@ public abstract class CalibrationProcessor<T> extends Thread {
 			showProgressOnEDT(PROGRESS, "Regression", 85);
 		}
 		
+		// linear regression
 		results = performLinearRegressions(folder, avgs, vars);
-		
+				
 		if(stop) {
 			showProgressOnEDT(STOP, null, 0, 0, 0);
 			return 0;
@@ -122,8 +126,8 @@ public abstract class CalibrationProcessor<T> extends Thread {
 			showProgressOnEDT(PROGRESS, "Regression", 90);
 		}
 		
+		// write calibration file to the disk
 		calibPath = writeCalibrationToFile();
-		
 		if(calibPath != null) {
 			writeCalibrationToImages();
 		}
@@ -138,7 +142,7 @@ public abstract class CalibrationProcessor<T> extends Thread {
 		
 		return 0;
 	}
-	
+
 	protected void showProgressOnEDT(int flag, String message, int step, int totalSteps, int percentage) {
 		SwingUtilities.invokeLater(new Runnable() {
 	        public void run() {
@@ -298,14 +302,37 @@ public abstract class CalibrationProcessor<T> extends Thread {
 	
 	protected void writeCalibrationToImages() {
 		// Writes the results as images
-		new FloatImage(results.width, results.height, results.baseline, 0).saveAsTiff(folder+"\\results\\Baseline.tiff");
-		new FloatImage(results.width, results.height, results.dc_per_sec, 0).saveAsTiff(folder+"\\results\\DC_per_sec.tiff");
-		new FloatImage(results.width, results.height, results.gain, 0).saveAsTiff(folder+"\\results\\Gain.tiff");
-		new FloatImage(results.width, results.height, results.rn_sq, 0).saveAsTiff(folder+"\\results\\RN_sq.tiff");
-		new FloatImage(results.width, results.height, results.tn_sq_per_sec, 0).saveAsTiff(folder+"\\restults\\TN_sq_per_sec.tiff");
-		new FloatImage(results.width, results.height, results.r_sq_avg, 0).saveAsTiff(folder+"\\results\\R_sq_avg.tiff");
-		new FloatImage(results.width, results.height, results.r_sq_var, 0).saveAsTiff(folder+"\\results\\R_sq_var.tiff");
-		new FloatImage(results.width, results.height, results.r_sq_gain, 0).saveAsTiff(folder+"\\results\\R_sq_gain.tiff");
+		FloatImage baseline = new FloatImage(results.width, results.height, results.baseline, 0);
+		baseline.saveAsTiff(folder+"\\results\\Baseline.tiff");
+		HistogramWindow hw_baseline = new HistogramWindow(new ImagePlus("Baseline", baseline.getImage()));
+		
+		FloatImage dc_per_sec = new FloatImage(results.width, results.height, results.dc_per_sec, 0);
+		dc_per_sec.saveAsTiff(folder+"\\results\\DC_per_sec.tiff");
+		HistogramWindow hw_dc_per_sec = new HistogramWindow(new ImagePlus("DC per sec", dc_per_sec.getImage()));
+		
+		FloatImage gain = new FloatImage(results.width, results.height, results.gain, 0);
+		gain.saveAsTiff(folder+"\\results\\Gain.tiff");
+		HistogramWindow hw_gain = new HistogramWindow(new ImagePlus("Gain", gain.getImage()));
+		
+		FloatImage rn_sq = new FloatImage(results.width, results.height, results.rn_sq, 0);
+		rn_sq.saveAsTiff(folder+"\\results\\RN_sq.tiff");
+		HistogramWindow hw_rn_sq = new HistogramWindow(new ImagePlus("RN square", rn_sq.getImage()));
+		
+		FloatImage tn_sq_per_sec = new FloatImage(results.width, results.height, results.tn_sq_per_sec, 0);
+		tn_sq_per_sec.saveAsTiff(folder+"\\restults\\TN_sq_per_sec.tiff");
+		HistogramWindow hw_tn_sq_per_sec = new HistogramWindow(new ImagePlus("TN square per sec", tn_sq_per_sec.getImage()));
+		
+		FloatImage r_sq_avg = new FloatImage(results.width, results.height, results.r_sq_avg, 0);
+		r_sq_avg.saveAsTiff(folder+"\\results\\R_sq_avg.tiff");
+		HistogramWindow hw_r_sq_avg = new HistogramWindow(new ImagePlus("R square of the avg", r_sq_avg.getImage()));
+		
+		FloatImage r_sq_var = new FloatImage(results.width, results.height, results.r_sq_var, 0);
+		r_sq_var.saveAsTiff(folder+"\\results\\R_sq_var.tiff");
+		HistogramWindow hw_r_sq_var = new HistogramWindow(new ImagePlus("R square of the var", r_sq_var.getImage()));
+		
+		FloatImage r_sq_gain = new FloatImage(results.width, results.height, results.r_sq_gain, 0);
+		r_sq_gain.saveAsTiff(folder+"\\results\\R_sq_gain.tiff");
+		HistogramWindow hw_r_sq_gain = new HistogramWindow(new ImagePlus("R square of the gain", r_sq_gain.getImage()));
 	}
 	
 	protected PipelineController getController() {

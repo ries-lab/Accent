@@ -16,6 +16,7 @@ import javax.swing.JToggleButton;
 
 import java.awt.GridBagConstraints;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
@@ -156,15 +157,18 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 		gbc_btnProcess.gridx = 2;
 		gbc_btnProcess.gridy = 4;
 		add(btnProcess, gbc_btnProcess);
-		btnProcess.addItemListener(new ItemListener()  {
-			public void itemStateChanged(ItemEvent state) {
-				if (state.getStateChange() == ItemEvent.SELECTED) {
-					startProcessing();
-				} else {
-					stopProcessing();
-				}
-			}
-		});
+		btnProcess.addActionListener(new ActionListener() {
+		      public void actionPerformed(ActionEvent actionEvent) {
+		          AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
+		          boolean selected = abstractButton.getModel().isSelected();
+		          if (selected) {
+						startProcessing();
+					} else {
+						stopProcessing();
+					}
+		        }
+		      }
+		     );
 
 	}
 	
@@ -186,12 +190,15 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 
 	protected void startProcessing() {
 		if(!controller.isProcessingRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
-			boolean b = controller.startProcessor(textField.getText(), extractDatasets());
+			String s  = textField.getText();
+			List<DatasetExposurePair> list = extractDatasets();
+			boolean b = controller.startProcessor(s, list);
 			if(!b) {
 				btnProcess.setText(STOP);
-				btnProcess.setSelected(true);
+				btnProcess.setSelected(false);
 			}
 		} else {
+			btnProcess.setText(STOP);
 			btnProcess.setSelected(false);
 		}
 	}

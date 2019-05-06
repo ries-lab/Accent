@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.micromanager.Studio;
@@ -156,7 +157,7 @@ public class PipelineController {
 					bad += s+"\n";
 				}
 				
-				JOptionPane.showMessageDialog(null, "The following datasets had the wrong number of dimensions and were removed: \n"+bad,
+				JOptionPane.showMessageDialog(new JFrame(), "The following datasets had the wrong number of dimensions and were removed: \n"+bad,
 						"Invalid datasets", JOptionPane.INFORMATION_MESSAGE);
 			}
 			
@@ -167,10 +168,9 @@ public class PipelineController {
 					small += s+"\n";
 				}
 				
-				JOptionPane.showMessageDialog(null, "The following datasets are small and might lead to an inaccurate calibration: \n"+small,
+				JOptionPane.showMessageDialog(new JFrame(), "The following datasets are small and might lead to an inaccurate calibration: \n"+small,
 						"Small datasets", JOptionPane.INFORMATION_MESSAGE);
 			}
-			
 			
 			
 			// need at least three points to fit
@@ -181,7 +181,7 @@ public class PipelineController {
 					return true;
 				}
 			} else {
-				JOptionPane.showMessageDialog(null, "The processing pipeline was not given enough datasets to proceed (minimum of three).",
+				JOptionPane.showMessageDialog(new JFrame(), "The processing pipeline was not given enough datasets to proceed (minimum of three).",
 						"Error", JOptionPane.INFORMATION_MESSAGE);
 				processingHasStopped();
 				return false;

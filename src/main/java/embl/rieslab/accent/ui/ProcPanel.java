@@ -57,7 +57,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 		gbl_ProcessPanel.rowHeights = new int[]{0, 0, 0, 0};
 		gbl_ProcessPanel.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		gbl_ProcessPanel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		this.setLayout(gbl_ProcessPanel);
+		this.setLayout(gbl_ProcessPanel);  
 		
 		JLabel folderLabel = new JLabel("Folder:");
 		GridBagConstraints gbc_folderLabel = new GridBagConstraints();
