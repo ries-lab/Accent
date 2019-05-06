@@ -33,6 +33,11 @@ public abstract class CalibrationProcessor<T> extends Thread {
 	public final static int PROGRESS = -3;
 	
 	public CalibrationProcessor(String folder, PipelineController controller, Loader<T> loader) {
+		
+		if(loader.getSize() < 3) {
+			throw new IllegalArgumentException("At least three exposures are required.");
+		}
+		
 		this.folder = folder;
 		this.controller = controller;
 		this.loader = loader;

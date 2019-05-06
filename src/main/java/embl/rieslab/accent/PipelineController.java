@@ -2,6 +2,7 @@ package main.java.embl.rieslab.accent;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -133,14 +134,54 @@ public class PipelineController {
 		if(isReady() && path != null &&
 				(isAcqPathKnown(path) || new File(path).exists())) {
 			
-			if(extractedDatasets.size() > 0) {
+			// sanity check on the datasets
+			List<String> smallDatasets = new ArrayList<String>();
+			List<String> badDatasets = new ArrayList<String>();
+			Iterator<DatasetExposurePair> it = extractedDatasets.iterator();
+			while(it.hasNext()) {
+				DatasetExposurePair dataset = it.next();
+				if(dataset.getImage().numDimensions() > 3) {
+					it.remove();
+					badDatasets.add(dataset.getImage().getName());
+				}
+				if(dataset.getImage().getFrames() < 1000) {
+					smallDatasets.add(dataset.getImage().getName());
+				}
+			}
+			
+			// informs user that datasets were removed
+			if(badDatasets.size() > 0) {
+				String bad = "";
+				for(String s : badDatasets) {
+					bad += s+"\n";
+				}
+				
+				JOptionPane.showMessageDialog(null, "The following datasets had the wrong number of dimensions and were removed: \n"+bad,
+						"Invalid datasets", JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+			// informs user that some datasets are too small
+			if(smallDatasets.size() > 0) {
+				String small = "";
+				for(String s : smallDatasets) {
+					small += s+"\n";
+				}
+				
+				JOptionPane.showMessageDialog(null, "The following datasets are small and might lead to an inaccurate calibration: \n"+small,
+						"Small datasets", JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+			
+			
+			// need at least three points to fit
+			if(extractedDatasets.size() > 2) {
 				if(fiji) {
 					proc = new FloatImageProcessor(path, this, new CurrentImgsLoader(extractedDatasets));
 					proc.startProcess();
 					return true;
 				}
 			} else {
-				JOptionPane.showMessageDialog(null, "No dataset selected.",
+				JOptionPane.showMessageDialog(null, "The processing pipeline was not given enough datasets to proceed (minimum of three).",
 						"Error", JOptionPane.INFORMATION_MESSAGE);
 				processingHasStopped();
 				return false;
