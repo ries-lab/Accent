@@ -10,24 +10,22 @@ import org.micromanager.Studio;
 
 import main.java.embl.rieslab.accent.acquisition.Acquisition;
 import main.java.embl.rieslab.accent.acquisition.AcquisitionFactory;
-import main.java.embl.rieslab.accent.acquisition.AcquisitionPanelInterface;
 import main.java.embl.rieslab.accent.acquisition.AcquisitionSettings;
 import main.java.embl.rieslab.accent.calibration.Calibration;
 import main.java.embl.rieslab.accent.calibration.CalibrationIO;
 import main.java.embl.rieslab.accent.data.DatasetExposurePair;
 import main.java.embl.rieslab.accent.generator.AvgVarMapsGenerator;
-import main.java.embl.rieslab.accent.generator.GeneratePanelInterface;
 import main.java.embl.rieslab.accent.generator.Generator;
 import main.java.embl.rieslab.accent.loader.CurrentImgsLoader;
-import main.java.embl.rieslab.accent.loader.IJLoader;
 import main.java.embl.rieslab.accent.loader.MMStacksLoader;
 import main.java.embl.rieslab.accent.loader.QueuesLoader;
 import main.java.embl.rieslab.accent.processing.CalibrationProcessor;
 import main.java.embl.rieslab.accent.processing.FloatImageProcessor;
-import main.java.embl.rieslab.accent.processing.IJProcessor;
 import main.java.embl.rieslab.accent.processing.MMStacksProcessor;
-import main.java.embl.rieslab.accent.processing.ProcessingPanelInterface;
 import main.java.embl.rieslab.accent.processing.QueuesProcessor;
+import main.java.embl.rieslab.accent.ui.interfaces.AcquisitionPanelInterface;
+import main.java.embl.rieslab.accent.ui.interfaces.GeneratePanelInterface;
+import main.java.embl.rieslab.accent.ui.interfaces.ProcessingPanelInterface;
 
 public class PipelineController {
 
@@ -111,17 +109,13 @@ public class PipelineController {
 	}
 	
 	public boolean startProcessor(String path) {		
-		if(isReady() && path != null &&
+		if(!fiji && isReady() && path != null &&
 				(isAcqPathKnown(path) || new File(path).exists())) {
 			
 			String[] directories = getExposureFolders(path);
 			
 			if(directories.length > 0) {
-				if(!fiji) {
-					proc = new MMStacksProcessor(path, this, new MMStacksLoader(studio, directories));
-				} else {
-					proc = new IJProcessor(path, this, new IJLoader(directories)); 
-				}
+				proc = new MMStacksProcessor(path, this, new MMStacksLoader(studio, directories));
 				proc.startProcess();
 				return true;
 			} else {

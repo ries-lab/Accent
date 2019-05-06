@@ -19,8 +19,6 @@ public class FloatImageProcessor extends CalibrationProcessor<FloatImage>{
 			
 			boolean b = loader.openChannel(q);
 			if(b) {
-				System.out.println("b is "+b);
-				System.out.println("loader has next "+loader.hasNext(q));
 				while(loader.hasNext(q)) {
 					
 					// first round

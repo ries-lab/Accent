@@ -5,7 +5,6 @@ import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
-import ij.IJ;
 import main.java.embl.rieslab.accent.ui.MainFrame;
 import net.imagej.DatasetService;
 import net.imagej.ImageJ;
@@ -20,11 +19,7 @@ public class AccentFiji implements Command{
 	public void run() {
 		
 		MainFrame frame = new MainFrame(null, true, dataService);
-		frame.setVisible(true);
-
-		//System.out.println(dataService.getDatasets().size());
-
-		
+		frame.setVisible(true);	
 	}
 
 	public static void main(final String... args) throws Exception {

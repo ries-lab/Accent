@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 
 import main.java.embl.rieslab.accent.PipelineController;
 import main.java.embl.rieslab.accent.data.DatasetExposurePair;
-import main.java.embl.rieslab.accent.processing.ProcessingPanelInterface;
+import main.java.embl.rieslab.accent.ui.interfaces.ProcessingPanelInterface;
 import main.java.embl.rieslab.accent.utils.utils;
 import net.imagej.Dataset;
 import net.imagej.DatasetService;

@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.acquisition;
+package main.java.embl.rieslab.accent.ui.interfaces;
 
 import main.java.embl.rieslab.accent.data.SimpleRoi;
 

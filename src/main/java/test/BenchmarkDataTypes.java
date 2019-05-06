@@ -3,16 +3,13 @@ package main.java.test;
 import org.micromanager.Studio;
 import org.micromanager.data.Image;
 
-import ij.ImagePlus;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import main.java.embl.rieslab.accent.data.FloatImage;
-import net.imglib2.img.Img;
-import net.imglib2.type.numeric.real.FloatType;
 
-public class ImageConversions {
+public class BenchmarkDataTypes {
 
-	public static void testImage(Studio studio) {
+	public static void testMM(Studio studio) {
 		long start, end;
 		double avg_floatproc=0, avg_floatim=0, avg_addproc=0, avg_addim=0;
 		
@@ -78,9 +75,7 @@ public class ImageConversions {
 
 	public static void addPixels(int w, int h, FloatProcessor avg_im, ImageProcessor improc) {
 		for (int x = 0; x < w; x++) {
-
 			for (int y = 0; y < h; y++) {
-
 				avg_im.setf(x, y, avg_im.getf(x, y) + improc.getf(x, y));
 			}
 		}

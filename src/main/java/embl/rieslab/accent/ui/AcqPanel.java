@@ -31,9 +31,9 @@ import javax.swing.border.TitledBorder;
 import org.micromanager.data.Datastore;
 
 import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.acquisition.AcquisitionPanelInterface;
 import main.java.embl.rieslab.accent.acquisition.AcquisitionSettings;
 import main.java.embl.rieslab.accent.data.SimpleRoi;
+import main.java.embl.rieslab.accent.ui.interfaces.AcquisitionPanelInterface;
 import main.java.embl.rieslab.accent.utils.utils;
 
 public class AcqPanel extends JPanel implements AcquisitionPanelInterface {

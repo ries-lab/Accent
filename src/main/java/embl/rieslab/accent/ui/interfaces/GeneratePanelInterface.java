@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.generator;
+package main.java.embl.rieslab.accent.ui.interfaces;
 
 public interface GeneratePanelInterface {
 

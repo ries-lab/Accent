@@ -21,7 +21,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import main.java.embl.rieslab.accent.PipelineController;
 import main.java.embl.rieslab.accent.calibration.CalibrationIO;
-import main.java.embl.rieslab.accent.generator.GeneratePanelInterface;
+import main.java.embl.rieslab.accent.ui.interfaces.GeneratePanelInterface;
 import main.java.embl.rieslab.accent.utils.utils;
 
 public class GenPanel extends JPanel implements GeneratePanelInterface{

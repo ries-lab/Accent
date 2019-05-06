@@ -22,7 +22,7 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.processing.ProcessingPanelInterface;
+import main.java.embl.rieslab.accent.ui.interfaces.ProcessingPanelInterface;
 
 public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 
