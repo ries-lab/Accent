@@ -38,8 +38,8 @@ public class MMStacksProcessor extends CalibrationProcessor<ImageExposurePair>{
 					stackSizes[q]++;
 				}
 
-				int progress = (int) (percentile * loader.getSize() + percentile * stackSizes[q] / loader.getChannelLength());
-				showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+q+"/"+loader.getSize()+" ", stackSizes[q], loader.getChannelLength(), progress);
+				int progress = (int) (percentile * q + percentile * stackSizes[q] / loader.getChannelLength());
+				showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getSize()+", frame ", stackSizes[q], loader.getChannelLength(), progress);
 			}
 			if(avgs[q] != null && vars[q] != null) {
 

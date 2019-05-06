@@ -86,7 +86,6 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		
 		// pre-run
 		if(settings.preRunTime_ > 0) {
-			System.out.println("3");
 			prerun = true;
 			
 			int tot_expo = 0;
@@ -97,8 +96,6 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 
 			int frame = 0;
 			while (!stop && frame < prerunFrames) {
-				System.out.println(frame);
-
 				// for each exposure, sets the exposure, snaps an image
 				for (int i = 0; i < settings.exposures_.length; i++) {
 					studio.getCMMCore().setExposure(settings.exposures_[i]);

@@ -21,7 +21,7 @@ public class MMStacksLoader implements Loader<ImageExposurePair>{
 	public MMStacksLoader(Studio studio, String[] directories) {
 		this.studio = studio;
 		this.directories = directories;
-		currentDirectory = 0;
+		currentDirectory = -1;
 		currentPlane = 0;
 	}
 
@@ -33,7 +33,7 @@ public class MMStacksLoader implements Loader<ImageExposurePair>{
 	@Override
 	public ImageExposurePair getNext(int channel) {
 		Coords.CoordsBuilder builder = new DefaultCoords.Builder();
-		builder.channel(0).z(currentPlane++).stagePosition(0).time(0);
+		builder.channel(0).z(0).stagePosition(0).time(currentPlane++);
 
 		try {
 			Image im = store.getImage(builder.build());
