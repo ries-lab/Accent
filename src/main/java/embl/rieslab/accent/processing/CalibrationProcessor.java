@@ -104,8 +104,8 @@ public abstract class CalibrationProcessor<T> extends Thread {
 		
 		// saves images
 		for(int q=0;q<loader.getSize();q++) {
-			avgs[q].saveAsTiff(folder + "\\results\\" + "Avg_" + avgs[q].getExposure() + "ms.tiff");
-			vars[q].saveAsTiff(folder + "\\results\\" + "Var_" + avgs[q].getExposure() + "ms.tiff");
+			avgs[q].saveAsTiff(folder + "\\Avg_" + avgs[q].getExposure() + "ms.tiff");
+			vars[q].saveAsTiff(folder + "\\Var_" + avgs[q].getExposure() + "ms.tiff");
 		}
 
 		
@@ -303,35 +303,37 @@ public abstract class CalibrationProcessor<T> extends Thread {
 	protected void writeCalibrationToImages() {
 		// Writes the results as images
 		FloatImage baseline = new FloatImage(results.width, results.height, results.baseline, 0);
-		baseline.saveAsTiff(folder+"\\results\\Baseline.tiff");
-		HistogramWindow hw_baseline = new HistogramWindow(new ImagePlus("Baseline", baseline.getImage()));
+		baseline.saveAsTiff(folder+"\\Baseline.tiff");
+		ImagePlus baseline_imp = new ImagePlus("Baseline", baseline.getImage());
+		new HistogramWindow(baseline_imp).showHistogram(baseline_imp, baseline_imp.getAllStatistics());
+		
 		
 		FloatImage dc_per_sec = new FloatImage(results.width, results.height, results.dc_per_sec, 0);
-		dc_per_sec.saveAsTiff(folder+"\\results\\DC_per_sec.tiff");
+		dc_per_sec.saveAsTiff(folder+"\\DC_per_sec.tiff");
 		HistogramWindow hw_dc_per_sec = new HistogramWindow(new ImagePlus("DC per sec", dc_per_sec.getImage()));
 		
 		FloatImage gain = new FloatImage(results.width, results.height, results.gain, 0);
-		gain.saveAsTiff(folder+"\\results\\Gain.tiff");
+		gain.saveAsTiff(folder+"\\Gain.tiff");
 		HistogramWindow hw_gain = new HistogramWindow(new ImagePlus("Gain", gain.getImage()));
 		
 		FloatImage rn_sq = new FloatImage(results.width, results.height, results.rn_sq, 0);
-		rn_sq.saveAsTiff(folder+"\\results\\RN_sq.tiff");
+		rn_sq.saveAsTiff(folder+"\\RN_sq.tiff");
 		HistogramWindow hw_rn_sq = new HistogramWindow(new ImagePlus("RN square", rn_sq.getImage()));
 		
 		FloatImage tn_sq_per_sec = new FloatImage(results.width, results.height, results.tn_sq_per_sec, 0);
-		tn_sq_per_sec.saveAsTiff(folder+"\\restults\\TN_sq_per_sec.tiff");
+		tn_sq_per_sec.saveAsTiff(folder+"\\TN_sq_per_sec.tiff");
 		HistogramWindow hw_tn_sq_per_sec = new HistogramWindow(new ImagePlus("TN square per sec", tn_sq_per_sec.getImage()));
 		
 		FloatImage r_sq_avg = new FloatImage(results.width, results.height, results.r_sq_avg, 0);
-		r_sq_avg.saveAsTiff(folder+"\\results\\R_sq_avg.tiff");
+		r_sq_avg.saveAsTiff(folder+"\\R_sq_avg.tiff");
 		HistogramWindow hw_r_sq_avg = new HistogramWindow(new ImagePlus("R square of the avg", r_sq_avg.getImage()));
 		
 		FloatImage r_sq_var = new FloatImage(results.width, results.height, results.r_sq_var, 0);
-		r_sq_var.saveAsTiff(folder+"\\results\\R_sq_var.tiff");
+		r_sq_var.saveAsTiff(folder+"\\R_sq_var.tiff");
 		HistogramWindow hw_r_sq_var = new HistogramWindow(new ImagePlus("R square of the var", r_sq_var.getImage()));
 		
 		FloatImage r_sq_gain = new FloatImage(results.width, results.height, results.r_sq_gain, 0);
-		r_sq_gain.saveAsTiff(folder+"\\results\\R_sq_gain.tiff");
+		r_sq_gain.saveAsTiff(folder+"\\R_sq_gain.tiff");
 		HistogramWindow hw_r_sq_gain = new HistogramWindow(new ImagePlus("R square of the gain", r_sq_gain.getImage()));
 	}
 	
