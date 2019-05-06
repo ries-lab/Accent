@@ -3,6 +3,7 @@ package main.java.embl.rieslab.accent.acquisition;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import main.java.embl.rieslab.accent.data.acquisition.AcquisitionSettings;
 import main.java.embl.rieslab.accent.data.images.ImageExposurePair;
 
 public interface Acquisition {

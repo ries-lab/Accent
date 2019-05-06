@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.acquisition;
+package main.java.embl.rieslab.accent.data.acquisition;
 
 import org.micromanager.data.Datastore;
 

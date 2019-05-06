@@ -9,8 +9,8 @@ import javax.swing.JOptionPane;
 import org.micromanager.Studio;
 
 import main.java.embl.rieslab.accent.acquisition.Acquisition;
-import main.java.embl.rieslab.accent.acquisition.AcquisitionFactory;
-import main.java.embl.rieslab.accent.acquisition.AcquisitionSettings;
+import main.java.embl.rieslab.accent.acquisition.AlternatedAcquisition;
+import main.java.embl.rieslab.accent.data.acquisition.AcquisitionSettings;
 import main.java.embl.rieslab.accent.data.calibration.Calibration;
 import main.java.embl.rieslab.accent.data.calibration.CalibrationIO;
 import main.java.embl.rieslab.accent.data.images.DatasetExposurePair;
@@ -59,7 +59,7 @@ public class PipelineController {
 		if(!fiji && isReady()) {
 			acqDone = false;
 			acqSettings = settings;
-			acq = AcquisitionFactory.getFactory().getAcquisition(studio, acqSettings, this);
+			acq = new AlternatedAcquisition(studio, acqSettings, this);
 			acq.start();
 			
 			if(acqSettings.parallelProcessing) {
