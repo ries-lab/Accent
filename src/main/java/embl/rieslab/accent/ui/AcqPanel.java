@@ -28,12 +28,10 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
-import org.micromanager.data.Datastore;
-
 import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.data.acquisition.AcquisitionSettings;
-import main.java.embl.rieslab.accent.data.roi.SimpleRoi;
-import main.java.embl.rieslab.accent.ui.interfaces.AcquisitionPanelInterface;
+import main.java.embl.rieslab.accent.common.interfaces.AcquisitionPanelInterface;
+import main.java.embl.rieslab.accent.mm2.data.acquisition.AcquisitionSettings;
+import main.java.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
 import main.java.embl.rieslab.accent.utils.utils;
 
 public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
@@ -70,11 +68,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		this.controller = controller;
 
 		AcquisitionSettings settings  = new AcquisitionSettings();
-		if(settings.saveMode_ == Datastore.SaveMode.MULTIPAGE_TIFF) {
-			saveAsStacks = true;
-		} else {
-			saveAsStacks = false;
-		}
+		saveAsStacks = settings.saveAsStacks_;
 		parallelProcessing = settings.parallelProcessing;
 		preRunTime = settings.preRunTime_;
 
@@ -336,11 +330,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		settings.numFrames_ = getFrames();
 		settings.exposures_ = getExposures();
 		
-		if(saveAsStacks) {
-			settings.saveMode_ = Datastore.SaveMode.MULTIPAGE_TIFF;
-		} else {
-			settings.saveMode_ = Datastore.SaveMode.SINGLEPLANE_TIFF_SERIES;
-		}
+		settings.saveAsStacks_ = saveAsStacks;
 		
 		settings.parallelProcessing = parallelProcessing;
 		

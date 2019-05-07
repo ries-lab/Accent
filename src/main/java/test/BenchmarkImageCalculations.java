@@ -3,7 +3,7 @@ package main.java.test;
 import org.micromanager.Studio;
 import org.micromanager.data.Image;
 
-import main.java.embl.rieslab.accent.data.images.FloatImage;
+import main.java.embl.rieslab.accent.common.data.image.FloatImage;
 
 public class BenchmarkImageCalculations {
 

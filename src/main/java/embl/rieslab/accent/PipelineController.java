@@ -12,22 +12,22 @@ import org.micromanager.Studio;
 
 import main.java.embl.rieslab.accent.acquisition.Acquisition;
 import main.java.embl.rieslab.accent.acquisition.AlternatedAcquisition;
-import main.java.embl.rieslab.accent.data.acquisition.AcquisitionSettings;
-import main.java.embl.rieslab.accent.data.calibration.Calibration;
-import main.java.embl.rieslab.accent.data.calibration.CalibrationIO;
-import main.java.embl.rieslab.accent.data.images.DatasetExposurePair;
-import main.java.embl.rieslab.accent.generator.AvgVarMapsGenerator;
-import main.java.embl.rieslab.accent.generator.Generator;
-import main.java.embl.rieslab.accent.loader.CurrentImgsLoader;
-import main.java.embl.rieslab.accent.loader.MMStacksLoader;
-import main.java.embl.rieslab.accent.loader.QueuesLoader;
-import main.java.embl.rieslab.accent.processing.CalibrationProcessor;
-import main.java.embl.rieslab.accent.processing.FloatImageProcessor;
-import main.java.embl.rieslab.accent.processing.MMStacksProcessor;
-import main.java.embl.rieslab.accent.processing.QueuesProcessor;
-import main.java.embl.rieslab.accent.ui.interfaces.AcquisitionPanelInterface;
-import main.java.embl.rieslab.accent.ui.interfaces.GeneratePanelInterface;
-import main.java.embl.rieslab.accent.ui.interfaces.ProcessingPanelInterface;
+import main.java.embl.rieslab.accent.common.data.calibration.Calibration;
+import main.java.embl.rieslab.accent.common.data.calibration.CalibrationIO;
+import main.java.embl.rieslab.accent.common.generator.AvgVarMapsGenerator;
+import main.java.embl.rieslab.accent.common.interfaces.AcquisitionPanelInterface;
+import main.java.embl.rieslab.accent.common.interfaces.GeneratePanelInterface;
+import main.java.embl.rieslab.accent.common.interfaces.Generator;
+import main.java.embl.rieslab.accent.common.interfaces.ProcessingPanelInterface;
+import main.java.embl.rieslab.accent.common.processor.CalibrationProcessor;
+import main.java.embl.rieslab.accent.fiji.data.image.DatasetExposurePair;
+import main.java.embl.rieslab.accent.fiji.loader.CurrentImgsLoader;
+import main.java.embl.rieslab.accent.fiji.processor.FloatImageProcessor;
+import main.java.embl.rieslab.accent.mm2.data.acquisition.AcquisitionSettings;
+import main.java.embl.rieslab.accent.mm2.loader.MMStacksLoader;
+import main.java.embl.rieslab.accent.mm2.loader.QueuesLoader;
+import main.java.embl.rieslab.accent.mm2.processor.MMStacksProcessor;
+import main.java.embl.rieslab.accent.mm2.processor.QueuesProcessor;
 
 public class PipelineController {
 

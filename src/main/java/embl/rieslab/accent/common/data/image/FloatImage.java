@@ -1,0 +1,248 @@
+package main.java.embl.rieslab.accent.common.data.image;
+
+import ij.ImagePlus;
+import ij.io.FileSaver;
+import ij.process.FloatProcessor;
+
+public class FloatImage {
+
+	private final int exposure;
+	private FloatProcessor img;
+
+	public FloatImage(int width, int height, byte[] pixels, int exposure) {
+		this.exposure = exposure;
+
+		img = new FloatProcessor(width, height);
+
+		setPixels(width, height, pixels);
+	}
+
+	public FloatImage(int width, int height, short[] pixels, int exposure) {
+		this.exposure = exposure;
+
+		img = new FloatProcessor(width, height);
+
+		setPixels(width, height, pixels);
+	}
+	
+	public FloatImage(int width, int height, double[] pixels, int exposure) {
+		this.exposure = exposure;
+
+		img = new FloatProcessor(width, height);
+
+		setPixels(width, height, pixels);
+	}	
+	
+	public FloatImage(int width, int height, float[] pixels, int exposure) {
+		this.exposure = exposure;
+
+		img = new FloatProcessor(width, height);
+
+		setPixels(width, height, pixels);
+	}
+
+	public FloatImage(FloatImage image) {
+		this.exposure = image.getExposure();
+		
+		img = new FloatProcessor(image.getImage().getFloatArray());
+	}
+
+	private void setPixels(int width, int height, byte[] pixels) {
+		if(img != null) {
+			for(int x=0;x<width;x++) {
+				for(int y=0;y<height;y++) {
+					img.setf(x, y, Byte.toUnsignedInt(pixels[x+width*y]));
+				}
+			}
+		}
+	}
+
+	private void setPixels(int width, int height, double[] pixels) {
+		if(img != null) {
+			for(int x=0;x<width;x++) {
+				for(int y=0;y<height;y++) {
+					img.setf(x, y, (float) pixels[x+width*y]);
+				}
+			}
+		}
+	}
+
+	private void setPixels(int width, int height, float[] pixels) {
+		if(img != null) {
+			for(int x=0;x<width;x++) {
+				for(int y=0;y<height;y++) {
+					img.setf(x, y, pixels[x+width*y]);
+				}
+			}
+		}
+	}
+	
+	private void setPixels(int width, int height, short[] pixels) {
+		if(img != null) {
+			for(int x=0;x<width;x++) {
+				for(int y=0;y<height;y++) {
+					img.setf(x, y, Short.toUnsignedInt(pixels[x+width*y]));
+				}
+			}
+		}
+	}
+	
+	public int getExposure() {
+		return exposure;
+	}
+	
+	public int getWidth() {
+		return img.getWidth();
+	}
+	
+	public int getHeight() {
+		return  img.getHeight();
+	}
+	
+	public FloatProcessor getImage() {
+		return img;
+	}
+
+	public void addPixels(byte[] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		if(pixels.length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)+Byte.toUnsignedInt(pixels[x+getWidth()*y]));
+			}
+		}
+	}
+
+	public void addPixels(float[][] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		// assumes here a square 2D array
+		if(pixels.length*pixels[0].length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)+pixels[x][y]);
+			}
+		}
+	}
+	
+	public void addPixels(short[] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		if(pixels.length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)+Short.toUnsignedInt(pixels[x+getWidth()*y]));
+			}
+		}
+	}
+	
+	
+	public void dividePixels(float d) {
+		if(Math.abs(d) > 0.01) {
+			for(int x=0;x<getWidth();x++) {
+				for(int y=0;y<getHeight();y++) {
+					img.setf(x, y, img.getf(x,y)/d);
+				}
+			}
+		}
+	}
+
+	public void addSquarePixels(byte[] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		if(pixels.length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				int pix = Byte.toUnsignedInt(pixels[x+getWidth()*y]);
+				img.setf(x, y, img.getf(x,y)+pix*pix);
+			}
+		}
+	}
+	
+	public void addSquarePixels(short[] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		if(pixels.length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				int pix = Short.toUnsignedInt(pixels[x+getWidth()*y]);
+				img.setf(x, y, img.getf(x,y)+pix*pix);
+			}
+		}
+	}
+	
+	public void addSquarePixels(float[][] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		if(pixels.length*pixels[0].length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)+pixels[x][y]*pixels[x][y]);
+			}
+		}
+	}
+	
+	public void square() {
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)*img.getf(x,y));
+			}
+		}
+	}
+	
+	public void toVariance(FloatProcessor imp, float size) {
+		if(imp == null) {
+			throw new NullPointerException();
+		}
+		
+		if(imp.getWidth() != getWidth() || imp.getHeight() != getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)/size-imp.getf(x, y)*imp.getf(x, y));
+			}
+		}
+	}
+	
+	public void saveAsTiff(String path) {
+		FileSaver fs = new FileSaver(new ImagePlus("", img)); 
+		fs.saveAsTiff(path);
+	}
+	
+	public float getPixelValue(int x, int y) { 
+		return img.getf(x, y);
+	}
+}

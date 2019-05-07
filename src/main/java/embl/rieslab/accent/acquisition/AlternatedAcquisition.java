@@ -12,13 +12,12 @@ import org.micromanager.Studio;
 import org.micromanager.data.Coords;
 import org.micromanager.data.Datastore;
 import org.micromanager.data.Image;
-import org.micromanager.data.Datastore.SaveMode;
 import org.micromanager.data.internal.DefaultCoords;
 
 import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.data.acquisition.AcquisitionSettings;
-import main.java.embl.rieslab.accent.data.images.ImageExposurePair;
-import main.java.embl.rieslab.accent.data.roi.SimpleRoiWriter;
+import main.java.embl.rieslab.accent.mm2.data.acquisition.AcquisitionSettings;
+import main.java.embl.rieslab.accent.mm2.data.image.ImageExposurePair;
+import main.java.embl.rieslab.accent.mm2.data.roi.SimpleRoiWriter;
 import main.java.embl.rieslab.accent.utils.Dialogs;
 import main.java.embl.rieslab.accent.utils.utils;
 
@@ -135,7 +134,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 			String expPath = settings.folder_ + "/" + expName;
 						
 			// sets the SaveMode
-			if (settings.saveMode_ == SaveMode.MULTIPAGE_TIFF) {
+			if (settings.saveAsStacks_) {
 				try {
 					stores[i] = studio.data().createMultipageTIFFDatastore(expPath, true, true);
 				} catch (IOException e) {

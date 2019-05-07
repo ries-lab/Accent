@@ -21,10 +21,8 @@ import java.awt.Dimension;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import ij.gui.Roi;
-import ij.plugin.frame.RoiManager;
-import main.java.embl.rieslab.accent.data.roi.SimpleRoi;
-import main.java.embl.rieslab.accent.ui.interfaces.AcquisitionPanelInterface;
+import main.java.embl.rieslab.accent.common.interfaces.AcquisitionPanelInterface;
+import main.java.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
 import main.java.embl.rieslab.accent.utils.utils;
 
 import javax.swing.UIManager;
@@ -211,19 +209,6 @@ public class AcqOptionFrame extends JFrame {
 		gbl_roiPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		roiPanel.setLayout(gbl_roiPanel);
 		
-		JButton btnGetRoi = new JButton("Get Roi");
-		btnGetRoi.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				grabRoi();
-			}
-		});
-		
-		GridBagConstraints gbc_btnGetRoi = new GridBagConstraints();
-		gbc_btnGetRoi.insets = new Insets(0, 0, 5, 0);
-		gbc_btnGetRoi.gridx = 1;
-		gbc_btnGetRoi.gridy = 0;
-		roiPanel.add(btnGetRoi, gbc_btnGetRoi);
-		
 		JLabel lblX = new JLabel("X0 anchor");
 		GridBagConstraints gbc_lblX = new GridBagConstraints();
 		gbc_lblX.insets = new Insets(0, 5, 5, 5);
@@ -359,17 +344,6 @@ public class AcqOptionFrame extends JFrame {
 		
 		return new SimpleRoi(x,y,w,h);
 	}	
-	
-	protected void grabRoi() {
-	      final RoiManager roiManager = RoiManager.getInstance();
-	      if(roiManager != null && roiManager.getCount() > 0) {
-	    	  Roi roi = roiManager.getRoi(0);
-	    	  x0Field.setText(String.valueOf((int) roi.getXBase()));
-	    	  y0Field.setText(String.valueOf((int) roi.getYBase()));
-	    	  widthField.setText(String.valueOf((int) roi.getFloatWidth()));
-	    	  heightField.setText(String.valueOf((int) roi.getFloatHeight()));
-	      }
-	}
 
 	public void notifyOwner() {
 		boolean saveAsStacks, parallelProcessing;

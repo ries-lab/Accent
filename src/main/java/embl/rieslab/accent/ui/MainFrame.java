@@ -23,7 +23,7 @@ public class MainFrame extends JFrame{
 	 * Create the frame.
 	 */
 	public MainFrame(Studio studio, boolean fiji, DatasetService dataservice) {
-
+		
 		// controller 
 		PipelineController controller;
 		if(fiji) {

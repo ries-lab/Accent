@@ -14,7 +14,7 @@
 
 	<groupId>de.embl.rieslab</groupId>
 	<artifactId>Accent</artifactId>
-	<version>0.1</version>
+	<version>0.1-SNAPSHOT</version>
 
 	<name>Accent</name>
 	<description>Photon-free Camera Calibration tool for sCMOS, compatible with Micro-Manager2 and Fiji.</description>
@@ -94,23 +94,50 @@
 		</repository>
 	</repositories>
 
+
+	<profiles>
+		<profile>
+			<id>fiji</id>
+			<dependencies>
+				<dependency>
+					<groupId>net.imagej</groupId>
+					<artifactId>imagej</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mm2</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.micromanager</groupId>
+					<artifactId>MMCoreJ</artifactId>
+					<version>2.0.0-SNAPSHOT</version>
+				</dependency>
+				<dependency>
+					<groupId>org.micromanager</groupId>
+					<artifactId>MMAcqEngine</artifactId>
+					<version>2.0.0-SNAPSHOT</version>
+				</dependency>
+				<dependency>
+					<groupId>org.micromanager</groupId>
+					<artifactId>MMJ_</artifactId>
+					<version>2.0.0-SNAPSHOT</version>
+				</dependency>
+				<dependency>
+					<groupId>org.apache.commons</groupId>
+					<artifactId>commons-math3</artifactId>
+				</dependency>
+				<dependency>
+				    <groupId>org.scijava</groupId>
+				    <artifactId>scijava-common</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+	
+	
 	<dependencies>
-		<dependency>
-			<groupId>org.micromanager</groupId>
-			<artifactId>MMCoreJ</artifactId>
-			<version>2.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.micromanager</groupId>
-			<artifactId>MMAcqEngine</artifactId>
-			<version>2.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.micromanager</groupId>
-			<artifactId>MMJ_</artifactId>
-			<version>2.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
+		<dependency> 
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.8.11</version>
@@ -121,17 +148,11 @@
 			<version>2.8.11</version>
 		</dependency>
 		<dependency>
-			<groupId>net.imagej</groupId>
-			<artifactId>imagej</artifactId>
+		    <groupId>net.imagej</groupId>
+		    <artifactId>ij</artifactId>
 		</dependency>
-
-		<dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>ij</artifactId>
-	    </dependency>
-
-		
 	</dependencies>
+
 </project>
 
 
