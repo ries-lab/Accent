@@ -138,6 +138,7 @@ public class PipelineController {
 			// sanity check on the datasets
 			List<String> smallDatasets = new ArrayList<String>();
 			List<String> badDatasets = new ArrayList<String>();
+			List<String> noTimeDatasets = new ArrayList<String>();
 			Iterator<DatasetExposurePair> it = extractedDatasets.iterator();
 			while(it.hasNext()) {
 				DatasetExposurePair dataset = it.next();
@@ -145,7 +146,10 @@ public class PipelineController {
 					it.remove();
 					badDatasets.add(dataset.getImage().getName());
 				}
-				if(dataset.getImage().getFrames() < 1000) {
+				if(dataset.getImage().getFrames() == 1) {
+					it.remove();
+					noTimeDatasets.add(dataset.getImage().getName());
+				} else if(dataset.getImage().getFrames() < 1000) {
 					smallDatasets.add(dataset.getImage().getName());
 				}
 			}
@@ -169,6 +173,18 @@ public class PipelineController {
 				}
 				
 				JOptionPane.showMessageDialog(new JFrame(), "The following datasets are small and might lead to an inaccurate calibration: \n"+small,
+						"Small datasets", JOptionPane.INFORMATION_MESSAGE);
+			}
+
+			
+			// informs user that some datasets don't have the time dimension
+			if(noTimeDatasets.size() > 0) {
+				String noTime = "";
+				for(String s : noTimeDatasets) {
+					noTime += s+"\n";
+				}
+				
+				JOptionPane.showMessageDialog(new JFrame(), "The following datasets do not have a time axis and have been removed: \n"+noTime,
 						"Small datasets", JOptionPane.INFORMATION_MESSAGE);
 			}
 			
