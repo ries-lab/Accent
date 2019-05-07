@@ -19,7 +19,8 @@ public class AccentFiji implements Command{
 	public void run() {
 		
 		MainFrame frame = new MainFrame(null, true, dataService);
-		frame.setVisible(true);	
+		frame.setVisible(true);
+		
 	}
 
 	public static void main(final String... args) throws Exception {

@@ -35,7 +35,7 @@ public class FloatImageProcessor extends CalibrationProcessor<FloatImage>{
 						stackSizes[q]++;
 					}
 					
-					int progress = (int) (percentile * loader.getSize() + percentile * stackSizes[q] / loader.getChannelLength());
+					int progress = (int) (percentile * q + percentile * stackSizes[q] / loader.getChannelLength());
 					showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+q+"/"+loader.getSize()+" ", stackSizes[q], loader.getChannelLength(), progress);
 					
 				}

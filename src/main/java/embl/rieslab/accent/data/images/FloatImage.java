@@ -168,7 +168,8 @@ public class FloatImage {
 			throw new NullPointerException();
 		}
 		
-		if(pixels.length != getWidth()*getHeight()) {
+		// assumes here a square 2D array
+		if(pixels.length*pixels[0].length != getWidth()*getHeight()) {
 			throw new IllegalArgumentException();
 		}
 		
@@ -261,7 +262,7 @@ public class FloatImage {
 			throw new NullPointerException();
 		}
 		
-		if(pixels.length != getWidth()*getHeight()) {
+		if(pixels.length*pixels[0].length != getWidth()*getHeight()) {
 			throw new IllegalArgumentException();
 		}
 		

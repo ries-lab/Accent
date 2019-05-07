@@ -9,19 +9,21 @@ public class CurrentImgsLoader implements Loader<FloatImage>{
 
 	private List<DatasetExposurePair> list;
 	private DatasetExposurePair currentDataset;
-	private int currentPlane, currentFile;
+	private int currentPlane, currentFile, currentChannelLength;
+	private String type;
 	
 	
 	public CurrentImgsLoader(List<DatasetExposurePair> list) {
 		this.list = list;
 		currentPlane = 0;
+		currentChannelLength = 0;
 		currentFile = -1;
 	}
 	
 	@Override
 	public FloatImage getNext(int channel) {
 		if(channel == currentFile) {
-			String type = currentDataset.getImage().getTypeLabelShort();
+			// we only consider three types of images here but many more exist...
 			if (type.equals("8-bit uint")) {
 				return new FloatImage((int) currentDataset.getImage().getWidth(),
 						(int) currentDataset.getImage().getHeight(),
@@ -74,6 +76,9 @@ public class CurrentImgsLoader implements Loader<FloatImage>{
 	public boolean openChannel(int channel) {
 		if(channel == currentFile + 1) {
 			currentDataset = list.get(channel);
+			type = currentDataset.getImage().getTypeLabelShort();
+			
+			currentChannelLength = (int) currentDataset.getImage().getFrames();
 			currentFile = channel;
 			currentPlane = 0;
 			return true;
@@ -83,10 +88,7 @@ public class CurrentImgsLoader implements Loader<FloatImage>{
 
 	@Override
 	public int getChannelLength() {
-		if(currentDataset != null) {
-			return (int) currentDataset.getImage().getFrames();
-		}
-		return 0;
+		return currentChannelLength;
 	}
 
 }
