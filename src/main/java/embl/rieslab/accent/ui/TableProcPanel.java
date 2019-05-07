@@ -34,6 +34,7 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import java.awt.Dimension;
+import java.awt.Font;
 
 public class TableProcPanel extends JPanel implements ProcessingPanelInterface  {
 
@@ -51,6 +52,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 	private JLabel lblPath;
 	private JTextField textField;
 	private JButton button;
+	private JLabel lblNewLabel;
 
 	/**
 	 * Create the panel.
@@ -64,9 +66,9 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 		setBorder(new TitledBorder(null, "Process", TitledBorder.LEFT, TitledBorder.TOP, null, null));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
+		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		JLabel lblLeaveTheExposure = new JLabel("Leave the exposure field blank to ignore it");
@@ -141,20 +143,31 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 			}
 		});
 		
-		progressBar = new JProgressBar();
-		GridBagConstraints gbc_progressBar = new GridBagConstraints();
-		gbc_progressBar.gridwidth = 2;
-		gbc_progressBar.fill = GridBagConstraints.HORIZONTAL;
-		gbc_progressBar.insets = new Insets(0, 0, 0, 5);
-		gbc_progressBar.gridx = 0;
-		gbc_progressBar.gridy = 4;
-		add(progressBar, gbc_progressBar);
+		lblNewLabel = new JLabel(" ");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel.gridx = 1;
+		gbc_lblNewLabel.gridy = 4;
+		add(lblNewLabel, gbc_lblNewLabel);
 		
 		btnProcess = new JToggleButton(START);
 		GridBagConstraints gbc_btnProcess = new GridBagConstraints();
+		gbc_btnProcess.fill = GridBagConstraints.VERTICAL;
+		gbc_btnProcess.gridheight = 2;
+		gbc_btnProcess.insets = new Insets(5, 0, 0, 0);
 		gbc_btnProcess.gridx = 2;
 		gbc_btnProcess.gridy = 4;
 		add(btnProcess, gbc_btnProcess);
+		
+		progressBar = new JProgressBar();
+		GridBagConstraints gbc_progressBar = new GridBagConstraints();
+		gbc_progressBar.insets = new Insets(0, 5, 5, 5);
+		gbc_progressBar.gridwidth = 2;
+		gbc_progressBar.fill = GridBagConstraints.HORIZONTAL;
+		gbc_progressBar.gridx = 0;
+		gbc_progressBar.gridy = 5;
+		add(progressBar, gbc_progressBar);
 		btnProcess.addActionListener(new ActionListener() {
 		      public void actionPerformed(ActionEvent actionEvent) {
 		          AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
@@ -167,7 +180,6 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 		        }
 		      }
 		     );
-
 	}
 	
 
@@ -192,7 +204,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 			List<DatasetExposurePair> list = extractDatasets();
 			boolean b = controller.startProcessor(s, list);
 			if(!b) {
-				btnProcess.setText(STOP);
+				btnProcess.setText(START);
 				btnProcess.setSelected(false);
 			}
 		} else {
@@ -224,6 +236,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 
 	@Override
 	public void setProgress(String progress, int percentage) {
+		lblNewLabel.setText(progress);
 		progressBar.setValue(percentage);
 	}
 
@@ -240,7 +253,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 
 	@Override
 	public void processingHasStopped() {
-		btnProcess.setText(STOP);
+		btnProcess.setText(START);
 		btnProcess.setSelected(false);
 	}
 
