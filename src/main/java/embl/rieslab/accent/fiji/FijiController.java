@@ -23,7 +23,7 @@ import main.java.embl.rieslab.accent.fiji.ui.MainFrame;
 import net.imagej.Dataset;
 import net.imagej.DatasetService;
 
-public class FijiController extends Controller<Integer> {
+public class FijiController extends Controller {
 
 	private DatasetService dataService;
 	private LogService logService;
