@@ -1,7 +1,7 @@
 package main.java.embl.rieslab.accent.common.data.acquisition;
 
 
-import main.java.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
+import main.java.embl.rieslab.accent.common.data.roi.SimpleRoi;
 
 public class AcquisitionSettings {
 

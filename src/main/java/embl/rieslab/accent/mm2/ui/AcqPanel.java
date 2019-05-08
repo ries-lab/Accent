@@ -28,10 +28,10 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import main.java.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
+import main.java.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import main.java.embl.rieslab.accent.common.interfaces.PipelineController;
 import main.java.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
 import main.java.embl.rieslab.accent.common.utils.utils;
-import main.java.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
 
 public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 

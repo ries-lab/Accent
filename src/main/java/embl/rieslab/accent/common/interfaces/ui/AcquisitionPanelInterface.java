@@ -1,6 +1,6 @@
 package main.java.embl.rieslab.accent.common.interfaces.ui;
 
-import main.java.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
+import main.java.embl.rieslab.accent.common.data.roi.SimpleRoi;
 
 public interface AcquisitionPanelInterface {
 

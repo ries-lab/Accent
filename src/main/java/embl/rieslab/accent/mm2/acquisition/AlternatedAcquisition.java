@@ -16,10 +16,10 @@ import org.micromanager.data.internal.DefaultCoords;
 
 import main.java.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
 import main.java.embl.rieslab.accent.common.data.image.BareImage;
+import main.java.embl.rieslab.accent.common.data.roi.SimpleRoiWriter;
 import main.java.embl.rieslab.accent.common.interfaces.PipelineController;
 import main.java.embl.rieslab.accent.common.utils.Dialogs;
 import main.java.embl.rieslab.accent.common.utils.utils;
-import main.java.embl.rieslab.accent.mm2.data.roi.SimpleRoiWriter;
 
 public class AlternatedAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
 
