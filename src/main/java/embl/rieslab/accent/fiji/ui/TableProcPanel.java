@@ -1,13 +1,10 @@
-package main.java.embl.rieslab.accent.ui;
+package main.java.embl.rieslab.accent.fiji.ui;
 
 import javax.swing.JPanel;
 
-import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.common.interfaces.ProcessingPanelInterface;
-import main.java.embl.rieslab.accent.fiji.data.image.DatasetExposurePair;
-import main.java.embl.rieslab.accent.utils.utils;
-import net.imagej.Dataset;
-import net.imagej.DatasetService;
+import main.java.embl.rieslab.accent.common.interfaces.PipelineController;
+import main.java.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
+import main.java.embl.rieslab.accent.common.utils.utils;
 
 import javax.swing.border.TitledBorder;
 import java.awt.GridBagLayout;
@@ -24,7 +21,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.border.LineBorder;
@@ -43,9 +40,8 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 	
 	private JTable table;
 	private JToggleButton btnProcess;
-	private PipelineController controller;
+	private main.java.embl.rieslab.accent.common.interfaces.PipelineController controller;
 	private JProgressBar progressBar;
-	private DatasetService dataservice;
 	
 	private final static String START = "Process";
 	private final static String STOP = "Stop";
@@ -53,15 +49,23 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 	private JTextField textField;
 	private JButton button;
 	private JLabel lblNewLabel;
+	
+	private List<String> datasets;
 
 	/**
 	 * Create the panel.
 	 * @param dataservice 
 	 * @param controller 
 	 */
-	public TableProcPanel(PipelineController controller, DatasetService dataservice) {
+	public TableProcPanel(PipelineController controller, List<String> datasets) {
+		
+		if(datasets == null) {
+			throw new NullPointerException();
+		}
+		
+		
 		this.controller = controller;
-		this.dataservice = dataservice;
+		this.datasets = datasets;
 		
 		setBorder(new TitledBorder(null, "Process", TitledBorder.LEFT, TitledBorder.TOP, null, null));
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -169,17 +173,16 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 		gbc_progressBar.gridy = 5;
 		add(progressBar, gbc_progressBar);
 		btnProcess.addActionListener(new ActionListener() {
-		      public void actionPerformed(ActionEvent actionEvent) {
-		          AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
-		          boolean selected = abstractButton.getModel().isSelected();
-		          if (selected) {
-						startProcessing();
-					} else {
-						stopProcessing();
-					}
-		        }
-		      }
-		     );
+			public void actionPerformed(ActionEvent actionEvent) {
+				AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
+				boolean selected = abstractButton.getModel().isSelected();
+				if (selected) {
+					startProcessing();
+				} else {
+					stopProcessing();
+				}
+			}
+		});
 	}
 	
 
@@ -201,7 +204,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 	protected void startProcessing() {
 		if(!controller.isProcessingRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
 			String s  = textField.getText();
-			List<DatasetExposurePair> list = extractDatasets();
+			HashMap<String, Integer> list = extractDatasets();
 			boolean b = controller.startProcessor(s, list);
 			if(!b) {
 				btnProcess.setText(START);
@@ -213,8 +216,8 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 		}
 	}
 	
-	protected List<DatasetExposurePair> extractDatasets(){
-		List<DatasetExposurePair> list = new ArrayList<DatasetExposurePair>();
+	protected HashMap<String, Integer> extractDatasets(){
+		HashMap<String, Integer> list = new HashMap<String, Integer>();
 		int n = table.getRowCount();
 		
 		for(int i=0;i<n;i++) {
@@ -222,7 +225,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 			if(!ms.equals("") && utils.isInteger(ms)) {
 				Integer exposure = Integer.parseInt(ms);
 				
-				list.add(new DatasetExposurePair(dataservice.getDatasets().get(i),exposure));
+				list.put(datasets.get(i),exposure);
 			}
 		}
 		
@@ -267,14 +270,13 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 
 
 	private String[][] buildList(){
-		List<Dataset> datasets = dataservice.getDatasets();
 		String[][] data = new String[datasets.size()][2];
 		
 		for(int i=0;i<datasets.size();i++) {
 			// check if name contains "ms"
-			String ms = extractMs(datasets.get(i).getName());
+			String ms = extractMs(datasets.get(i));
 					
-			data[i][0] = datasets.get(i).getName();
+			data[i][0] = datasets.get(i);
 			data[i][1] = ms;
 		}
 		

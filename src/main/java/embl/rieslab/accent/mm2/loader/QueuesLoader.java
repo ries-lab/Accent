@@ -3,15 +3,15 @@ package main.java.embl.rieslab.accent.mm2.loader;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import main.java.embl.rieslab.accent.common.data.image.BareImage;
 import main.java.embl.rieslab.accent.common.interfaces.Loader;
-import main.java.embl.rieslab.accent.mm2.data.image.ImageExposurePair;
 
-public class QueuesLoader implements Loader<ImageExposurePair>{
+public class QueuesLoader implements Loader{
 
-	private ArrayList<ArrayBlockingQueue<ImageExposurePair>> queues;
+	private ArrayList<ArrayBlockingQueue<BareImage>> queues;
 	private boolean done = false;
 	
-	public QueuesLoader(ArrayList<ArrayBlockingQueue<ImageExposurePair>> queues) {
+	public QueuesLoader(ArrayList<ArrayBlockingQueue<BareImage>> queues) {
 		if(queues == null) {
 			throw new NullPointerException();
 		}
@@ -20,7 +20,7 @@ public class QueuesLoader implements Loader<ImageExposurePair>{
 	}
 	
 	@Override
-	public ImageExposurePair getNext(int q) {
+	public BareImage getNext(int q) {
 		return queues.get(q).poll();
 	}
 

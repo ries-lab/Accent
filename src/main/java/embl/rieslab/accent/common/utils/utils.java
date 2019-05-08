@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.utils;
+package main.java.embl.rieslab.accent.common.utils;
 
 public class utils {
 

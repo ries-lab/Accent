@@ -1,8 +1,9 @@
-package main.java.test;
+package main.java.embl.rieslab.accent.mm2.test;
 
 import org.micromanager.Studio;
 import org.micromanager.data.Image;
 
+import main.java.embl.rieslab.accent.common.data.image.BareImage;
 import main.java.embl.rieslab.accent.common.data.image.FloatImage;
 
 public class BenchmarkImageCalculations {
@@ -10,9 +11,25 @@ public class BenchmarkImageCalculations {
 	public static void testPerformancesImageToFloatImage(Studio studio) {
 		double length = 200.;
 		long start, end;
-		double avg_floatim=0,avg_addim=0,avg_div=0,avg_sq=0,avg_var=0;
+		double bare_creation=0, avg_floatim=0,avg_addim=0,avg_div=0,avg_sq=0,avg_var=0;
 
 		Image mm_im = studio.live().snap(false).get(0);
+		
+		// Creation
+		BareImage bareim = null;
+		for(int i=0;i<length;i++) {
+			
+			// get image
+					
+			start = System.currentTimeMillis();
+
+			bareim = new BareImage(BareImage.DataType.BYTE, mm_im.getRawPixels(), mm_im.getWidth(), mm_im.getHeight(), 0);
+		
+			end = System.currentTimeMillis();
+			bare_creation += end-start;
+
+		}
+		System.out.println("At creation, bareim: "+bare_creation/length+" ms");
 		
 		// Creation
 		FloatImage im = null;
@@ -22,7 +39,7 @@ public class BenchmarkImageCalculations {
 					
 			start = System.currentTimeMillis();
 
-			im = new FloatImage(mm_im, 0);
+			im = new FloatImage(bareim);
 		
 			end = System.currentTimeMillis();
 			avg_floatim += end-start;
@@ -31,12 +48,12 @@ public class BenchmarkImageCalculations {
 		System.out.println("At creation, floatim: "+avg_floatim/length+" ms");
 		
 		// Addition
-		for(int i=0;i<length;i++) {
-			im = new FloatImage(mm_im, 0);
+		for(int i=0;i<length;i++) {	
+			im = new FloatImage(bareim);
 			
 			start = System.currentTimeMillis();
 
-			im.addPixels(mm_im);
+			im.addPixels(bareim);
 			
 			end = System.currentTimeMillis();
 
@@ -46,8 +63,8 @@ public class BenchmarkImageCalculations {
 		
 
 		// Division
-		for(int i=0;i<length;i++) {
-			im = new FloatImage(mm_im, 0);
+		for(int i=0;i<length;i++) {		
+			im = new FloatImage(bareim);
 			
 			start = System.currentTimeMillis();
 
@@ -61,11 +78,11 @@ public class BenchmarkImageCalculations {
 		
 		// Square addition
 		for(int i=0;i<length;i++) {
-			im = new FloatImage(mm_im, 0);
+			im = new FloatImage(bareim);
 			
 			start = System.currentTimeMillis();
 
-			im.addSquarePixels(mm_im);
+			im.addSquarePixels(bareim);
 			
 			end = System.currentTimeMillis();
 
@@ -74,9 +91,9 @@ public class BenchmarkImageCalculations {
 		System.out.println("Square addition, floatim: "+avg_sq/length+" ms");
 		
 		// To variance
-		FloatImage mean = new FloatImage(mm_im, 0); 
+		FloatImage mean = new FloatImage(bareim);; 
 		for(int i=0;i<length;i++) {
-			im = new FloatImage(mm_im, 0);
+			im = new FloatImage(bareim);
 			
 			start = System.currentTimeMillis();
 

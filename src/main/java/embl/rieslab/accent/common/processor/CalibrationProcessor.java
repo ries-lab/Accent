@@ -8,17 +8,17 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
-import main.java.embl.rieslab.accent.PipelineController;
 import main.java.embl.rieslab.accent.common.data.calibration.Calibration;
 import main.java.embl.rieslab.accent.common.data.calibration.CalibrationIO;
 import main.java.embl.rieslab.accent.common.data.image.FloatImage;
 import main.java.embl.rieslab.accent.common.interfaces.Loader;
+import main.java.embl.rieslab.accent.common.interfaces.PipelineController;
 
-public abstract class CalibrationProcessor<T> extends Thread {
+public abstract class CalibrationProcessor extends Thread {
 
 	private PipelineController controller;
-	private Loader<T> loader;
-	private boolean stop = false;
+	private Loader loader;
+	protected boolean stop = false;
 	private boolean running = false;
 	
 	private Calibration results;
@@ -32,7 +32,7 @@ public abstract class CalibrationProcessor<T> extends Thread {
 	public final static int STOP = -2;
 	public final static int PROGRESS = -3;
 	
-	public CalibrationProcessor(String folder, PipelineController controller, Loader<T> loader) {
+	public CalibrationProcessor(String folder, PipelineController controller, Loader loader) {
 		
 		if(loader.getSize() < 3) {
 			throw new IllegalArgumentException("At least three exposures are required.");
@@ -103,7 +103,7 @@ public abstract class CalibrationProcessor<T> extends Thread {
 		// saves images
 		for(int q=0;q<loader.getSize();q++) {
 			avgs[q].saveAsTiff(folder + "\\Avg_" + avgs[q].getExposure() + "ms.tiff");
-			vars[q].saveAsTiff(folder + "\\Var_" + avgs[q].getExposure() + "ms.tiff");
+			vars[q].saveAsTiff(folder + "\\Var_" + vars[q].getExposure() + "ms.tiff");
 		}
 
 		
@@ -192,7 +192,7 @@ public abstract class CalibrationProcessor<T> extends Thread {
 		}	
 	}
 	
-	protected abstract void computeAvgAndVar(Loader<T> loader, FloatImage[] avgs, FloatImage[] vars, int[] stackSizes);
+	protected abstract void computeAvgAndVar(Loader loader, FloatImage[] avgs, FloatImage[] vars, int[] stackSizes);
 	
 	protected Calibration performLinearRegressions(String folder, FloatImage[] avgs, FloatImage[] vars) {
 		int width = (int) avgs[0].getWidth();
@@ -336,5 +336,9 @@ public abstract class CalibrationProcessor<T> extends Thread {
 	
 	protected PipelineController getController() {
 		return controller;
+	}
+
+	public Loader getLoader() {
+		return loader;
 	}
 }

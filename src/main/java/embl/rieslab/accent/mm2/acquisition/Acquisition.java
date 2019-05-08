@@ -1,10 +1,10 @@
-package main.java.embl.rieslab.accent.acquisition;
+package main.java.embl.rieslab.accent.mm2.acquisition;
 
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import main.java.embl.rieslab.accent.mm2.data.acquisition.AcquisitionSettings;
-import main.java.embl.rieslab.accent.mm2.data.image.ImageExposurePair;
+import main.java.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
+import main.java.embl.rieslab.accent.common.data.image.BareImage;
 
 public interface Acquisition {
 
@@ -18,7 +18,7 @@ public interface Acquisition {
 	
 	public AcquisitionSettings getSettings();
 	
-	public ArrayList<ArrayBlockingQueue<ImageExposurePair>> getQueues();
+	public ArrayList<ArrayBlockingQueue<BareImage>> getQueues();
 	
 	public double getExecutionTime();
 }

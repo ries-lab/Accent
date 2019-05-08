@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.mm2.data.acquisition;
+package main.java.embl.rieslab.accent.common.data.acquisition;
 
 
 import main.java.embl.rieslab.accent.mm2.data.roi.SimpleRoi;

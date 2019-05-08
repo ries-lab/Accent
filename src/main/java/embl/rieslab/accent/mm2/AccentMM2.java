@@ -1,10 +1,10 @@
 package main.java.embl.rieslab.accent.mm2;
 
+import javax.swing.JFrame;
+
 import org.micromanager.Studio;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.SciJavaPlugin;
-
-import main.java.embl.rieslab.accent.ui.MainFrame;
 
 @Plugin(type = org.micromanager.MenuPlugin.class)
 public class AccentMM2 implements org.micromanager.MenuPlugin, SciJavaPlugin {
@@ -48,7 +48,8 @@ public class AccentMM2 implements org.micromanager.MenuPlugin, SciJavaPlugin {
 
 	@Override
 	public void onPluginSelected() {
-		MainFrame frame = new MainFrame(studio, false, null);
+		MM2Controller controller = new MM2Controller(studio);
+		JFrame frame = controller.getMainFrame();
 		frame.setVisible(true);
 	}
 

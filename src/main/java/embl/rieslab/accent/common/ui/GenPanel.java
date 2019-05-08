@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.ui;
+package main.java.embl.rieslab.accent.common.ui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -19,10 +19,10 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import main.java.embl.rieslab.accent.PipelineController;
 import main.java.embl.rieslab.accent.common.data.calibration.CalibrationIO;
-import main.java.embl.rieslab.accent.common.interfaces.GeneratePanelInterface;
-import main.java.embl.rieslab.accent.utils.utils;
+import main.java.embl.rieslab.accent.common.interfaces.PipelineController;
+import main.java.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
+import main.java.embl.rieslab.accent.common.utils.utils;
 
 public class GenPanel extends JPanel implements GeneratePanelInterface{
 

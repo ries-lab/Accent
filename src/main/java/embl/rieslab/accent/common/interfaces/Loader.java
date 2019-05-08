@@ -1,9 +1,10 @@
 package main.java.embl.rieslab.accent.common.interfaces;
 
+import main.java.embl.rieslab.accent.common.data.image.BareImage;
 
-public interface Loader<T> {
+public interface Loader {
 
-	public T getNext(int channel);
+	public BareImage getNext(int channel);
 	
 	public boolean hasNext(int channel);
 	

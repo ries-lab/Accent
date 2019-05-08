@@ -8,11 +8,11 @@ import org.micromanager.data.Datastore;
 import org.micromanager.data.Image;
 import org.micromanager.data.internal.DefaultCoords;
 
+import main.java.embl.rieslab.accent.common.data.image.BareImage;
 import main.java.embl.rieslab.accent.common.interfaces.Loader;
-import main.java.embl.rieslab.accent.mm2.data.image.ImageExposurePair;
-import main.java.embl.rieslab.accent.utils.utils;
+import main.java.embl.rieslab.accent.common.utils.utils;
 
-public class MMStacksLoader implements Loader<ImageExposurePair>{
+public class MMStacksLoader implements Loader{
 
 	private Studio studio;
 	private String[] directories;
@@ -32,7 +32,7 @@ public class MMStacksLoader implements Loader<ImageExposurePair>{
 	}
 
 	@Override
-	public ImageExposurePair getNext(int channel) {
+	public BareImage getNext(int channel) {
 		Coords.CoordsBuilder builder = new DefaultCoords.Builder();
 		builder.channel(0).z(0).stagePosition(0).time(currentPlane++);
 
@@ -43,7 +43,7 @@ public class MMStacksLoader implements Loader<ImageExposurePair>{
 				store.close();
 			}
 			
-			return new ImageExposurePair(im, currentExposure);
+			return new BareImage(im.getBytesPerPixel(), im.getRawPixels(), im.getWidth(), im.getHeight(), currentExposure);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

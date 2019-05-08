@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.ui;
+package main.java.embl.rieslab.accent.mm2.ui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -7,10 +7,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.File;
 
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -21,8 +20,8 @@ import javax.swing.JToggleButton;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
-import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.common.interfaces.ProcessingPanelInterface;
+import main.java.embl.rieslab.accent.common.interfaces.PipelineController;
+import main.java.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
 
 public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 
@@ -100,9 +99,11 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 		this.add(procFeedbackLabel, gbc_procFeedbackLabel);
 		
 		processButton = new JToggleButton(START);
-		processButton.addItemListener(new ItemListener()  {
-			public void itemStateChanged(ItemEvent state) {
-				if (state.getStateChange() == ItemEvent.SELECTED) {
+		processButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
+				boolean selected = abstractButton.getModel().isSelected();
+				if (selected) {
 					startProcessing();
 				} else {
 					stopProcessing();

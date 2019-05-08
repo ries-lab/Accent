@@ -5,11 +5,11 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
-import main.java.embl.rieslab.accent.PipelineController;
 import main.java.embl.rieslab.accent.common.data.calibration.Calibration;
 import main.java.embl.rieslab.accent.common.data.calibration.CalibrationMap;
 import main.java.embl.rieslab.accent.common.data.image.FloatImage;
 import main.java.embl.rieslab.accent.common.interfaces.Generator;
+import main.java.embl.rieslab.accent.common.interfaces.PipelineController;
 
 public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implements Generator {
 

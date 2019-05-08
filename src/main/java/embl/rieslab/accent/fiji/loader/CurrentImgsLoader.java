@@ -2,42 +2,32 @@ package main.java.embl.rieslab.accent.fiji.loader;
 
 import java.util.List;
 
-import main.java.embl.rieslab.accent.common.data.image.FloatImage;
+import main.java.embl.rieslab.accent.common.data.image.BareImage;
 import main.java.embl.rieslab.accent.common.interfaces.Loader;
-import main.java.embl.rieslab.accent.fiji.data.image.DatasetExposurePair;
+import main.java.embl.rieslab.accent.fiji.data.image.FijiDataset;
 
-public class CurrentImgsLoader implements Loader<FloatImage>{
+public class CurrentImgsLoader implements Loader{
 
-	private List<DatasetExposurePair> list;
-	private DatasetExposurePair currentDataset;
+	private List<FijiDataset> list;
+	private FijiDataset currentDataset;
 	private int currentPlane, currentFile, currentChannelLength;
-	private String type;
+	private BareImage.DataType type;
 	
-	
-	public CurrentImgsLoader(List<DatasetExposurePair> list) {
+	public CurrentImgsLoader(List<FijiDataset> list) {
 		this.list = list;
 		currentPlane = 0;
 		currentChannelLength = 0;
 		currentFile = -1;
+		
+		type = BareImage.DataType.FLOAT; // default
 	}
 	
 	@Override
-	public FloatImage getNext(int channel) {
-		if(channel == currentFile) {
-			// we only consider three types of images here but many more exist...
-			if (type.equals("8-bit uint")) {
-				return new FloatImage((int) currentDataset.getImage().getWidth(),
-						(int) currentDataset.getImage().getHeight(),
-						(byte[]) currentDataset.getImage().getPlane(currentPlane++), currentDataset.getExposure());
-			} else if (type.equals("16-bit uint")) {
-				return new FloatImage((int) currentDataset.getImage().getWidth(),
-						(int) currentDataset.getImage().getHeight(),
-						(short[]) currentDataset.getImage().getPlane(currentPlane++), currentDataset.getExposure());
-			} else if (type.equals("32-bit uint")) {
-				return new FloatImage((int) currentDataset.getImage().getWidth(),
-						(int) currentDataset.getImage().getHeight(),
-						(float[]) currentDataset.getImage().getPlane(currentPlane++), currentDataset.getExposure());
-			}
+	public BareImage getNext(int channel) {
+		if(channel == currentFile) {	
+			return new BareImage(type, currentDataset.getImage().getPlane(currentPlane++), (int) currentDataset.getImage().getWidth(),
+						(int) currentDataset.getImage().getHeight(),currentDataset.getExposure());
+		
 		}
 		return null;
 	}
@@ -77,7 +67,17 @@ public class CurrentImgsLoader implements Loader<FloatImage>{
 	public boolean openChannel(int channel) {
 		if(channel == currentFile + 1) {
 			currentDataset = list.get(channel);
-			type = currentDataset.getImage().getTypeLabelShort();
+			
+			// we only consider three types of images here but many more exist...
+			if (currentDataset.getType().equals("8-bit uint")) {
+				type = BareImage.DataType.BYTE;
+			} else if (currentDataset.getType().equals("16-bit uint")) {
+				type = BareImage.DataType.SHORT;
+			} else if (currentDataset.getType().equals("32-bit uint")) {
+				type = BareImage.DataType.FLOAT;
+			} else {
+				throw new IllegalArgumentException("Unknown data type.");
+			}
 			
 			currentChannelLength = (int) currentDataset.getImage().getFrames();
 			currentFile = channel;

@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.ui;
+package main.java.embl.rieslab.accent.mm2.ui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -7,14 +7,13 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -28,11 +27,11 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
-import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.common.interfaces.AcquisitionPanelInterface;
-import main.java.embl.rieslab.accent.mm2.data.acquisition.AcquisitionSettings;
+import main.java.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
+import main.java.embl.rieslab.accent.common.interfaces.PipelineController;
+import main.java.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
+import main.java.embl.rieslab.accent.common.utils.utils;
 import main.java.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
-import main.java.embl.rieslab.accent.utils.utils;
 
 public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 
@@ -168,9 +167,11 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		framesSpinner.getEditor().getComponent(0).setBackground(Color.WHITE);
 		
 		acquireButton = new JToggleButton(ACQ_START);
-		acquireButton.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent state) {
-				if (state.getStateChange() == ItemEvent.SELECTED) {
+		acquireButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
+				boolean selected = abstractButton.getModel().isSelected();
+				if (selected) {
 					runAcquisition();
 				} else {
 					stopAcquisition();

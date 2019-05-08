@@ -3,11 +3,26 @@ package main.java.embl.rieslab.accent.common.data.image;
 import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.process.FloatProcessor;
+import main.java.embl.rieslab.accent.common.data.image.BareImage.DataType;
 
 public class FloatImage {
 
 	private final int exposure;
 	private FloatProcessor img;
+
+	public FloatImage(BareImage image) {
+		this.exposure = image.getExposure();
+
+		img = new FloatProcessor(image.getWidth(), image.getHeight());
+
+		if(image.getDataType() == DataType.BYTE) {
+			setPixels(image.getWidth(), image.getHeight(), (byte[]) image.getPixels());
+		} else if(image.getDataType() == DataType.SHORT) {
+			setPixels(image.getWidth(), image.getHeight(), (byte[]) image.getPixels());
+		} else {
+			setPixels(image.getWidth(), image.getHeight(), (float[]) image.getPixels());
+		}
+	}
 
 	public FloatImage(int width, int height, byte[] pixels, int exposure) {
 		this.exposure = exposure;
@@ -103,6 +118,17 @@ public class FloatImage {
 		return img;
 	}
 
+	public void addPixels(BareImage image) {
+		if(image.getDataType() == DataType.BYTE) {
+			addPixels((byte[]) image.getPixels());
+		} else if(image.getDataType() == DataType.SHORT) {
+			addPixels((byte[]) image.getPixels());
+		} else {
+			addPixels((float[]) image.getPixels());
+		}
+	}
+	
+	
 	public void addPixels(byte[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
@@ -115,6 +141,23 @@ public class FloatImage {
 		for(int x=0;x<getWidth();x++) {
 			for(int y=0;y<getHeight();y++) {
 				img.setf(x, y, img.getf(x,y)+Byte.toUnsignedInt(pixels[x+getWidth()*y]));
+			}
+		}
+	}
+
+	public void addPixels(float[] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		// assumes here a square 2D array
+		if(pixels.length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)+pixels[x+getWidth()*y]);
 			}
 		}
 	}
@@ -162,7 +205,17 @@ public class FloatImage {
 			}
 		}
 	}
-
+	
+	public void addSquarePixels(BareImage image) {
+		if(image.getDataType() == DataType.BYTE) {
+			addSquarePixels((byte[]) image.getPixels());
+		} else if(image.getDataType() == DataType.SHORT) {
+			addSquarePixels((byte[]) image.getPixels());
+		} else {
+			addSquarePixels((float[]) image.getPixels());
+		}
+	}
+	
 	public void addSquarePixels(byte[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
@@ -209,6 +262,22 @@ public class FloatImage {
 		for(int x=0;x<getWidth();x++) {
 			for(int y=0;y<getHeight();y++) {
 				img.setf(x, y, img.getf(x,y)+pixels[x][y]*pixels[x][y]);
+			}
+		}
+	}
+	
+	public void addSquarePixels(float[] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		if(pixels.length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)+pixels[x+getWidth()*y]*pixels[x+getWidth()*y]);
 			}
 		}
 	}

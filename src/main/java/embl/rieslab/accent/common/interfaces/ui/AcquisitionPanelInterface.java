@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.common.interfaces;
+package main.java.embl.rieslab.accent.common.interfaces.ui;
 
 import main.java.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
 

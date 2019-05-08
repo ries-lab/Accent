@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.ui;
+package main.java.embl.rieslab.accent.mm2.ui;
 
 
 import javax.swing.JFrame;
@@ -21,9 +21,9 @@ import java.awt.Dimension;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import main.java.embl.rieslab.accent.common.interfaces.AcquisitionPanelInterface;
+import main.java.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
+import main.java.embl.rieslab.accent.common.utils.utils;
 import main.java.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
-import main.java.embl.rieslab.accent.utils.utils;
 
 import javax.swing.UIManager;
 import java.awt.Component;

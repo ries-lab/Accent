@@ -1,4 +1,4 @@
-package main.java.embl.rieslab.accent.acquisition;
+package main.java.embl.rieslab.accent.mm2.acquisition;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,12 +14,12 @@ import org.micromanager.data.Datastore;
 import org.micromanager.data.Image;
 import org.micromanager.data.internal.DefaultCoords;
 
-import main.java.embl.rieslab.accent.PipelineController;
-import main.java.embl.rieslab.accent.mm2.data.acquisition.AcquisitionSettings;
-import main.java.embl.rieslab.accent.mm2.data.image.ImageExposurePair;
+import main.java.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
+import main.java.embl.rieslab.accent.common.data.image.BareImage;
+import main.java.embl.rieslab.accent.common.interfaces.PipelineController;
+import main.java.embl.rieslab.accent.common.utils.Dialogs;
+import main.java.embl.rieslab.accent.common.utils.utils;
 import main.java.embl.rieslab.accent.mm2.data.roi.SimpleRoiWriter;
-import main.java.embl.rieslab.accent.utils.Dialogs;
-import main.java.embl.rieslab.accent.utils.utils;
 
 public class AlternatedAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
 
@@ -37,7 +37,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 	private final static int DONE = -1;
 	private final static int STOP = -2;
 	
-	private ArrayList<ArrayBlockingQueue<ImageExposurePair>> queues;
+	private ArrayList<ArrayBlockingQueue<BareImage>> queues;
 	
 	public AlternatedAcquisition(Studio studio, AcquisitionSettings settings, PipelineController controller) {
 		if(studio == null || settings == null || controller == null) {
@@ -48,9 +48,9 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		this.settings = settings;
 		this.controller = controller;
 		
-		queues = new ArrayList<ArrayBlockingQueue<ImageExposurePair>>();
+		queues = new ArrayList<ArrayBlockingQueue<BareImage>>();
 		for(int i=0;i<settings.exposures_.length;i++) {
-			queues.add(new ArrayBlockingQueue<ImageExposurePair>(200));
+			queues.add(new ArrayBlockingQueue<BareImage>(200));
 		}
 		
 		startTime = 0;
@@ -190,7 +190,8 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 					
 					if(settings.parallelProcessing) {
 						// adds to queue
-						queues.get(i).add(new ImageExposurePair(image, settings.exposures_[i]));
+						queues.get(i).add(new BareImage(image.getBytesPerPixel(), image.getRawPixels(), 
+									image.getWidth(), image.getHeight(), settings.exposures_[i]));
 					}
 				} catch (IOException e) {
 					stop = true;
@@ -198,7 +199,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 				}
 			}
 
-			publish(frame);
+			publish(frame+1);
 
 			frame++;
 		}
@@ -290,7 +291,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 	}
 
 	@Override
-	public ArrayList<ArrayBlockingQueue<ImageExposurePair>> getQueues() {
+	public ArrayList<ArrayBlockingQueue<BareImage>> getQueues() {
 		return queues;
 	}
 	
