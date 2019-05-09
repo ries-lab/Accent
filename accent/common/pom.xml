@@ -12,7 +12,7 @@
 	</parent>
 
 	<artifactId>common</artifactId>
-	<name>common</name>
+	<name>Accent-common</name>
 	<packaging>jar</packaging>
 
 	<properties>

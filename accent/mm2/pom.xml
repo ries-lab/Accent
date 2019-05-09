@@ -12,7 +12,7 @@
 	</parent>
 	
 	<artifactId>mm2</artifactId>
-	<name>mm2</name>
+	<name>Accent-MM2</name>
 	<packaging>jar</packaging>
 	
 	<properties>

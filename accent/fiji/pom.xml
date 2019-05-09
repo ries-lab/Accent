@@ -13,7 +13,7 @@
 	</parent>
 
 	<groupId>de.embl.rieslab</groupId>
-	<artifactId>Accent</artifactId>
+	<artifactId>Accent-Fiji</artifactId>
 	<version>0.1-SNAPSHOT</version>
 
 	<name>Accent</name>
