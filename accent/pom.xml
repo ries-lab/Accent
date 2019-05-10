@@ -9,6 +9,61 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+
+<description>Photon-free Camera Calibration tool for sCMOS, compatible with Micro-Manager2 and Fiji.</description>
+	<url>none</url>
+	<inceptionYear>2019</inceptionYear>
+	<organization>
+		<name>EMBL</name>
+		<url>https://www.embl.de/</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>LGPL</name>
+			<distribution>none</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>jdeschamps</id>
+			<name>Joran Deschamps</name>
+			<url>https://github.com/jdeschamps</url>
+			<roles>
+				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
+			</roles>
+		</developer>
+	</developers>
+	
+	<contributors>
+		<contributor>
+			<name>Robin Diekmann</name>
+			<url>none</url>
+			<roles>
+				<role>founder</role>
+				<role>lead</role>
+				<role>reviewer</role>
+			</roles>
+		</contributor>
+	</contributors>
+
+	<scm>
+		<connection>scm:git:git://github.com/ries-lab/Accent</connection>
+		<developerConnection>scm:git:git@github.com:ries-lab/Accent</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/ries-lab/Accent</url>
+	</scm>
+	
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>None</url>
+	</issueManagement>
+	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
