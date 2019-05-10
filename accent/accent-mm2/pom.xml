@@ -11,7 +11,7 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>mm2</artifactId>
+	<artifactId>accent-mm2</artifactId>
 	<name>Accent-MM2</name>
 	<packaging>jar</packaging>
 	

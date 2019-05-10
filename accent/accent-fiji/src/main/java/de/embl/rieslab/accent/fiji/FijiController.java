@@ -33,7 +33,7 @@ public class FijiController extends Controller {
 		this.dataService = dataService;
 		this.logService = logService;
 	}
-	
+	 
 	@Override
 	public boolean startProcessor(String path, HashMap<String, Integer> openedDatasets) {
 		// sanity check on the datasets

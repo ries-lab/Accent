@@ -69,8 +69,8 @@
 	</properties>
 
 	<modules>
-		<module>common</module>
-		<module>mm2</module>
-		<module>fiji</module>
+		<module>accent-common</module>
+		<module>accent-mm2</module>
+		<module>accent-fiji</module>
 	</modules>
 </project>
