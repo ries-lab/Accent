@@ -8,7 +8,6 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 import de.embl.rieslab.accent.common.utils.Dialogs;
-import ij.ImagePlus;
 import ij.WindowManager;
 import net.imagej.DatasetService;
 import net.imagej.ImageJ;
@@ -24,37 +23,22 @@ public class AccentFiji implements Command{
     
 	@Override
 	public void run() {
-		ij.IJ.open("D:/Accent/fiji/MMStack_Default.ome_10ms.tif");
-		ij.IJ.open("D:/Accent/fiji/MMStack_Default.ome_50ms.tif");
-		ij.IJ.open("D:/Accent/fiji/MMStack_Default.ome_100ms.tif");
-		
+
+		// check if IJ1 can grab the frames
 		String[] ids = WindowManager.getImageTitles();
-		for(String i: ids) {
-			logService.error(i);
-		}
-
-		ImagePlus imp = WindowManager.getImage(ids[0]);
-		logService.error(imp.getStackSize());
-
-		logService.error("--------------------------------------------------------------");
-		System.out.println("Dataservice: "+dataService.getDatasets().size());
-	
-		
-		if(dataService.getDatasets().size() < 3) {
-			Dialogs.showErrorMessage("Not enough datasets open (minimum of 3).");
-		} else {
-			FijiController controller = new FijiController(dataService, logService);
+		if(ids.length > 2) {
+			System.out.println("WindowManager found "+ids.length+" images");
+			FijiController controller = new FijiController(ids, dataService, logService);
 			JFrame frame = controller.getMainFrame();
 			frame.setVisible(true);
-		}
-		if(dataService.getDatasets().size() < 3) {
-			Dialogs.showErrorMessage("Not enough datasets open (minimum of 3).");
-		} else {
-			FijiController controller = new FijiController(dataService, logService);
+		} else if(dataService.getDatasets().size() > 2) {
+			System.out.println("DatasetService found "+dataService.getDatasets().size()+" images");
+			FijiController controller = new FijiController(new String[0], dataService, logService);
 			JFrame frame = controller.getMainFrame();
 			frame.setVisible(true);
-		}
-		
+		} else {
+			Dialogs.showErrorMessage("Not enough datasets open (minimum of 3).");
+		}		
 	}
 
 	public static void main(final String... args) throws Exception {
@@ -62,6 +46,9 @@ public class AccentFiji implements Command{
         final ImageJ ijlaunch = new net.imagej.ImageJ();
         ijlaunch.ui().showUI();
         
+		ij.IJ.open("D:/Accent/fiji/MMStack_Default.ome_10ms.tif");
+		ij.IJ.open("D:/Accent/fiji/MMStack_Default.ome_50ms.tif");
+		ij.IJ.open("D:/Accent/fiji/MMStack_Default.ome_100ms.tif");
         
 		ijlaunch.command().run(AccentFiji.class, true);
     }

@@ -18,8 +18,12 @@ import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import de.embl.rieslab.accent.common.processor.StacksProcessor;
 import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.fiji.data.image.FijiDataset;
+import de.embl.rieslab.accent.fiji.data.image.ImagePlusDataset;
 import de.embl.rieslab.accent.fiji.loader.CurrentImgsLoader;
+import de.embl.rieslab.accent.fiji.loader.ImagePlusLoader;
 import de.embl.rieslab.accent.fiji.ui.MainFrame;
+import ij.ImagePlus;
+import ij.WindowManager;
 import net.imagej.Dataset;
 import net.imagej.DatasetService;
 
@@ -28,47 +32,89 @@ public class FijiController extends Controller {
 	private DatasetService dataService;
 	private LogService logService;
 	private List<FijiDataset> datasetsToProcess;
-	
-	public FijiController(DatasetService dataService, LogService logService) {
+	private List<ImagePlusDataset> ipdatasetsToProcess;
+	private String[] windowIDs;
+	private boolean ij1;
+
+	public FijiController(String[] windowIDs, DatasetService dataService, LogService logService) {
+		this.windowIDs = windowIDs;
 		this.dataService = dataService;
 		this.logService = logService;
+		
+		if(windowIDs.length == 0) {
+			ij1 = false;
+		} else {
+			ij1 = true;
+		}
 	}
 	 
 	@Override
 	public boolean startProcessor(String path, HashMap<String, Integer> openedDatasets) {
+
 		// sanity check on the datasets
 		List<String> smallDatasets = new ArrayList<String>();
 		List<String> hyperDimensionDatasets = new ArrayList<String>();
 		List<String> noTimeAxisDatasets = new ArrayList<String>();
 		List<String> uncompatibleTypeDatasets = new ArrayList<String>();
-
-		List<Dataset> datasets = dataService.getDatasets();
+		
 		datasetsToProcess = new ArrayList<FijiDataset>();
-
-		Iterator<Dataset> it = datasets.iterator();
-		while (it.hasNext()) {
-			Dataset dataset = it.next();
-
-			if (openedDatasets.containsKey(dataset.getName())) {
-				if (dataset.numDimensions() > 3) {
-					hyperDimensionDatasets.add(dataset.getName());
-				} else if (dataset.getFrames() == 1) {
-					noTimeAxisDatasets.add(dataset.getName());
-				} else if(!dataset.getTypeLabelShort().equals("8-bit uint")
-						&&!dataset.getTypeLabelShort().equals("16-bit uint") 
-						 && !dataset.getTypeLabelShort().equals("32-bit uint") ){
-					logService.error(dataset.getName()+" is of the wrong type: "+dataset.getTypeLabelShort());
-					uncompatibleTypeDatasets.add(dataset.getName());			
-				} else {
-					datasetsToProcess.add(new FijiDataset(dataset, openedDatasets.get(dataset.getName())));
+		ipdatasetsToProcess = new ArrayList<ImagePlusDataset>();
+		
+		if(!ij1) {
+	
+			List<Dataset> datasets = dataService.getDatasets();
+	
+			Iterator<Dataset> it = datasets.iterator();
+			while (it.hasNext()) {
+				Dataset dataset = it.next();
+	
+				if (openedDatasets.containsKey(dataset.getName())) {
+					if (dataset.numDimensions() > 3) {
+						hyperDimensionDatasets.add(dataset.getName());
+					} else if (dataset.getFrames() == 1) {
+						noTimeAxisDatasets.add(dataset.getName());
+					} else if(!dataset.getTypeLabelShort().equals("8-bit uint")
+							&&!dataset.getTypeLabelShort().equals("16-bit uint") 
+							 && !dataset.getTypeLabelShort().equals("32-bit uint") ){
+						logService.error(dataset.getName()+" is of the wrong type: "+dataset.getTypeLabelShort());
+						uncompatibleTypeDatasets.add(dataset.getName());			
+					} else {
+						datasetsToProcess.add(new FijiDataset(dataset, openedDatasets.get(dataset.getName())));
+					}
+	
+					if (dataset.getFrames() < 1000) {
+						smallDatasets.add(dataset.getName());
+					}
 				}
+			}
+	
+		} else {	
 
-				if (dataset.getFrames() < 1000) {
-					smallDatasets.add(dataset.getName());
+			for (String id: windowIDs) {
+				
+				if (openedDatasets.containsKey(id)) {
+					ImagePlus ip = WindowManager.getImage(id);
+					
+					if (ip.getNDimensions() > 3) {
+						hyperDimensionDatasets.add(id);
+					} else if (ip.getNFrames() == 1) {
+						noTimeAxisDatasets.add(id);
+					} else if(ip.getType() != ImagePlus.GRAY8
+							&& ip.getType() != ImagePlus.GRAY16
+							 && ip.getType() != ImagePlus.GRAY32 ){
+						logService.error(id+" is of the wrong type: "+ip.getType());
+						uncompatibleTypeDatasets.add(id);			
+					} else {
+						ipdatasetsToProcess.add(new ImagePlusDataset(ip, openedDatasets.get(id)));
+					}
+	
+					if (ip.getNFrames() < 1000) {
+						smallDatasets.add(id);
+					}
 				}
 			}
 		}
-
+		
 		// informs user that datasets were removed due to wrong dimensions
 		if (hyperDimensionDatasets.size() > 0) {
 			String bad = "";
@@ -105,7 +151,7 @@ public class FijiController extends Controller {
 					"Small datasets", JOptionPane.INFORMATION_MESSAGE);
 		}
 		
-		if(datasetsToProcess.size() > 2) {
+		if(datasetsToProcess.size() > 2 || ipdatasetsToProcess.size() > 2) {
 			// informs user that some datasets are too small
 			if (smallDatasets.size() > 0) {
 				String small = "";
@@ -128,8 +174,10 @@ public class FijiController extends Controller {
 
 	@Override
 	public Loader getLoader(String parameter) {
-		if(datasetsToProcess != null && datasetsToProcess.size() > 2) {
+		if(!ij1 && datasetsToProcess != null && datasetsToProcess.size() > 2) {
 			return new CurrentImgsLoader(datasetsToProcess); 
+		} else if(ij1 && ipdatasetsToProcess != null && ipdatasetsToProcess.size() > 2) {
+			return new ImagePlusLoader(ipdatasetsToProcess); 
 		}
 		return null;
 	}
@@ -145,11 +193,18 @@ public class FijiController extends Controller {
 	@Override
 	public JFrame getMainFrame() {
 		List<String> datasets = new ArrayList<String>();
-		Iterator<Dataset> it = dataService.getDatasets().iterator();
-		while(it.hasNext()) {
-			datasets.add(it.next().getName());
-		}
 		
+		if(ij1) {
+			for(String ids: windowIDs) {
+				datasets.add(ids);
+			}
+		} else {
+			Iterator<Dataset> it = dataService.getDatasets().iterator();
+			while(it.hasNext()) {
+				datasets.add(it.next().getName());
+			}			
+		}
+
 		MainFrame frame = new MainFrame(this, datasets);
 		
 		return frame;
