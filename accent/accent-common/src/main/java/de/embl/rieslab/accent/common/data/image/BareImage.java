@@ -50,13 +50,13 @@ public class BareImage {
 			if(width*height != ((short[]) pixels).length) {
 				throw new IllegalArgumentException();
 			} else {
-				type = DataType.BYTE;
+				type = DataType.SHORT;
 			}
 		} else {
 			if(width*height != ((float[]) pixels).length) {
 				throw new IllegalArgumentException();
 			} else {
-				type = DataType.BYTE;
+				type = DataType.FLOAT;
 			}
 		}
 		

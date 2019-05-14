@@ -18,7 +18,7 @@ public class FloatImage {
 		if(image.getDataType() == DataType.BYTE) {
 			setPixels(image.getWidth(), image.getHeight(), (byte[]) image.getPixels());
 		} else if(image.getDataType() == DataType.SHORT) {
-			setPixels(image.getWidth(), image.getHeight(), (byte[]) image.getPixels());
+			setPixels(image.getWidth(), image.getHeight(), (short[]) image.getPixels());
 		} else {
 			setPixels(image.getWidth(), image.getHeight(), (float[]) image.getPixels());
 		}
@@ -122,7 +122,7 @@ public class FloatImage {
 		if(image.getDataType() == DataType.BYTE) {
 			addPixels((byte[]) image.getPixels());
 		} else if(image.getDataType() == DataType.SHORT) {
-			addPixels((byte[]) image.getPixels());
+			addPixels((short[]) image.getPixels());
 		} else {
 			addPixels((float[]) image.getPixels());
 		}
@@ -210,7 +210,7 @@ public class FloatImage {
 		if(image.getDataType() == DataType.BYTE) {
 			addSquarePixels((byte[]) image.getPixels());
 		} else if(image.getDataType() == DataType.SHORT) {
-			addSquarePixels((byte[]) image.getPixels());
+			addSquarePixels((short[]) image.getPixels());
 		} else {
 			addSquarePixels((float[]) image.getPixels());
 		}
