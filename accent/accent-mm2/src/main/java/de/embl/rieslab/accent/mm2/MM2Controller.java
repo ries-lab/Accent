@@ -52,7 +52,7 @@ public class MM2Controller extends Controller {
 			
 			if(acqSettings.parallelProcessing) {
 				boolean b = startProcessor(settings.folder_, acq.getQueues());
-				if(b) {
+				if(!b) {
 					System.out.println("Processor failed to start");
 				}
 			} 
