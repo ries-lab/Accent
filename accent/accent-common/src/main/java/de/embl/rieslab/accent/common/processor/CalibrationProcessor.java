@@ -219,9 +219,9 @@ public abstract class CalibrationProcessor extends Thread {
 					}
 					
 					
-					avg_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() * 1000;
+					avg_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() / 1000;
 					avg_exp_list.get(x + width * y)[q][1] = avgs[q].getPixelValue(x, y);
-					var_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() * 1000;
+					var_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() / 1000;
 					var_exp_list.get(x + width * y)[q][1] = vars[q].getPixelValue(x, y);
 					var_avg_list.get(x + width * y)[q][0] = avgs[q].getPixelValue(x, y);
 					var_avg_list.get(x + width * y)[q][1] = vars[q].getPixelValue(x, y);
@@ -266,14 +266,14 @@ public abstract class CalibrationProcessor extends Thread {
 		}
 		
 		// sanity check on the median: replace negative gains by the median
-		double median = StatUtils.percentile(gain, 50);
+/*		double median = StatUtils.percentile(gain, 50);
 		for (int i = 0; i < totalLength; i++) {
 			if(Double.isNaN(gain[i]) || Double.compare(gain[i], 0) <= 0.0) {
 				gain[i] = median;
 			}
 		}
 		
-
+*/
 		Calibration results = new Calibration();
 		
 		// saves results in the calibration
