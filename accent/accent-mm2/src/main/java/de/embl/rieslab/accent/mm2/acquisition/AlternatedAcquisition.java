@@ -45,8 +45,22 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		}
 		
 		this.studio = studio;
-		this.settings = settings;
 		this.controller = controller;
+		this.settings = settings;
+		
+		// sanity check the folder
+		boolean b = false;
+		for(int i=0;i<settings.exposures_.length;i++) {
+			String expName = settings.name_ + "_" + settings.exposures_[i] + "ms";
+			String expPath =  settings.folder_ + "/" + expName;
+			if(new File(expPath).exists()) {
+				b = true;
+			}
+		}
+		
+		if(b) {
+			settings.folder_ = getFolderName(settings.folder_);
+		}
 		
 		queues = new ArrayList<ArrayBlockingQueue<BareImage>>();
 		for(int i=0;i<settings.exposures_.length;i++) {
@@ -58,7 +72,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 	}
 	
 	@Override
-	public void start() {
+	public void start() {	
 		stop = false;
 		running = true;
 		this.execute();
@@ -116,19 +130,6 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		// creates an array of stores
 		Datastore[] stores = new Datastore[settings.exposures_.length];
 				
-		// test if any acquisition already exists
-		boolean b = false;
-		for(int i=0;i<settings.exposures_.length;i++) {
-			String expName = settings.name_ + "_" + settings.exposures_[i] + "ms";
-			String expPath =  settings.folder_ + "/" + expName;
-			if(new File(expPath).exists()) {
-				b = true;
-			}
-		}
-		if(b) { // set the folder name with an increment
-			settings.folder_ = getFolderName(settings.folder_);
-		}
-		
 		for(int i=0;i<settings.exposures_.length;i++) {
 			String expName = settings.name_ + "_" + settings.exposures_[i] + "ms";
 			String expPath = settings.folder_ + "/" + expName;

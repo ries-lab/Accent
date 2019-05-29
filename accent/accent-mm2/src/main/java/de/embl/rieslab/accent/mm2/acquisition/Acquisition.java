@@ -21,5 +21,6 @@ public interface Acquisition {
 	public ArrayList<ArrayBlockingQueue<BareImage>> getQueues();
 	
 	public double getExecutionTime();
+	
 }
     
