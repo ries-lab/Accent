@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 
 import org.micromanager.Studio;
 
-import de.embl.rieslab.accent.common.Controller;
+import de.embl.rieslab.accent.common.AbstractController;
 import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
 import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.interfaces.Loader;
@@ -23,7 +23,7 @@ import de.embl.rieslab.accent.mm2.loader.QueuesLoader;
 import de.embl.rieslab.accent.mm2.processor.QueuesProcessor;
 import de.embl.rieslab.accent.mm2.ui.MainFrame;
 
-public class MM2Controller extends Controller {
+public class MM2Controller extends AbstractController {
 
 	public static String QUEUES_LOADER = "Queues";
 	

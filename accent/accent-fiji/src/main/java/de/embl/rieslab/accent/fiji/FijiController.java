@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 
 import org.scijava.log.LogService;
 
-import de.embl.rieslab.accent.common.Controller;
+import de.embl.rieslab.accent.common.AbstractController;
 import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.interfaces.Loader;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
@@ -27,7 +27,7 @@ import ij.WindowManager;
 import net.imagej.Dataset;
 import net.imagej.DatasetService;
 
-public class FijiController extends Controller {
+public class FijiController extends AbstractController {
 
 	private DatasetService dataService;
 	private LogService logService;

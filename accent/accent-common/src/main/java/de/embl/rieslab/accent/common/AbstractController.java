@@ -17,7 +17,7 @@ import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import de.embl.rieslab.accent.common.utils.Dialogs;
 
 
-public abstract class Controller implements PipelineController{
+public abstract class AbstractController implements PipelineController{
 
 	public static String DEFAULT_LOADER = "Default";
 	
