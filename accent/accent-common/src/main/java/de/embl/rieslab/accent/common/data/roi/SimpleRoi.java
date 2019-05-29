@@ -11,7 +11,7 @@ public class SimpleRoi {
 	public SimpleRoi(int x, int y, int w, int h) {
 		x0 = x;
 		y0 = y;
-		w = width;
-		h = height;
+		width = w;
+		height = h;
 	}
 }
