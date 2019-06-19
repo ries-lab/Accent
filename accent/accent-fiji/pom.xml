@@ -81,8 +81,8 @@
 	</ciManagement>
 
 	<properties>
-		<package-name>embl.rieslab.accent</package-name>
-		<main-class>embl.rieslab.accent.AccentFiji</main-class>
+		<package-name>de.embl.rieslab.accent.fiji</package-name>
+		<main-class>de.embl.rieslab.accent.fiji.AccentFiji</main-class>
 		<license.licenseName>LGPL</license.licenseName>
 		<license.copyrightOwners>EMBL</license.copyrightOwners>
 	</properties>
