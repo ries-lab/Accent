@@ -200,9 +200,9 @@ public abstract class CalibrationProcessor extends Thread {
 		int totalLength = height * width;
 		
 		// instantiates the arrays for the linear regression
-		ArrayList<double[][]> avg_exp_list = new ArrayList<double[][]>();
-		ArrayList<double[][]> var_exp_list = new ArrayList<double[][]>();
-		ArrayList<double[][]> var_avg_list = new ArrayList<double[][]>();
+		ArrayList<double[][]> avg_exp_list = new ArrayList<double[][]>(totalLength);
+		ArrayList<double[][]> var_exp_list = new ArrayList<double[][]>(totalLength);
+		ArrayList<double[][]> var_avg_list = new ArrayList<double[][]>(totalLength);
 	
 		for (int k = 0; k < totalLength; k++) {
 			avg_exp_list.add(new double[avgs.length][2]);
@@ -217,7 +217,6 @@ public abstract class CalibrationProcessor extends Thread {
 					if(stop) {
 						return null;
 					}
-					
 					
 					avg_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() / 1000;
 					avg_exp_list.get(x + width * y)[q][1] = avgs[q].getPixelValue(x, y);
