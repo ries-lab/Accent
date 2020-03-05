@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
@@ -217,10 +216,9 @@ public abstract class CalibrationProcessor extends Thread {
 					if(stop) {
 						return null;
 					}
-					
-					avg_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() / 1000;
+					avg_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() / 1000.;
 					avg_exp_list.get(x + width * y)[q][1] = avgs[q].getPixelValue(x, y);
-					var_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() / 1000;
+					var_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() / 1000.;
 					var_exp_list.get(x + width * y)[q][1] = vars[q].getPixelValue(x, y);
 					var_avg_list.get(x + width * y)[q][0] = avgs[q].getPixelValue(x, y);
 					var_avg_list.get(x + width * y)[q][1] = vars[q].getPixelValue(x, y);
@@ -228,9 +226,7 @@ public abstract class CalibrationProcessor extends Thread {
 			}
 		}
 		
-		SimpleRegression[] avg_exp_reg = new SimpleRegression[totalLength];
-		SimpleRegression[] var_exp_reg = new SimpleRegression[totalLength];
-		SimpleRegression[] var_avg_reg = new SimpleRegression[totalLength];
+		SimpleRegression sreg;
 		double[] baseline = new double[totalLength];
 		double[] dcpt = new double[totalLength];
 		double[] rnsq = new double[totalLength];
@@ -245,23 +241,22 @@ public abstract class CalibrationProcessor extends Thread {
 				return null;
 			}
 			
-			avg_exp_reg[i] = new SimpleRegression();
-			avg_exp_reg[i].addData(avg_exp_list.get(i));
-			baseline[i] = avg_exp_reg[i].getIntercept();
-			dcpt[i] = avg_exp_reg[i].getSlope();
-			rsq_avg[i] = avg_exp_reg[i].getRSquare();
+			sreg = new SimpleRegression();
+			sreg.addData(avg_exp_list.get(i));
+			baseline[i] = sreg.getIntercept();
+			dcpt[i] = sreg.getSlope();
+			rsq_avg[i] = sreg.getRSquare();
 			
-			var_exp_reg[i] = new SimpleRegression();
-			var_exp_reg[i].addData(var_exp_list.get(i));
-			rnsq[i] = var_exp_reg[i].getIntercept();
-			tnsqpt[i] = var_exp_reg[i].getSlope();
-			rsq_var[i] = var_exp_reg[i].getRSquare();
+			sreg = new SimpleRegression();
+			sreg.addData(var_exp_list.get(i));
+			rnsq[i] = sreg.getIntercept();
+			tnsqpt[i] = sreg.getSlope();
+			rsq_var[i] = sreg.getRSquare();
 
-			var_avg_reg[i] = new SimpleRegression();
-			var_avg_reg[i].addData(var_avg_list.get(i));
-			gain[i] = var_avg_reg[i].getSlope();
-			rsq_gain[i] = var_avg_reg[i].getRSquare();
-
+			sreg = new SimpleRegression();
+			sreg.addData(var_avg_list.get(i));
+			gain[i] = sreg.getSlope();
+			rsq_gain[i] = sreg.getRSquare();
 		}
 		
 		// sanity check on the median: replace negative gains by the median

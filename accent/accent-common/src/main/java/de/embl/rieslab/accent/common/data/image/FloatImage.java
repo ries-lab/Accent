@@ -7,7 +7,7 @@ import ij.process.FloatProcessor;
 
 public class FloatImage {
 
-	private final int exposure;
+	private final double exposure;
 	private FloatProcessor img;
 
 	public FloatImage(BareImage image) {
@@ -24,7 +24,7 @@ public class FloatImage {
 		}
 	}
 
-	public FloatImage(int width, int height, byte[] pixels, int exposure) {
+	public FloatImage(int width, int height, byte[] pixels, double exposure) {
 		this.exposure = exposure;
 
 		img = new FloatProcessor(width, height);
@@ -32,7 +32,7 @@ public class FloatImage {
 		setPixels(width, height, pixels);
 	}
 
-	public FloatImage(int width, int height, short[] pixels, int exposure) {
+	public FloatImage(int width, int height, short[] pixels, double exposure) {
 		this.exposure = exposure;
 
 		img = new FloatProcessor(width, height);
@@ -40,7 +40,7 @@ public class FloatImage {
 		setPixels(width, height, pixels);
 	}
 	
-	public FloatImage(int width, int height, double[] pixels, int exposure) {
+	public FloatImage(int width, int height, double[] pixels, double exposure) {
 		this.exposure = exposure;
 
 		img = new FloatProcessor(width, height);
@@ -48,7 +48,7 @@ public class FloatImage {
 		setPixels(width, height, pixels);
 	}	
 	
-	public FloatImage(int width, int height, float[] pixels, int exposure) {
+	public FloatImage(int width, int height, float[] pixels, double exposure) {
 		this.exposure = exposure;
 
 		img = new FloatProcessor(width, height);
@@ -102,7 +102,7 @@ public class FloatImage {
 		}
 	}
 	
-	public int getExposure() {
+	public double getExposure() {
 		return exposure;
 	}
 	

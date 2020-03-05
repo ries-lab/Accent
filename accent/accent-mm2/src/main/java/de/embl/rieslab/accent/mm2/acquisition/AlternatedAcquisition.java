@@ -182,7 +182,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 			
 			// for each exposure, sets the exposure, snaps an image and adds it to its respective store
 			for(int i=0;i<settings.exposures_.length; i++) {
-				studio.getCMMCore().setExposure(settings.exposures_[i]);
+				studio.getCMMCore().setExposure(settings.exposures_[i]); // should maybe retrieve the actual exposure...
 				image = studio.live().snap(false).get(0);
 				image = image.copyAtCoords(builder.build());
 

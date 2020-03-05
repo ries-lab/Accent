@@ -6,9 +6,9 @@ public class BareImage {
 	private Object pixels;
 	private int width;
 	private int height;
-	private int exposure;
+	private double exposure;
 
-	public BareImage(DataType type, Object pixels, int width, int height, int exposure) {
+	public BareImage(DataType type, Object pixels, int width, int height, double exposure) {
 		if(pixels == null || type == null) {
 			throw new NullPointerException();
 		}
@@ -35,7 +35,7 @@ public class BareImage {
 		this.exposure = exposure;
 	}
 	
-	public BareImage(int bytesPerPixel, Object pixels, int width, int height, int exposure) {
+	public BareImage(int bytesPerPixel, Object pixels, int width, int height, double exposure) {
 		if(pixels == null) {
 			throw new NullPointerException();
 		}
@@ -82,7 +82,7 @@ public class BareImage {
 		return height;
 	}
 	
-	public int getExposure() {
+	public double getExposure() {
 		return exposure;
 	}
 		
