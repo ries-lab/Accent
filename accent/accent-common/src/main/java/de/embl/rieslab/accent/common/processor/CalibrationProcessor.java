@@ -101,8 +101,10 @@ public abstract class CalibrationProcessor extends Thread {
 		
 		// saves images
 		for(int q=0;q<loader.getSize();q++) {
-			avgs[q].saveAsTiff(folder + "\\Avg_" + avgs[q].getExposure() + "ms.tiff");
-			vars[q].saveAsTiff(folder + "\\Var_" + vars[q].getExposure() + "ms.tiff");
+			if(avgs[q] != null && vars[q]!=null) {
+				avgs[q].saveAsTiff(folder + "\\Avg_" + avgs[q].getExposure() + "ms.tiff");
+				vars[q].saveAsTiff(folder + "\\Var_" + vars[q].getExposure() + "ms.tiff");
+			}
 		}
 
 		

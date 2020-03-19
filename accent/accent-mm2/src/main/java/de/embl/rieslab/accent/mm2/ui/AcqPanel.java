@@ -36,10 +36,6 @@ import de.embl.rieslab.accent.common.utils.utils;
 public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5228290693013659054L;
 	private boolean saveAsStacks;
 	private boolean parallelProcessing;
 	private int preRunTime;
@@ -60,6 +56,8 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 
 	private final static String ACQ_START = "Run";
 	private final static String ACQ_STOP = "Stop";
+	
+	private boolean preventTrigger = false;
 	
 	private PipelineController controller;
 
@@ -171,10 +169,12 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 			public void actionPerformed(ActionEvent actionEvent) {
 				AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
-				if (selected) {
-					runAcquisition();
-				} else {
-					stopAcquisition();
+				if(!preventTrigger) {
+					if(selected) {
+						runAcquisition();
+					} else {
+						stopAcquisition();
+					}
 				}
 			}
 		});
@@ -299,6 +299,12 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		return list.toArray(new Integer[0]);
 	}
 
+	private void deselectAcquireToggle() {
+		preventTrigger = true;
+		acquireButton.setSelected(false);
+		preventTrigger = false;
+	}
+	
 	private void runAcquisition() {
 		
 		AcquisitionSettings settings  = new AcquisitionSettings();
@@ -307,6 +313,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		if(settings.name_ == null || settings.name_.equals("")) {
 			JOptionPane.showMessageDialog(null, "Invalid acquisition name.",
 					"Error", JOptionPane.INFORMATION_MESSAGE);
+			deselectAcquireToggle();
 			return;
 		}
 		
@@ -314,6 +321,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		if(settings.folder_ == null || settings.folder_.equals("")) {
 			JOptionPane.showMessageDialog(null, "Invalid folder.",
 					"Error", JOptionPane.INFORMATION_MESSAGE);
+			deselectAcquireToggle();
 			return;
 		}
 		
@@ -324,6 +332,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 			if(!success) {
 				JOptionPane.showMessageDialog(null, "Error creating the folder, please create it manually and try again.",
 						"Error", JOptionPane.INFORMATION_MESSAGE);
+				deselectAcquireToggle();
 				return;
 			}
 		} 

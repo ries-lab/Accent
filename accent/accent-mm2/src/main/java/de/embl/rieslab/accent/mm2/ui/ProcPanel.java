@@ -24,9 +24,6 @@ import de.embl.rieslab.accent.common.interfaces.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
 
 public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
-
-
-	private static final long serialVersionUID = 594076788862915294L;
 	
 	private JTextField folderField;
 	private JProgressBar procProgressBar;
@@ -38,6 +35,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 	private final static String STOP = "Stop";
 		
 	private PipelineController controller;
+	private boolean preventTrigger = false;
 
 	/**
 	 * Create the panel.
@@ -103,10 +101,12 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 			public void actionPerformed(ActionEvent actionEvent) {
 				AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
-				if (selected) {
-					startProcessing();
-				} else {
-					stopProcessing();
+				if(!preventTrigger) {
+					if (selected) {
+						startProcessing();
+					} else {
+						stopProcessing();
+					}
 				}
 			}
 		});
@@ -129,19 +129,29 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 	}
 	
 	protected void stopProcessing() {
-		controller.stopProcessor();
+		controller.stopProcessor();	
 	}
 
-
+	private void selectProcessToggle(boolean b) {
+		preventTrigger = true;
+		processButton.setSelected(b);
+		preventTrigger = false;
+	}
+	
 	protected void startProcessing() {
 		if(!controller.isProcessingRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
-			boolean b = controller.startProcessor(folderField.getText());
-			if(!b) {
-				processButton.setText(STOP);
-				processButton.setSelected(true);
+			String path = folderField.getText();
+			if(!path.isEmpty()) {
+				boolean b = controller.startProcessor(path);
+				if(!b) {
+					processButton.setText(STOP);
+					selectProcessToggle(true);
+				}	
+			} else {
+				selectProcessToggle(false);
 			}
 		} else {
-			processButton.setSelected(false);
+			selectProcessToggle(false);
 		}
 	}
 
@@ -177,7 +187,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 
 	@Override
 	public void processingHasStopped() {
-		processButton.setText(STOP);
+		processButton.setText(START);
 		processButton.setSelected(false);
 	}
 
