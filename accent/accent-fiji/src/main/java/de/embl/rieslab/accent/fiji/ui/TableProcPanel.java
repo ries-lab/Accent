@@ -34,9 +34,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 
 public class TableProcPanel extends JPanel implements ProcessingPanelInterface  {
-
-
-	private static final long serialVersionUID = 7399274328796332915L;
 	
 	private JTable table;
 	private JToggleButton btnProcess;
@@ -99,18 +96,10 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
-		table.setModel(new DefaultTableModel(
-				buildList(),
-			new String[] {
-				"Dataset", "Exposure (ms)"
-			}
-		) {
+		table.setModel(new DefaultTableModel(buildList(), new String[] { "Dataset", "Exposure (ms)" }) {
 
-			private static final long serialVersionUID = -8002387977444423007L;
-			
-			boolean[] columnEditables = new boolean[] {
-				false, true
-			};
+			boolean[] columnEditables = new boolean[] { false, true };
+
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}

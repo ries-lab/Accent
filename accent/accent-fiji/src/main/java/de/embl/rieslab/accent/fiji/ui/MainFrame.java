@@ -14,10 +14,6 @@ import de.embl.rieslab.accent.common.ui.GenPanel;
 
 public class MainFrame extends JFrame {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6754834396939877304L;
 	private TableProcPanel procpane;
 	private GenPanel genpane;
 	
