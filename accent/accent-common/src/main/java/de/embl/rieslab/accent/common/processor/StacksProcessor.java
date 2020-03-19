@@ -41,15 +41,15 @@ public class StacksProcessor extends CalibrationProcessor {
 					stackSizes[q]++;
 				}
 
-				int progress = (int) (percentile * q + percentile * stackSizes[q] / loader.getChannelLength());
-				showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getSize()+", frame ", stackSizes[q], loader.getChannelLength(), progress);
+				if(stackSizes[q] % 100 == 0) {
+					int progress = (int) (percentile * q + percentile * stackSizes[q] / loader.getChannelLength());
+					showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getSize()+", frame ", stackSizes[q], loader.getChannelLength(), progress);
+				}
 			}
 			if(avgs[q] != null && vars[q] != null) {
 				avgs[q].dividePixels(stackSizes[q]);
 				vars[q].toVariance(avgs[q].getImage(), stackSizes[q]);
 			}
-			
 		}
 	}
-
 }

@@ -200,9 +200,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 				}
 			}
 
-			publish(frame+1);
-
-			frame++;
+			publish(++frame);
 		}
 		
 		stopTime = System.currentTimeMillis();

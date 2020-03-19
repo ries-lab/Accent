@@ -96,7 +96,7 @@ public class FloatImage {
 		if(img != null) {
 			for(int x=0;x<width;x++) {
 				for(int y=0;y<height;y++) {
-					img.setf(x, y, Short.toUnsignedInt(pixels[x+width*y]));
+					img.setf(x, y, (float) Short.toUnsignedInt(pixels[x+width*y]));
 				}
 			}
 		}
@@ -190,7 +190,7 @@ public class FloatImage {
 		
 		for(int x=0;x<getWidth();x++) {
 			for(int y=0;y<getHeight();y++) {
-				img.setf(x, y, img.getf(x,y)+Short.toUnsignedInt(pixels[x+getWidth()*y]));
+				img.setf(x, y, img.getf(x,y)+ (float) Short.toUnsignedInt(pixels[x+getWidth()*y]));
 			}
 		}
 	}
@@ -227,7 +227,7 @@ public class FloatImage {
 		
 		for(int x=0;x<getWidth();x++) {
 			for(int y=0;y<getHeight();y++) {
-				int pix = Byte.toUnsignedInt(pixels[x+getWidth()*y]);
+				float pix = (float) Byte.toUnsignedInt(pixels[x+getWidth()*y]);
 				img.setf(x, y, img.getf(x,y)+pix*pix);
 			}
 		}
@@ -241,10 +241,10 @@ public class FloatImage {
 		if(pixels.length != getWidth()*getHeight()) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		for(int x=0;x<getWidth();x++) {
 			for(int y=0;y<getHeight();y++) {
-				int pix = Short.toUnsignedInt(pixels[x+getWidth()*y]);
+				float pix = (float) Short.toUnsignedInt(pixels[x+getWidth()*y]);
 				img.setf(x, y, img.getf(x,y)+pix*pix);
 			}
 		}

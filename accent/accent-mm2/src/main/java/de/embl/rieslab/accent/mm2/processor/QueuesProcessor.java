@@ -18,6 +18,7 @@ public class QueuesProcessor extends CalibrationProcessor {
 			FloatImage[] vars, int[] stackSizes) {
 				
 		boolean done = false;
+		boolean update = false;
 		while(!done) {
 			boolean allEmpty = true;
 			for(int q=0;q<loader.getSize();q++) {
@@ -43,12 +44,15 @@ public class QueuesProcessor extends CalibrationProcessor {
 						stackSizes[q]++;
 					}
 					
-					showProgressOnEDT(CalibrationProcessor.PROGRESS, "Processing frame: "+stackSizes[0], 0);
-
+					update = true;
 				}
 			}
 			
-
+			if(update) {
+				showProgressOnEDT(CalibrationProcessor.PROGRESS, "Processing frame: "+(stackSizes[0]-1), 0);
+				update = false;
+			}
+			
 			// all queues were empty
 			if(allEmpty && getController().isAcquisitionDone()) {
 				done = true;
