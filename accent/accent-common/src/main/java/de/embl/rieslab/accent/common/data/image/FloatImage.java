@@ -129,7 +129,7 @@ public class FloatImage {
 	}
 	
 	
-	public void addPixels(byte[] pixels) {
+	private void addPixels(byte[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
 		}
@@ -145,7 +145,7 @@ public class FloatImage {
 		}
 	}
 
-	public void addPixels(float[] pixels) {
+	private void addPixels(float[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
 		}
@@ -162,6 +162,7 @@ public class FloatImage {
 		}
 	}
 
+	/*
 	public void addPixels(float[][] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
@@ -177,9 +178,9 @@ public class FloatImage {
 				img.setf(x, y, img.getf(x,y)+pixels[x][y]);
 			}
 		}
-	}
+	}*/
 	
-	public void addPixels(short[] pixels) {
+	private void addPixels(short[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
 		}
@@ -194,7 +195,6 @@ public class FloatImage {
 			}
 		}
 	}
-	
 	
 	public void dividePixels(float d) {
 		if(Math.abs(d) > 0.01) {
@@ -216,7 +216,7 @@ public class FloatImage {
 		}
 	}
 	
-	public void addSquarePixels(byte[] pixels) {
+	private void addSquarePixels(byte[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
 		}
@@ -233,7 +233,7 @@ public class FloatImage {
 		}
 	}
 	
-	public void addSquarePixels(short[] pixels) {
+	private void addSquarePixels(short[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
 		}
@@ -250,23 +250,7 @@ public class FloatImage {
 		}
 	}
 	
-	public void addSquarePixels(float[][] pixels) {
-		if(pixels == null) {
-			throw new NullPointerException();
-		}
-		
-		if(pixels.length*pixels[0].length != getWidth()*getHeight()) {
-			throw new IllegalArgumentException();
-		}
-		
-		for(int x=0;x<getWidth();x++) {
-			for(int y=0;y<getHeight();y++) {
-				img.setf(x, y, img.getf(x,y)+pixels[x][y]*pixels[x][y]);
-			}
-		}
-	}
-	
-	public void addSquarePixels(float[] pixels) {
+	private void addSquarePixels(float[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
 		}
@@ -281,6 +265,23 @@ public class FloatImage {
 			}
 		}
 	}
+	
+	/*
+	public void addSquarePixels(float[][] pixels) {
+		if(pixels == null) {
+			throw new NullPointerException();
+		}
+		
+		if(pixels.length*pixels[0].length != getWidth()*getHeight()) {
+			throw new IllegalArgumentException();
+		}
+		
+		for(int x=0;x<getWidth();x++) {
+			for(int y=0;y<getHeight();y++) {
+				img.setf(x, y, img.getf(x,y)+pixels[x][y]*pixels[x][y]);
+			}
+		}
+	}*/
 	
 	public void square() {
 		for(int x=0;x<getWidth();x++) {
