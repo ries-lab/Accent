@@ -13,11 +13,16 @@ public class FloatImageTest {
 		int width = 3;
 		int height = 4;
 		double exposure = 10.5;
-				
+			
+		// to get almost the full dynamical range
+		int offset = -128;
+		int slope = 20;
+		
 		byte[] pixels = new byte[width*height];
 		for(int i=0;i<width*height;i++) {
-			pixels[i] = (new Integer(i)).byteValue();
-			assertEquals(i,(int) pixels[i]);
+			byte val = (byte) (i*slope+offset);
+			pixels[i] = val;
+			assertEquals(val,(int) pixels[i]);
 		}
 		
 		FloatImage im = new FloatImage(width,height,pixels,exposure);
@@ -28,8 +33,9 @@ public class FloatImageTest {
 
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
-				int k = y*width+x;
-				assertEquals(k,im.getPixelValue(x, y), 0.001);
+				byte k = (byte) (slope*(y*width+x)+offset);
+				float val = (float) Byte.toUnsignedInt(k);
+				assertEquals(val,im.getPixelValue(x, y), 0.001);
 			}
 		}
 	}
@@ -39,11 +45,16 @@ public class FloatImageTest {
 		int width = 3;
 		int height = 4;
 		double exposure = 10.5;
+
+		// to get almost the full dynamical range
+		int offset = -128;
+		int slope = 20;
 		
 		byte[] pixels = new byte[width*height];
 		for(int i=0;i<width*height;i++) {
-			pixels[i] = (new Integer(i)).byteValue();
-			assertEquals(i,(int) pixels[i]);
+			byte val = (byte) (i*slope+offset);
+			pixels[i] = val;
+			assertEquals(val,(int) pixels[i]);
 		}
 
 		BareImage bim = new BareImage(1,pixels,width,height,exposure);
@@ -55,8 +66,9 @@ public class FloatImageTest {
 
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
-				int k = y*width+x;
-				assertEquals(k,im.getPixelValue(x, y), 0.001);
+				byte k = (byte) (slope*(y*width+x)+offset);
+				float val = (float) Byte.toUnsignedInt(k);
+				assertEquals(val,im.getPixelValue(x, y), 0.001);
 			}
 		}
 	}
@@ -66,13 +78,16 @@ public class FloatImageTest {
 		int width = 3;
 		int height = 4;
 		double exposure = 10.5;
-		
-		int offset = 100; // max signed byte is 127
+
+		// to get almost the full dynamical range
+		int offset = -128;
+		int slope = 20;
 		
 		byte[] pixels = new byte[width*height];
 		for(int i=0;i<width*height;i++) {
-			pixels[i] = (new Integer(i+offset)).byteValue();
-			assertEquals(i+offset,(int) pixels[i]);
+			byte val = (byte) (i*slope+offset);
+			pixels[i] = val;
+			assertEquals(val,(int) pixels[i]);
 		}
 
 		BareImage bim = new BareImage(1,pixels,width,height,exposure);
@@ -81,8 +96,9 @@ public class FloatImageTest {
 
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
-				int k = y*width+x+offset;
-				assertEquals(2*k,im.getPixelValue(x, y), 0.001);
+				byte k = (byte) (slope*(y*width+x)+offset);
+				float val = (float) Byte.toUnsignedInt(k);
+				assertEquals(2*val,im.getPixelValue(x, y), 0.001);
 			}
 		}
 	}
@@ -92,13 +108,16 @@ public class FloatImageTest {
 		int width = 3;
 		int height = 4;
 		double exposure = 10.5;
-		
-		int offset = 100; // max signed byte is 127
+
+		// to get almost the full dynamical range
+		int offset = -128;
+		int slope = 20;
 		
 		byte[] pixels = new byte[width*height];
 		for(int i=0;i<width*height;i++) {
-			pixels[i] = (new Integer(i+offset)).byteValue();
-			assertEquals(i+offset,(int) pixels[i]);
+			byte val = (byte) (i*slope+offset);
+			pixels[i] = val;
+			assertEquals(val,(int) pixels[i]);
 		}
 
 		BareImage bim = new BareImage(1,pixels,width,height,exposure);
@@ -107,8 +126,9 @@ public class FloatImageTest {
 
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
-				int k = y*width+x+offset;
-				assertEquals(k+k*k,im.getPixelValue(x, y), 0.001);
+				byte k = (byte) (slope*(y*width+x)+offset);
+				float val = (float) Byte.toUnsignedInt(k);
+				assertEquals(val+val*val,im.getPixelValue(x, y), 0.001);
 			}
 		}
 	}
@@ -118,11 +138,16 @@ public class FloatImageTest {
 		int width = 3;
 		int height = 4;
 		double exposure = 10.5;
+
+		// this should cover almost the entire range of short
+		int offset = -32000;
+		int slope = 5300;
 		
 		short[] pixels = new short[width*height];
 		for(int i=0;i<width*height;i++) {
-			pixels[i] = new Integer(i).shortValue();
-			assertEquals(i,(int) pixels[i]);
+			short val = (short) (offset+slope*i);
+			pixels[i] = val;
+			assertEquals(val,(int) pixels[i]);
 		}
 		
 		FloatImage im = new FloatImage(width,height,pixels,exposure);
@@ -133,8 +158,9 @@ public class FloatImageTest {
 
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
-				int k = y*width+x;
-				assertEquals(k,im.getPixelValue(x, y), 0.001);
+				Short k = (short) (slope*(y*width+x)+offset);
+				float val = (float) Short.toUnsignedInt(k);
+				assertEquals(val,im.getPixelValue(x, y), 0.001);
 			}
 		}
 	}
@@ -145,10 +171,15 @@ public class FloatImageTest {
 		int height = 4;
 		double exposure = 10.5;
 		
+		// this should cover almost the entire range of short
+		int offset = -32000;
+		int slope = 5300;
+		
 		short[] pixels = new short[width*height];
-		for(int i=0;i<width*height;i++) {
-			pixels[i] = new Integer(i).shortValue();
-			assertEquals(i,(int) pixels[i]);
+		for(int i=0;i<width*height;i++) {			
+			short val = (short) (offset+slope*i);
+			pixels[i] = val;
+			assertEquals(val, pixels[i]);
 		}
 
 		BareImage bim = new BareImage(2,pixels,width,height,exposure);
@@ -160,8 +191,9 @@ public class FloatImageTest {
 
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
-				int k = y*width+x;
-				assertEquals(k,im.getPixelValue(x, y), 0.001);
+				Short k = (short) (slope*(y*width+x)+offset);
+				float val = (float) Short.toUnsignedInt(k);
+				assertEquals(val,im.getPixelValue(x, y), 0.001);
 			}
 		}
 	}
@@ -171,13 +203,16 @@ public class FloatImageTest {
 		int width = 3;
 		int height = 4;
 		double exposure = 10.5;
-		
-		int offset = 32000; // max short is 32,767
+
+		// this should cover almost the entire range of short
+		int offset = -32000;
+		int slope = 5300;
 		
 		short[] pixels = new short[width*height];
-		for(int i=0;i<width*height;i++) {
-			pixels[i] = new Integer(i+offset).shortValue();
-			assertEquals(i+offset,(int) pixels[i]);
+		for(int i=0;i<width*height;i++) {		
+			short val = (short) (offset+slope*i);
+			pixels[i] = val;
+			assertEquals(val, pixels[i]);
 		}
 
 		BareImage bim = new BareImage(2,pixels,width,height,exposure);
@@ -186,8 +221,9 @@ public class FloatImageTest {
 
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
-				int k = y*width+x+offset;
-				assertEquals(2*k,im.getPixelValue(x, y), 0.001);
+				Short k = (short) (slope*(y*width+x)+offset);
+				float val = (float) Short.toUnsignedInt(k);
+				assertEquals(2*val,im.getPixelValue(x, y), 0.001);
 			}
 		}
 	}
@@ -198,13 +234,16 @@ public class FloatImageTest {
 		int width = 3;
 		int height = 4;
 		double exposure = 10.5;
-		
-		int offset = 32000; // max short is 32,767
+
+		// this should cover almost the entire range of short
+		int offset = -32000;
+		int slope = 5300;
 		
 		short[] pixels = new short[width*height];
-		for(int i=0;i<width*height;i++) {
-			pixels[i] = new Integer(i+offset).shortValue();
-			assertEquals(i+offset,(int) pixels[i]);
+		for(int i=0;i<width*height;i++) {	
+			short val = (short) (offset+slope*i);
+			pixels[i] = val;
+			assertEquals(val, pixels[i]);
 		}
 
 		BareImage bim = new BareImage(2,pixels,width,height,exposure);
@@ -213,8 +252,9 @@ public class FloatImageTest {
 
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
-				int k = y*width+x+offset;
-				assertEquals((float) k+k*k,im.getPixelValue(x, y), 0.001);
+				Short k = (short) (slope*(y*width+x)+offset);
+				float val = (float) Short.toUnsignedInt(k);
+				assertEquals(val+val*val,im.getPixelValue(x, y), 0.001);
 			}
 		}
 	}
@@ -350,16 +390,52 @@ public class FloatImageTest {
 
 	@Test
 	public void testSquareFloatImage() {
+		int width = 3;
+		int height = 4;
+		double exposure = 10.5;
+		
+		int offset = 32000; // max short is 32,767		
+		
+		short[] pixels = new short[width*height];
+		for(int i=0;i<width*height;i++) {
+			pixels[i] = new Integer(i+offset).shortValue();
+			assertEquals(i+offset,(int) pixels[i]);
+		}
+		
+		FloatImage im = new FloatImage(width,height,pixels,exposure);
+		im.square();
 
+		for(int y=0;y<height;y++) {
+			for(int x=0;x<width;x++) {
+				float k = y*width+x+offset;
+				assertEquals(k*k,im.getPixelValue(x, y), 0.0001);
+			}
+		}
 	}
 	
 	@Test
 	public void testDividePixelsFloatImage() {
+		int width = 3;
+		int height = 4;
+		double exposure = 10.5;
+		
+		int offset = 32000; // max short is 32,767		
+		
+		short[] pixels = new short[width*height];
+		for(int i=0;i<width*height;i++) {
+			pixels[i] = new Integer(i+offset).shortValue();
+			assertEquals(i+offset,(int) pixels[i]);
+		}
+		
+		FloatImage im = new FloatImage(width,height,pixels,exposure);
+		float d = (float) 10.568;
+		im.dividePixels(d);
 
-	}
-	
-	@Test
-	public void testSaveAsTiffs() {
-
+		for(int y=0;y<height;y++) {
+			for(int x=0;x<width;x++) {
+				float k = y*width+x+offset;
+				assertEquals(k/d,im.getPixelValue(x, y), 0.0001);
+			}
+		}
 	}
 }
