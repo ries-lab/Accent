@@ -49,7 +49,7 @@ public class FijiController extends AbstractController {
 	}
 	 
 	@Override
-	public boolean startProcessor(String path, HashMap<String, Integer> openedDatasets) {
+	public boolean startProcessor(String path, HashMap<String, Double> openedDatasets) {
 
 		// sanity check on the datasets
 		List<String> smallDatasets = new ArrayList<String>();

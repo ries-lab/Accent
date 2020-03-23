@@ -41,7 +41,7 @@ public interface PipelineController {
 	
 	public boolean startProcessor(String path);
 
-	public boolean startProcessor(String path, HashMap<String, Integer> openedDatasets);
+	public boolean startProcessor(String path, HashMap<String, Double> openedDatasets);
 	
 	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<BareImage>> queues);
 
@@ -60,7 +60,7 @@ public interface PipelineController {
 	public void setProcessorPanelPath(String path);
 	
 	//////// map generation
-	public boolean startMapGeneration(String path, Integer[] exposures);
+	public boolean startMapGeneration(String path, double[] exposures);
 	
 	public boolean isGenerationRunning();
 	

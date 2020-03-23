@@ -5,7 +5,7 @@ import de.embl.rieslab.accent.common.data.image.FloatImage;
 public class CalibrationMap {
 
 	
-	public static FloatImage generateAvgMap(Calibration calib, int exposure) {
+	public static FloatImage generateAvgMap(Calibration calib, double exposure) {
 		float[] avpix = new float[calib.getWidth()*calib.getHeight()];
 		
 		for(int i=0;i<calib.getWidth()*calib.getHeight();i++) {
@@ -15,7 +15,7 @@ public class CalibrationMap {
 		return new FloatImage(calib.getWidth(), calib.getHeight(), avpix, exposure);
 	}
 	
-	public static FloatImage generateVarMap(Calibration calib, int exposure) {
+	public static FloatImage generateVarMap(Calibration calib, double exposure) {
 		float[] varpix= new float[calib.getWidth()*calib.getHeight()];
 		
 		for(int i=0;i<calib.getWidth()*calib.getHeight();i++) {

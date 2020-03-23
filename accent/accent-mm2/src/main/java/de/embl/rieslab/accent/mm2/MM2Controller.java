@@ -150,7 +150,7 @@ public class MM2Controller extends AbstractController {
 		return false;
 	}
 	
-	public boolean startProcessor(String path, HashMap<String, Integer> list) {
+	public boolean startProcessor(String path, HashMap<String, Double> list) {
 		// Do nothing
 		return false;
 	}

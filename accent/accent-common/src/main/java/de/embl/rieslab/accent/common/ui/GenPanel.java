@@ -26,11 +26,6 @@ import de.embl.rieslab.accent.common.utils.utils;
 
 public class GenPanel extends JPanel implements GeneratePanelInterface{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -9065077621140098173L;
-
 	private PipelineController controller;
 	
 	private JTextField calibField;
@@ -132,7 +127,7 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 		this.add(feedbackLabel, gbc_feedbackLabel);
 	}
 	
-	public Integer[] getExposures() {
+	public double[] getExposures() {
 		String[] exp = genExposuresField.getText().split(",");
 		
 		boolean badInput = false;

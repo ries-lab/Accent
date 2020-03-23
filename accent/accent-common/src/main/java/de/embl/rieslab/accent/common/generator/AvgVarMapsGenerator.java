@@ -15,11 +15,14 @@ public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implement
 
 	private PipelineController controller;
 	private Calibration calib;
-	private Integer[] exposures;
+	private double[] exposures;
 	private boolean running_ = false;
 	private String path;
 		
 	public AvgVarMapsGenerator(PipelineController controller) {
+		if(controller == null)
+			throw new NullPointerException("Controller cannot be null.");
+		
 		this.controller = controller;
 	}
 	
@@ -29,12 +32,12 @@ public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implement
 	}
 
 	@Override
-	public void generate(String path, Calibration calibration, Integer[] exposures) {
+	public void generate(String path, Calibration calibration, double[] exposures) {
 		if(calibration == null || exposures == null || path == null) {
 			throw new NullPointerException();
 		}
 		
-		if(exposures.length == 0 || !( new File(path).isDirectory())) {
+		if(exposures.length == 0 || !(new File(path).isDirectory())) {
 			throw new IllegalArgumentException();
 		}
 		
@@ -49,15 +52,22 @@ public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implement
 	protected Integer doInBackground() throws Exception {
 		
 		int counter = 0;
-		for(Integer exp: exposures) {
+		for(double exp: exposures) {
 
 			publish(counter ++);
-			
+
 			FloatImage avg_im = CalibrationMap.generateAvgMap(calib, exp);
-			avg_im.saveAsTiff(path+"\\"+"generated_Avg_"+exp+"ms.tiff");
-			
 			FloatImage var_im = CalibrationMap.generateVarMap(calib, exp);
-			var_im.saveAsTiff(path+"\\"+"generated_Var_"+exp+"ms.tiff");
+			if(Double.compare(exp, (int) exp) == 0){
+				avg_im.saveAsTiff(path+"\\"+"generated_Avg_"+((int) exp)+"ms.tiff");
+
+				var_im.saveAsTiff(path+"\\"+"generated_Var_"+((int) exp)+"ms.tiff");
+				
+			} else {
+				avg_im.saveAsTiff(path+"\\"+"generated_Avg_"+exp+"ms.tiff");
+
+				var_im.saveAsTiff(path+"\\"+"generated_Var_"+exp+"ms.tiff");
+			}
 			
 		}
 		

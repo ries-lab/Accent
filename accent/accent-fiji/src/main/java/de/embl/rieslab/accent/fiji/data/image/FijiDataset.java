@@ -5,9 +5,9 @@ import net.imagej.Dataset;
 public class FijiDataset {
 
 	private Dataset im;
-	private int exposure;
+	private double exposure;
 	
-	public FijiDataset(Dataset im, int exposure) {
+	public FijiDataset(Dataset im, double exposure) {
 		if(im == null) {
 			throw new NullPointerException();
 		}
@@ -20,7 +20,7 @@ public class FijiDataset {
 		return im;
 	}
 	
-	public int getExposure() {
+	public double getExposure() {
 		return exposure;
 	}
 	

@@ -112,7 +112,7 @@ public abstract class AbstractController implements PipelineController{
 			// set path to calibration file on generation panel and start
 			genPanel.setCalibrationPath(processor.getCalibrationPath());
 			
-			Integer[] exposures = genPanel.getExposures();
+			double[] exposures = genPanel.getExposures();
 			if(exposures.length > 0) {
 				generator = new AvgVarMapsGenerator(this);
 				generator.generate(new File(processor.getCalibrationPath()).getParentFile().getAbsolutePath(), 
@@ -129,7 +129,7 @@ public abstract class AbstractController implements PipelineController{
 	}
 	
 	//////// map generation
-	public boolean startMapGeneration(String path, Integer[] exposures) {		
+	public boolean startMapGeneration(String path, double[] exposures) {		
 		if(isReady() && path != null &&
 				(new File(path).exists()) && (exposures != null && exposures.length > 0)) {
 			

@@ -5,9 +5,9 @@ import ij.ImagePlus;
 public class ImagePlusDataset {
 
 	private ImagePlus im;
-	private int exposure;
+	private double exposure;
 	
-	public ImagePlusDataset(ImagePlus im, int exposure) {
+	public ImagePlusDataset(ImagePlus im, double exposure) {
 		if(im == null) {
 			throw new NullPointerException();
 		}
@@ -20,7 +20,7 @@ public class ImagePlusDataset {
 		return im;
 	}
 	
-	public int getExposure() {
+	public double getExposure() {
 		return exposure;
 	}
 

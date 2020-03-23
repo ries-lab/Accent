@@ -23,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.border.LineBorder;
 import java.awt.Color;
@@ -96,7 +97,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
-		table.setModel(new DefaultTableModel(buildList(), new String[] { "Dataset", "Exposure (ms)" }) {
+		table.setModel(new DefaultTableModel(buildList(), new String[] { "Dataset", "Exposure (ms)" }) { // expects an array, not a map
 
 			boolean[] columnEditables = new boolean[] { false, true };
 
@@ -193,7 +194,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 	protected void startProcessing() {
 		if(!controller.isProcessingRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
 			String s  = textField.getText();
-			HashMap<String, Integer> list = extractDatasets();
+			HashMap<String, Double> list = extractDatasets();
 			boolean b = controller.startProcessor(s, list);
 			if(!b) {
 				btnProcess.setText(START);
@@ -205,7 +206,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 		}
 	}
 	
-	protected HashMap<String, Integer> extractDatasets(){
+	protected HashMap<String, Double> extractDatasets(){ // this method should go
 		HashMap<String, Integer> list = new HashMap<String, Integer>();
 		int n = table.getRowCount();
 		
@@ -258,31 +259,16 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 	}
 
 
-	private String[][] buildList(){
-		String[][] data = new String[datasets.size()][2];
+	private Map<String,Double> buildList(){
+		Map<String,Double> map = new HashMap<String,Double>();
 		
 		for(int i=0;i<datasets.size();i++) {
 			// check if name contains "ms"
-			String ms = extractMs(datasets.get(i));
-					
-			data[i][0] = datasets.get(i);
-			data[i][1] = ms;
+			double expo = utils.extractExposureMs(datasets.get(i));
+			if(Double.compare(expo, 0) == 0)
+				map.put(datasets.get(i), expo);
 		}
 		
-		return data;
-	}
-	
-	private String extractMs(String name) {
-		String s = "";
-
-		int ind = name.lastIndexOf("ms");
-		if(ind != -1) {
-			int i = 1;
-			while(utils.isInteger(name.substring(ind-i,ind))) {
-				s = name.substring(ind-i,ind);
-				i ++;
-			}
-		}
-		return s;
+		return map;
 	}
 }

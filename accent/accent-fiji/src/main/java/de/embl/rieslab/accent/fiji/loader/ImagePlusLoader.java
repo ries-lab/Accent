@@ -12,7 +12,8 @@ public class ImagePlusLoader implements Loader{
 
 	private List<ImagePlusDataset> list;
 	private ImageStack currentDataset;
-	private int currentPlane, currentFile, currentChannelLength, currentExposure;
+	private int currentPlane, currentFile, currentChannelLength;
+	private double currentExposure;
 	private BareImage.DataType type;
 	
 	public ImagePlusLoader(List<ImagePlusDataset> list) {

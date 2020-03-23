@@ -6,5 +6,5 @@ public interface GeneratePanelInterface {
 	
 	public void setProgress(String progress);
 	
-	public Integer[] getExposures();
+	public double[] getExposures();
 }
