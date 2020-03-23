@@ -79,9 +79,9 @@ public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implement
 		for(Integer i:chunks) {
 			if(i == -1) {
 				running_ = false;
-				controller.setGeneratorProgress("Done.");
+				controller.updateGeneratorProgress("Done.");
 			} else {
-				controller.setGeneratorProgress("Exposure: "+i+"/"+exposures.length);
+				controller.updateGeneratorProgress("Exposure: "+i+"/"+exposures.length);
 			}
 		}
 	}

@@ -25,7 +25,7 @@ public class CalibrationIOTest {
 	
 	@Test
 	public void testIO() {
-		String dir = "/temp_test/";
+		String dir = "/temp_test_calib/";
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();

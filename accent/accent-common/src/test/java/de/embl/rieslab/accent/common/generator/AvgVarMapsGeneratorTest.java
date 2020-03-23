@@ -43,11 +43,11 @@ public class AvgVarMapsGeneratorTest {
 			}
 		}
 		
-		for(int i=0;i<cont.arr_str.size()-1;i++) {
+		for(int i=0;i<cont.gen_progress.size()-1;i++) {
 			String s = "Exposure: "+i+"/"+expo.length;
-			assertEquals(s, cont.arr_str.get(i));
+			assertEquals(s, cont.gen_progress.get(i));
 		}
-		assertEquals("Done.", cont.arr_str.get(cont.arr_str.size()-1));
+		assertEquals("Done.", cont.gen_progress.get(cont.gen_progress.size()-1));
 		
 		// delete files
 		for(int i=0;i<expo.length;i++) {
@@ -61,12 +61,12 @@ public class AvgVarMapsGeneratorTest {
 			}
 			
 			assertTrue(s_avg.exists());
-			s_avg.delete();
+			assertTrue(s_avg.delete());
 			
 			assertTrue(s_var.exists());
-			s_var.delete();
+			assertTrue(s_var.delete());
 		}
-		f_dir.delete();
+		assertTrue(f_dir.delete());
 	}
 	
 	@Test
@@ -87,6 +87,8 @@ public class AvgVarMapsGeneratorTest {
 		assertThrows(IllegalArgumentException.class, () -> {
 			gen.generate(f_dir.getAbsolutePath(), cal, expo);
 		});
+		
+		assertTrue(f_dir.delete());
 	}
 
 	@Test
@@ -116,6 +118,7 @@ public class AvgVarMapsGeneratorTest {
 		assertThrows(NullPointerException.class, () -> {
 			gen.generate(f_dir.getAbsolutePath(), cal, null);
 		});
+		assertTrue(f_dir.delete());
 	}
 
 	@Test

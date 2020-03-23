@@ -64,7 +64,7 @@ public interface PipelineController {
 	
 	public boolean isGenerationRunning();
 	
-	public void setGeneratorProgress(String progress);
+	public void updateGeneratorProgress(String progress);
 	
 	//////////////////////// Other methods
 	public void setAcquisitionPanel(AcquisitionPanelInterface procpane);

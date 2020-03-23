@@ -99,15 +99,19 @@ public abstract class CalibrationProcessor extends Thread {
 		} else {
 			showProgressOnEDT(PROGRESS, "", 80);
 		}
-		
+
 		// saves images
 		for(int q=0;q<loader.getNumberOfChannels();q++) {
 			if(avgs[q] != null && vars[q]!=null) {
-				avgs[q].saveAsTiff(folder + "\\Avg_" + avgs[q].getExposure() + "ms.tiff");
-				vars[q].saveAsTiff(folder + "\\Var_" + vars[q].getExposure() + "ms.tiff");
+				if(Double.compare(avgs[q].getExposure(), (int)avgs[q].getExposure()) == 0) {
+					avgs[q].saveAsTiff(folder + "\\Avg_" + (int) avgs[q].getExposure() + "ms.tiff"); // to avoid "10.0ms"
+					vars[q].saveAsTiff(folder + "\\Var_" + (int) vars[q].getExposure() + "ms.tiff");
+				} else {
+					avgs[q].saveAsTiff(folder + "\\Avg_" + avgs[q].getExposure() + "ms.tiff");
+					vars[q].saveAsTiff(folder + "\\Var_" + vars[q].getExposure() + "ms.tiff");
+				}
 			}
 		}
-
 		
 		if(stop) {
 			showProgressOnEDT(STOP, null, 0, 0, 0);
@@ -125,7 +129,7 @@ public abstract class CalibrationProcessor extends Thread {
 		} else {
 			showProgressOnEDT(PROGRESS, "Regression", 90);
 		}
-		
+
 		// write calibration file to the disk
 		calibPath = writeCalibrationToFile();
 		if(calibPath != null) {
@@ -194,6 +198,15 @@ public abstract class CalibrationProcessor extends Thread {
 		}	
 	}
 	
+	// probably not a great idea to pass empty arrays...
+	/**
+	 * Compute the average and variance images from the Loader input and store them in avgs and vars.
+	 * 
+	 * @param loader
+	 * @param avgs
+	 * @param vars
+	 * @param stackSizes
+	 */
 	protected abstract void computeAvgAndVar(Loader loader, FloatImage[] avgs, FloatImage[] vars, int[] stackSizes);
 	
 	protected Calibration performLinearRegressions(FloatImage[] avgs, FloatImage[] vars) {

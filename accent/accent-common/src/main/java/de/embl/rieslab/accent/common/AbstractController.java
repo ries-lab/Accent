@@ -157,7 +157,7 @@ public abstract class AbstractController implements PipelineController{
 		return false;
 	}
 	
-	public void setGeneratorProgress(String progress) {
+	public void updateGeneratorProgress(String progress) {
 		if(genPanel != null) {
 			genPanel.setProgress(progress);
 		}

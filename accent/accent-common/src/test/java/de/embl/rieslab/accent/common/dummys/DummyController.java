@@ -17,10 +17,12 @@ import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 
 public class DummyController implements PipelineController {
-	public List<String> arr_str;
+	public List<String> gen_progress;
+	public List<String> proc_progress;
 	
 	public DummyController (){
-		arr_str = new ArrayList<String>();
+		gen_progress = new ArrayList<String>();
+		proc_progress = new ArrayList<String>();
 	}
 	
 	@Override
@@ -69,7 +71,9 @@ public class DummyController implements PipelineController {
 	public void stopProcessor() {}
 
 	@Override
-	public void updateProcessorProgress(String progressString, int progress) {}
+	public void updateProcessorProgress(String progressString, int progress) {
+		proc_progress.add(progressString);
+	}
 
 	@Override
 	public void processingHasStopped() {}
@@ -93,8 +97,8 @@ public class DummyController implements PipelineController {
 	public boolean isGenerationRunning() {return false;}
 
 	@Override
-	public void setGeneratorProgress(String progress) {
-		arr_str.add(progress);
+	public void updateGeneratorProgress(String progress) {
+		gen_progress.add(progress);
 	}
 
 	@Override
