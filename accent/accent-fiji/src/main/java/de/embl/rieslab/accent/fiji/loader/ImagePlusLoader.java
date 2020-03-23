@@ -46,7 +46,7 @@ public class ImagePlusLoader implements Loader{
 
 	@Override
 	public boolean isDone() {
-		return (currentFile == getSize()-1 && currentPlane == getChannelLength());
+		return (currentFile == getNumberOfChannels()-1 && currentPlane == getChannelLength());
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class ImagePlusLoader implements Loader{
 	}
 
 	@Override
-	public int getSize() {
+	public int getNumberOfChannels() {
 		return list.size();
 	}
 

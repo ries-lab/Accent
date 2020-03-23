@@ -4,7 +4,6 @@ import de.embl.rieslab.accent.common.data.image.FloatImage;
 
 public class CalibrationMap {
 
-	
 	public static FloatImage generateAvgMap(Calibration calib, double exposure) {
 		float[] avpix = new float[calib.getWidth()*calib.getHeight()];
 		

@@ -6,31 +6,17 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-
-import javax.swing.JFrame;
-
 import org.junit.Test;
 
-import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIOTest;
-import de.embl.rieslab.accent.common.data.image.BareImage;
-import de.embl.rieslab.accent.common.interfaces.Loader;
-import de.embl.rieslab.accent.common.interfaces.PipelineController;
-import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
-import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
-import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
-import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
+import de.embl.rieslab.accent.common.dummys.DummyController;
 
 public class AvgVarMapsGeneratorTest {
 
 	@Test
 	public void testGeneration() {
-		Controller cont = new Controller();
+		DummyController cont = new DummyController();
 		Calibration cal = CalibrationIOTest.generateCalibration();
 		AvgVarMapsGenerator gen = new AvgVarMapsGenerator(cont);
 
@@ -85,7 +71,7 @@ public class AvgVarMapsGeneratorTest {
 	
 	@Test
 	public void testIllegalArgumentsGenerations() {
-		Controller cont = new Controller();
+		DummyController cont = new DummyController();
 		Calibration cal = CalibrationIOTest.generateCalibration();
 		AvgVarMapsGenerator gen = new AvgVarMapsGenerator(cont);
 
@@ -105,7 +91,7 @@ public class AvgVarMapsGeneratorTest {
 
 	@Test
 	public void testNullGenerations() {
-		Controller cont = new Controller();
+		DummyController cont = new DummyController();
 		Calibration cal = CalibrationIOTest.generateCalibration();
 		AvgVarMapsGenerator gen = new AvgVarMapsGenerator(cont);
 
@@ -142,99 +128,5 @@ public class AvgVarMapsGeneratorTest {
 		assertThrows(NullPointerException.class, () -> {
 			new AvgVarMapsGenerator(null);
 		});
-	}
-	
-	private class Controller implements PipelineController {
-		public List<String> arr_str;
-		
-		public Controller (){
-			arr_str = new ArrayList<String>();
-		}
-		
-		@Override
-		public JFrame getMainFrame() {return null;}
-
-		@Override
-		public void updateAcquisitionProgress(String message, int progress) {}
-
-		@Override
-		public void acquisitionHasStarted() {}
-
-		@Override
-		public void acquisitionHasStopped() {}
-
-		@Override
-		public void acquisitionHasEnded() {}
-
-		@Override
-		public boolean isAcquisitionDone() {return false;}
-
-		@Override
-		public boolean startAcquisition(AcquisitionSettings settings) {return false;}
-
-		@Override
-		public void stopAcquisition() {}
-
-		@Override
-		public Loader getLoader(String parameter) {return null;}
-
-		@Override
-		public CalibrationProcessor getProcessor(String path, Loader loader) {return null;}
-
-		@Override
-		public boolean isProcessorReady() {return false;}
-
-		@Override
-		public boolean startProcessor(String path) {return false;}
-
-		@Override
-		public boolean startProcessor(String path, HashMap<String, Double> openedDatasets) {return false;}
-
-		@Override
-		public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<BareImage>> queues) {return false;}
-
-		@Override
-		public void stopProcessor() {}
-
-		@Override
-		public void updateProcessorProgress(String progressString, int progress) {}
-
-		@Override
-		public void processingHasStopped() {}
-
-		@Override
-		public void processingHasStarted() {}
-
-		@Override
-		public void processingHasEnded() {}
-
-		@Override
-		public boolean isProcessingRunning() {return false;}
-
-		@Override
-		public void setProcessorPanelPath(String path) {}
-
-		@Override
-		public boolean startMapGeneration(String path, double[] exposures) {return false;}
-
-		@Override
-		public boolean isGenerationRunning() {return false;}
-
-		@Override
-		public void setGeneratorProgress(String progress) {
-			arr_str.add(progress);
-		}
-
-		@Override
-		public void setAcquisitionPanel(AcquisitionPanelInterface procpane) {}
-
-		@Override
-		public void setProcessingPanel(ProcessingPanelInterface procpane) {}
-
-		@Override
-		public void setGeneratePanel(GeneratePanelInterface genpane) {}
-
-		@Override
-		public boolean isReady() {return false;}		
 	}
 }

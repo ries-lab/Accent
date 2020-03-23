@@ -2,21 +2,29 @@ package de.embl.rieslab.accent.common.data.calibration;
 
 import java.util.Arrays;
 
+/**
+ * 
+ * 
+ * @author Joran Deschamps
+ *
+ */
 public class Calibration {
 
 	private int width;
 	private int height;
 	
-	private double[] baseline;
-	private double[] dc_per_sec;
-	private double[] r_sq_avg;
+	// avg over time fit
+	private double[] baseline; // avg over time fit offset 
+	private double[] dc_per_sec; // dark current per time: slope of the fit
+	private double[] r_sq_avg; // fit coefficient of determination
 	
-	private double[] rn_sq;
-	private double[] tn_sq_per_sec;
-	private double[] r_sq_var;
+	// var over time fit
+	private double[] rn_sq; // read-noise square: fit offset
+	private double[] tn_sq_per_sec; // thermal noise square: fit slope
+	private double[] r_sq_var; // fit coefficient of determination
 	
-	private double[] gain;	
-	private double[] r_sq_gain;
+	private double[] gain; // var vs avg, fit slope
+	private double[] r_sq_gain; // fit coefficient of determination
 
 	public Calibration() {
 	}
@@ -80,7 +88,7 @@ public class Calibration {
 	}
 
 	
-	public double[] getRsqAvg() {
+	public double[] getRSqAvg() {
 		return r_sq_avg;
 	}
 	
@@ -171,7 +179,7 @@ public class Calibration {
 	
 	public static boolean areEquals(Calibration c1, Calibration c2) {
 		return c1.getWidth()==c2.getWidth() && c1.getHeight()==c2.getHeight() && Arrays.equals(c1.getBaseline(), c2.getBaseline()) 
-				&& Arrays.equals(c1.getDcPerSec(), c2.getDcPerSec()) && Arrays.equals(c1.getRsqAvg(), c2.getRsqAvg()) 
+				&& Arrays.equals(c1.getDcPerSec(), c2.getDcPerSec()) && Arrays.equals(c1.getRSqAvg(), c2.getRSqAvg()) 
 				&& Arrays.equals(c1.getRnSq(), c2.getRnSq()) && Arrays.equals(c1.getTnSqPerSec(), c2.getTnSqPerSec()) 
 				&& Arrays.equals(c1.getRSqVar(), c2.getRSqVar()) && Arrays.equals(c1.getGain(), c2.getGain()) 
 				&& Arrays.equals(c1.getRSqGain(), c2.getRSqGain());

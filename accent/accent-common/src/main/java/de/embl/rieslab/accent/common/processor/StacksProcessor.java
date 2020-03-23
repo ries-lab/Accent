@@ -15,9 +15,9 @@ public class StacksProcessor extends CalibrationProcessor {
 	protected void computeAvgAndVar(Loader loader, FloatImage[] avgs,
 			FloatImage[] vars, int[] stackSizes) {
 		
-		double percentile = 75./(loader.getSize()+1);
+		double percentile = 75./(loader.getNumberOfChannels()+1);
 		
-		for(int q=0; q<loader.getSize(); q++) {
+		for(int q=0; q<loader.getNumberOfChannels(); q++) {
 			
 			loader.openChannel(q);
 			
@@ -43,7 +43,7 @@ public class StacksProcessor extends CalibrationProcessor {
 
 				if(stackSizes[q] % 100 == 0) {
 					int progress = (int) (percentile * q + percentile * stackSizes[q] / loader.getChannelLength());
-					showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getSize()+", frame ", stackSizes[q], loader.getChannelLength(), progress);
+					showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getNumberOfChannels()+", frame ", stackSizes[q], loader.getChannelLength(), progress);
 				}
 			}
 			if(avgs[q] != null && vars[q] != null) {

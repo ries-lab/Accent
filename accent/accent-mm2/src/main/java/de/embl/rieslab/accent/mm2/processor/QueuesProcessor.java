@@ -21,7 +21,7 @@ public class QueuesProcessor extends CalibrationProcessor {
 		boolean update = false;
 		while(!done) {
 			boolean allEmpty = true;
-			for(int q=0;q<loader.getSize();q++) {
+			for(int q=0;q<loader.getNumberOfChannels();q++) {
 				if(loader.hasNext(q)) {
 					
 					if(stop) {
@@ -60,7 +60,7 @@ public class QueuesProcessor extends CalibrationProcessor {
 		}
 		
 		// renormalizes and computes vars
-		for(int q=0;q<loader.getSize();q++) {
+		for(int q=0;q<loader.getNumberOfChannels();q++) {
 			if(avgs[q] != null && vars[q] != null) {
 				avgs[q].dividePixels(stackSizes[q]);
 				vars[q].toVariance(avgs[q].getImage(), stackSizes[q]);

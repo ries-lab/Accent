@@ -32,11 +32,12 @@ public abstract class CalibrationProcessor extends Thread {
 	public final static int PROGRESS = -3;
 	
 	public CalibrationProcessor(String folder, PipelineController controller, Loader loader) {
+		if(folder == null || controller == null || loader == null)		
+			throw new NullPointerException();
 		
-		if(loader.getSize() < 3) {
+		if(loader.getNumberOfChannels() < 3)
 			throw new IllegalArgumentException("At least three exposures are required.");
-		}
-		
+			
 		this.folder = folder;
 		this.controller = controller;
 		this.loader = loader;
@@ -85,9 +86,9 @@ public abstract class CalibrationProcessor extends Thread {
 		startTime = System.currentTimeMillis();
 		showProgressOnEDT(START, null, 0, 0, 0);
 
-		FloatImage[] avgs = new FloatImage[loader.getSize()];
-		FloatImage[] vars = new FloatImage[loader.getSize()];
-		int[] stackSizes = new int[loader.getSize()];
+		FloatImage[] avgs = new FloatImage[loader.getNumberOfChannels()];
+		FloatImage[] vars = new FloatImage[loader.getNumberOfChannels()];
+		int[] stackSizes = new int[loader.getNumberOfChannels()];
 		
 		// compute avg and var images
 		computeAvgAndVar(loader, avgs, vars, stackSizes);
@@ -100,7 +101,7 @@ public abstract class CalibrationProcessor extends Thread {
 		}
 		
 		// saves images
-		for(int q=0;q<loader.getSize();q++) {
+		for(int q=0;q<loader.getNumberOfChannels();q++) {
 			if(avgs[q] != null && vars[q]!=null) {
 				avgs[q].saveAsTiff(folder + "\\Avg_" + avgs[q].getExposure() + "ms.tiff");
 				vars[q].saveAsTiff(folder + "\\Var_" + vars[q].getExposure() + "ms.tiff");
@@ -116,7 +117,7 @@ public abstract class CalibrationProcessor extends Thread {
 		}
 		
 		// linear regression
-		results = performLinearRegressions(folder, avgs, vars);
+		results = performLinearRegressions(avgs, vars);
 				
 		if(stop) {
 			showProgressOnEDT(STOP, null, 0, 0, 0);
@@ -195,12 +196,15 @@ public abstract class CalibrationProcessor extends Thread {
 	
 	protected abstract void computeAvgAndVar(Loader loader, FloatImage[] avgs, FloatImage[] vars, int[] stackSizes);
 	
-	protected Calibration performLinearRegressions(String folder, FloatImage[] avgs, FloatImage[] vars) {
+	protected Calibration performLinearRegressions(FloatImage[] avgs, FloatImage[] vars) {
 		int width = (int) avgs[0].getWidth();
 		int height = (int) avgs[0].getHeight();
 		int totalLength = height * width;
 		
-		// instantiates the arrays for the linear regression
+		// instantiates the arrays for the linear regression:
+		// Ne = number of exposures
+		// L = w x h = number of pixels
+		// each list is > Ne x 2 x L x doubles
 		ArrayList<double[][]> avg_exp_list = new ArrayList<double[][]>(totalLength);
 		ArrayList<double[][]> var_exp_list = new ArrayList<double[][]>(totalLength);
 		ArrayList<double[][]> var_avg_list = new ArrayList<double[][]>(totalLength);
@@ -211,19 +215,19 @@ public abstract class CalibrationProcessor extends Thread {
 			var_avg_list.add(new double[avgs.length][2]);
 		}	
 		
-		for(int q=0;q<avgs.length;q++) {
+		for(int q=0;q<avgs.length;q++) { // for each exposure time
 			// fills arrays for linear regression
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
 					if(stop) {
 						return null;
 					}
-					avg_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() / 1000.;
-					avg_exp_list.get(x + width * y)[q][1] = avgs[q].getPixelValue(x, y);
-					var_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() / 1000.;
-					var_exp_list.get(x + width * y)[q][1] = vars[q].getPixelValue(x, y);
-					var_avg_list.get(x + width * y)[q][0] = avgs[q].getPixelValue(x, y);
-					var_avg_list.get(x + width * y)[q][1] = vars[q].getPixelValue(x, y);
+					avg_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() / 1000.; // exposure in sec
+					avg_exp_list.get(x + width * y)[q][1] = avgs[q].getPixelValue(x, y); // average pixel value at this exposure
+					var_exp_list.get(x + width * y)[q][0] = avgs[q].getExposure() / 1000.; // exposure in sec
+					var_exp_list.get(x + width * y)[q][1] = vars[q].getPixelValue(x, y); // variance of the pixel at this exposure
+					var_avg_list.get(x + width * y)[q][0] = avgs[q].getPixelValue(x, y); // average pixel value at this exposure
+					var_avg_list.get(x + width * y)[q][1] = vars[q].getPixelValue(x, y); // variance of the pixel at this exposure
 				}
 			}
 		}
@@ -243,6 +247,7 @@ public abstract class CalibrationProcessor extends Thread {
 				return null;
 			}
 			
+			// perform regressions
 			sreg = new SimpleRegression();
 			sreg.addData(avg_exp_list.get(i));
 			baseline[i] = sreg.getIntercept();
@@ -315,7 +320,7 @@ public abstract class CalibrationProcessor extends Thread {
 		tn_sq_per_sec.saveAsTiff(folder+"\\TN_sq_per_sec.tiff");
 		//HistogramWindow hw_tn_sq_per_sec = new HistogramWindow(new ImagePlus("TN square per sec", tn_sq_per_sec.getImage()));
 		
-		FloatImage r_sq_avg = new FloatImage(results.getWidth(), results.getHeight(), results.getRsqAvg(), 0);
+		FloatImage r_sq_avg = new FloatImage(results.getWidth(), results.getHeight(), results.getRSqAvg(), 0);
 		r_sq_avg.saveAsTiff(folder+"\\R_sq_avg.tiff");
 		//HistogramWindow hw_r_sq_avg = new HistogramWindow(new ImagePlus("R square of the avg", r_sq_avg.getImage()));
 		

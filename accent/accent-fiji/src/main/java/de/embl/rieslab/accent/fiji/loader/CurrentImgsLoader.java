@@ -42,7 +42,7 @@ public class CurrentImgsLoader implements Loader{
 
 	@Override
 	public boolean isDone() {
-		return (currentFile == getSize()-1 && currentPlane == getChannelLength()-1);
+		return (currentFile == getNumberOfChannels()-1 && currentPlane == getChannelLength()-1);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class CurrentImgsLoader implements Loader{
 	}
 
 	@Override
-	public int getSize() {
+	public int getNumberOfChannels() {
 		return list.size();
 	}
 

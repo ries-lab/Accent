@@ -12,7 +12,12 @@ public interface Loader {
 	
 	public void close();
 	
-	public int getSize();
+	/**
+	 * Returns the number of channels.
+	 * 
+	 * @return Number of channels.
+	 */
+	public int getNumberOfChannels();
 	
 	public boolean isOpen(int channel);
 	

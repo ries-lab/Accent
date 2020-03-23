@@ -40,7 +40,7 @@ public class QueuesLoader implements Loader{
 	}
 
 	@Override
-	public int getSize() {
+	public int getNumberOfChannels() {
 		return queues.size();
 	}
 

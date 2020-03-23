@@ -61,7 +61,7 @@ public class MMStacksLoader implements Loader{
 	}
 
 	@Override
-	public int getSize() {
+	public int getNumberOfChannels() {
 		return directories.length;
 	}
 
