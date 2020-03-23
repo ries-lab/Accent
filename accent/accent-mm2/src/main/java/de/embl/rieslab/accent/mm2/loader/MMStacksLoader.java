@@ -16,7 +16,8 @@ public class MMStacksLoader implements Loader{
 
 	private Studio studio;
 	private String[] directories;
-	private int currentDirectory, currentPlane, currentExposure;
+	private int currentDirectory, currentPlane;
+	private double currentExposure;
 	private Datastore store;
 	
 	public MMStacksLoader(Studio studio, String[] directories) {
@@ -84,7 +85,7 @@ public class MMStacksLoader implements Loader{
 					store.close();
 				}
 				store = studio.data().loadData(directories[currentDirectory], true);
-				currentExposure = utils.extractExposurefromFolderName(directories[currentDirectory]);
+				currentExposure = utils.extractExposureMs(directories[currentDirectory]);
 
 			} catch (IOException e) {
 				e.printStackTrace();

@@ -27,37 +27,30 @@ public class utils {
 	    return true;
 	}
 	
-	public static int extractExposurefromFolderName(String dataFolder) {
+	public static double extractExposureMs(String fileName) {
+		if (fileName == null || fileName.length() < 3)
+			return 0;
 		
-		if(dataFolder.substring(dataFolder.length()-2).equals("ms")) {
-			int length = 0;
-			int index  = dataFolder.length()-3;
+		// inverts string, gets the first occurrence of "sm" to get the last "ms" in fileName
+		String inv = (new StringBuilder(fileName)).reverse().toString(); 
+		int ind = inv.indexOf("sm"); 
 
-			while(Character.isDigit(dataFolder.charAt(index))) {
-				length ++;
-				index --;
+		if(ind != -1) {
+			int curr_ind  = fileName.length()-ind-3;
+
+			StringBuilder sb = new StringBuilder();
+			while(curr_ind>=0) {
+				if(Character.isDigit(fileName.charAt(curr_ind))) {
+					sb.append(fileName.charAt(curr_ind));
+				} else if(fileName.charAt(curr_ind) == '.' && curr_ind > 0 && Character.isDigit(fileName.charAt(curr_ind-1))) {
+					sb.append(fileName.charAt(curr_ind));
+				} else {
+					break;
+				}
+				curr_ind --;	
 			}
-
-			return Integer.parseInt(dataFolder.substring(index+1, index+1+length));
+			return Double.parseDouble(sb.reverse().toString());
 		}
-		
-		return 0;
-	}  	
-	
-	public static int extractExposurefromTiff(String tiffImage) {
-		
-		if(tiffImage.substring(tiffImage.length()-7).equals("ms.tiff")) {
-			int length = 0;
-			int index  = tiffImage.length()-8;
-
-			while(Character.isDigit(tiffImage.charAt(index))) {
-				length ++;
-				index --;
-			}
-
-			return Integer.parseInt(tiffImage.substring(index+1, index+1+length));
-		}
-		
 		return 0;
 	}  
     

@@ -18,7 +18,6 @@ public class SimpleRoiWriter {
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		
 		try {
-			// should write a GlobalConfigurationWrapper, not a GlobalConfiguration
 			objectMapper.writeValue(new FileOutputStream(fileToWriteTo), roi); 
 			return true;
 			

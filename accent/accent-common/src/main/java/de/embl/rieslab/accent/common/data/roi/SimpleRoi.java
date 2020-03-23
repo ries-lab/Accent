@@ -8,6 +8,8 @@ public class SimpleRoi {
 	public int width;
 	public int height;
 	
+	public SimpleRoi() {}
+	
 	public SimpleRoi(int x, int y, int w, int h) {
 		x0 = x;
 		y0 = y;
