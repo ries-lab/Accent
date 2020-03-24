@@ -10,26 +10,31 @@ public class DummyLoader implements Loader {
 	public double[] exposures;
 	public FloatImage[] avgs, vars;
 	
+	public int numImages = 200;
+	
 	public double baseline = 3.5;
 	public double dc_per_sec = 1.8; 
 	public double rn_sq = 2.4; 
 	public double tn_sq_per_sec = 1.8;
 	
-	int curr_chan;
-	int curr_im;
+	public int[] curr_ind;
+	public int curr_channel;
+	
+	public int width = 2;
+	public int height = 3;
 	
 	public DummyLoader(int nChannels) {
 		this.nChannels = nChannels;
-		curr_chan = 0;
-		curr_im = 0;
+		curr_ind = new int[nChannels];
+		for(int i=0;i<nChannels;i++)
+			curr_ind[i] = 0;
+
+		curr_channel=0;
 	
 		exposures = new double[nChannels];
 		for(int i = 0; i< nChannels; i++)
 			exposures[i] = 10+500.5*i;
-			
-		int width = 2;
-		int height = 3;
-		
+					
 		avgs = new FloatImage[nChannels];
 		vars = new FloatImage[nChannels];
 		for(int i =0; i< nChannels; i++) {
@@ -45,21 +50,41 @@ public class DummyLoader implements Loader {
 			avgs[i] = new FloatImage(width, height, f_avg, exposures[i]);
 			vars[i] = new FloatImage(width, height, f_var, exposures[i]);
 		}
+		
 	}
 	
 	@Override
 	public BareImage getNext(int channel) {
-		return null;
+		float[] pix = new float[width*height];
+		for(int y = 0; y<height; y++) {
+			for(int x = 0; x<width; x++) {
+				int p = x+width*y;
+				double avg = (baseline+dc_per_sec*exposures[curr_channel]/1000.);
+				double var = (rn_sq+tn_sq_per_sec*exposures[curr_channel]/1000.);
+				
+				pix[p] = (float) (avg+Math.sqrt(var)*Math.pow(-1, curr_ind[channel]));
+			}
+		}
+		curr_ind[curr_channel]++;
+		
+		return new BareImage(3, pix, width, height, exposures[curr_channel]);
 	}
 
 	@Override
 	public boolean hasNext(int channel) {
+		if(channel < nChannels)
+			return curr_ind[channel] < 2 ? true:false;
 		return false;
 	}
 
 	@Override
 	public boolean isDone() {
-		return false;
+		for(int i: curr_ind) {
+			if(i < 2) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -72,17 +97,21 @@ public class DummyLoader implements Loader {
 
 	@Override
 	public boolean isOpen(int channel) {
-		return false;
+		return curr_channel == channel;
 	}
 
 	@Override
 	public boolean openChannel(int channel) {
-		return false;
+		if(channel < 0 || channel >= nChannels)
+			return false;
+		
+		curr_channel = channel;
+		return true;
 	}
 
 	@Override
 	public int getChannelLength() {
-		return 0;
+		return numImages;
 	}
 
 }

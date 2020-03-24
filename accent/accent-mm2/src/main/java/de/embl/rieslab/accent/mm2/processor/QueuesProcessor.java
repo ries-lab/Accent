@@ -1,5 +1,6 @@
 package de.embl.rieslab.accent.mm2.processor;
 
+import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
 import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.data.image.FloatImage;
 import de.embl.rieslab.accent.common.interfaces.Loader;
@@ -14,8 +15,10 @@ public class QueuesProcessor extends CalibrationProcessor {
 	}
 
 	@Override
-	protected void computeAvgAndVar(Loader loader, FloatImage[] avgs,
-			FloatImage[] vars, int[] stackSizes) {
+	protected AvgVarStacks computeAvgAndVar(Loader loader) {
+		FloatImage[] avgs = new FloatImage[loader.getNumberOfChannels()];
+		FloatImage[] vars = new FloatImage[loader.getNumberOfChannels()];
+		int[] stackSizes = new int[loader.getNumberOfChannels()];
 				
 		boolean done = false;
 		boolean update = false;
@@ -25,7 +28,7 @@ public class QueuesProcessor extends CalibrationProcessor {
 				if(loader.hasNext(q)) {
 					
 					if(stop) {
-						return;
+						return null;
 					}
 					
 					allEmpty = false;
@@ -66,6 +69,8 @@ public class QueuesProcessor extends CalibrationProcessor {
 				vars[q].toVariance(avgs[q].getImage(), stackSizes[q]);
 			}
 		}
+		
+		return new AvgVarStacks(avgs, vars);
 	}
 
 }

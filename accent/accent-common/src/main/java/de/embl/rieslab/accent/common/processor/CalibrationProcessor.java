@@ -9,6 +9,7 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
+import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
 import de.embl.rieslab.accent.common.data.image.FloatImage;
 import de.embl.rieslab.accent.common.interfaces.Loader;
 import de.embl.rieslab.accent.common.interfaces.PipelineController;
@@ -85,13 +86,11 @@ public abstract class CalibrationProcessor extends Thread {
 	protected Integer runProcess() {
 		startTime = System.currentTimeMillis();
 		showProgressOnEDT(START, null, 0, 0, 0);
-
-		FloatImage[] avgs = new FloatImage[loader.getNumberOfChannels()];
-		FloatImage[] vars = new FloatImage[loader.getNumberOfChannels()];
-		int[] stackSizes = new int[loader.getNumberOfChannels()];
 		
 		// compute avg and var images
-		computeAvgAndVar(loader, avgs, vars, stackSizes);
+		AvgVarStacks avgvar = computeAvgAndVar(loader);
+		FloatImage[] avgs = avgvar.getAvgs();
+		FloatImage[] vars = avgvar.getVars();
 		
 		if(stop) {
 			showProgressOnEDT(STOP, null, 0, 0, 0);
@@ -198,16 +197,10 @@ public abstract class CalibrationProcessor extends Thread {
 		}	
 	}
 	
-	// probably not a great idea to pass empty arrays...
 	/**
 	 * Compute the average and variance images from the Loader input and store them in avgs and vars.
-	 * 
-	 * @param loader
-	 * @param avgs
-	 * @param vars
-	 * @param stackSizes
 	 */
-	protected abstract void computeAvgAndVar(Loader loader, FloatImage[] avgs, FloatImage[] vars, int[] stackSizes);
+	protected abstract AvgVarStacks computeAvgAndVar(Loader loader);
 	
 	protected Calibration performLinearRegressions(FloatImage[] avgs, FloatImage[] vars) {
 		int width = (int) avgs[0].getWidth();

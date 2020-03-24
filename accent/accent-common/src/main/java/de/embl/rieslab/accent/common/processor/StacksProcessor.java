@@ -1,5 +1,6 @@
 package de.embl.rieslab.accent.common.processor;
 
+import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
 import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.data.image.FloatImage;
 import de.embl.rieslab.accent.common.interfaces.Loader;
@@ -12,8 +13,10 @@ public class StacksProcessor extends CalibrationProcessor {
 	}
 
 	@Override
-	protected void computeAvgAndVar(Loader loader, FloatImage[] avgs,
-			FloatImage[] vars, int[] stackSizes) {
+	protected AvgVarStacks computeAvgAndVar(Loader loader) {
+		FloatImage[] avgs = new FloatImage[loader.getNumberOfChannels()];
+		FloatImage[] vars = new FloatImage[loader.getNumberOfChannels()];
+		int[] stackSizes = new int[loader.getNumberOfChannels()];
 		
 		double percentile = 75./(loader.getNumberOfChannels()+1);
 		
@@ -24,7 +27,7 @@ public class StacksProcessor extends CalibrationProcessor {
 			while(loader.hasNext(q)) {
 				
 				if(stop) {
-					return;
+					return null;
 				}
 				
 				// first round
@@ -50,6 +53,8 @@ public class StacksProcessor extends CalibrationProcessor {
 				avgs[q].dividePixels(stackSizes[q]);
 				vars[q].toVariance(avgs[q].getImage(), stackSizes[q]);
 			}
+			
 		}
+		return new AvgVarStacks(avgs, vars);
 	}
 }
