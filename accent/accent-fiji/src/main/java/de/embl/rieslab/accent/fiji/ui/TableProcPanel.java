@@ -22,8 +22,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.border.LineBorder;
 import java.awt.Color;
@@ -206,20 +208,20 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 		}
 	}
 	
-	protected HashMap<String, Double> extractDatasets(){ // this method should go
-		HashMap<String, Integer> list = new HashMap<String, Integer>();
+	protected HashMap<String, Double> extractDatasets(){ 
+		HashMap<String, Double> map = new HashMap<String, Double>();
 		int n = table.getRowCount();
 		
 		for(int i=0;i<n;i++) {
 			String ms = (String) table.getValueAt(i, 1);
-			if(!ms.equals("") && utils.isInteger(ms)) {
-				Integer exposure = Integer.parseInt(ms);
+			if(!ms.equals("") && utils.isNumeric(ms)) {
+				Double exposure = Double.parseDouble(ms);
 				
-				list.put(datasets.get(i),exposure);
+				map.put(datasets.get(i),exposure);
 			}
 		}
 		
-		return list;
+		return map;
 	}
 
 	@Override
@@ -259,16 +261,24 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 	}
 
 
-	private Map<String,Double> buildList(){
-		Map<String,Double> map = new HashMap<String,Double>();
+	private String[][] buildList(){
+		Map<String,Double> map = new LinkedHashMap<String,Double>();
 		
 		for(int i=0;i<datasets.size();i++) {
 			// check if name contains "ms"
 			double expo = utils.extractExposureMs(datasets.get(i));
-			if(Double.compare(expo, 0) == 0)
+			if(Double.compare(expo, 0) != 0)
 				map.put(datasets.get(i), expo);
 		}
 		
-		return map;
+		String[][] vals = new String[map.size()][2];
+		int i=0;
+		for(Entry<String, Double> e: map.entrySet()) {
+			vals[i][0] = e.getKey();
+			vals[i][1] = String.valueOf(e.getValue());
+			i++;
+		}
+		
+		return vals;
 	}
 }

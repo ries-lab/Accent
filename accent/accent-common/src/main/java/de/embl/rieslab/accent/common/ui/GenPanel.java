@@ -132,10 +132,10 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 		
 		boolean badInput = false;
 		StringBuilder sb = new StringBuilder("The following exposures are invalid:\n");
-		ArrayList<Integer> list = new ArrayList<Integer>();
+		ArrayList<Double> list = new ArrayList<Double>();
 		for(int i=0;i<exp.length;i++) {
-			if(utils.isInteger(exp[i])) {
-				list.add(Integer.valueOf(exp[i]));
+			if(utils.isNumeric(exp[i])) {
+				list.add(Double.valueOf(exp[i]));
 			} else {
 				sb.append("<");
 				sb.append(exp[i]);
@@ -144,12 +144,17 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 			}
 		}
 		
-		if(badInput) {
+		if(badInput) { // maybe better to give a choice to continue or not...
 			JOptionPane.showMessageDialog(null, sb.toString(),
 					"Error", JOptionPane.INFORMATION_MESSAGE);
 		}
 		
-		return list.toArray(new Integer[0]);
+		double[] vals = new double[list.size()];
+		for(int i=0;i<list.size();i++) {
+			vals[i] = list.get(i);
+		}
+		
+		return vals;
 	}
 	
 	private void startMapGeneration() {

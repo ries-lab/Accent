@@ -168,8 +168,7 @@ public class CalibrationProcessorTest {
 		assertTrue(f.delete());
 		
 		// checks updates
-		for(int i=0;i<cont.proc_progress.size();i++)
-			System.out.println(cont.proc_progress.get(i));
+		assertEquals("Done.",cont.proc_progress.get(cont.proc_progress.size()-1));
 		
 		// deletes all files
 		assertTrue(f_dir.delete());

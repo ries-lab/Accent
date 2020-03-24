@@ -1,5 +1,7 @@
 package de.embl.rieslab.accent.common.utils;
 
+import java.util.regex.Pattern;
+
 public class utils {
 
 
@@ -52,6 +54,16 @@ public class utils {
 			return Double.parseDouble(sb.reverse().toString());
 		}
 		return 0;
-	}  
-    
+	}      
+	
+	/*
+	 * From https://www.baeldung.com/java-check-string-number
+	 */
+	public static boolean isNumeric(String strNum) {
+		Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+	    if (strNum == null) {
+	        return false; 
+	    }
+	    return pattern.matcher(strNum).matches();
+	}
 }

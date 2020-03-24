@@ -26,6 +26,23 @@ public class UtilsTest {
 	}
 	
 	@Test
+	public void testIsNumeric() {
+		assertTrue(utils.isNumeric("0"));
+		assertTrue(utils.isNumeric("-50"));
+		assertTrue(utils.isNumeric("699"));
+		assertTrue(utils.isNumeric("1.025"));
+		assertTrue(utils.isNumeric("5.0"));
+		
+		// edge cases
+		assertFalse(utils.isNumeric(null));
+		assertFalse(utils.isNumeric(""));
+		assertFalse(utils.isNumeric("."));
+		assertFalse(utils.isNumeric(","));
+		assertFalse(utils.isNumeric("55d"));
+		assertFalse(utils.isNumeric("-5,4"));
+	}
+	
+	@Test
 	public void testExtractExposureFromString() {
 		assertEquals(10,utils.extractExposureMs("sdsfsdf_10ms"), 0.0001);
 		assertEquals(9,utils.extractExposureMs("9ms"), 0.0001);
