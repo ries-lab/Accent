@@ -128,7 +128,7 @@ public class MM2Controller extends AbstractController {
 		if(isReady() && path != null &&
 				(isAcqPathKnown(path) || new File(path).exists())) {
 
-			directoriesToLoad = getExposureFolders(path);
+			directoriesToLoad = getExposureFolders(path); // use utils instead
 			
 			if(directoriesToLoad == null) {
 				JOptionPane.showMessageDialog(null, "No experimental folder found in:\n" + path + 
