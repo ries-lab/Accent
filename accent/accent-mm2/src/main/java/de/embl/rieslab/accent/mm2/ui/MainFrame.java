@@ -9,8 +9,8 @@ import javax.swing.JPanel;
 
 import org.micromanager.Studio;
 
-import de.embl.rieslab.accent.common.interfaces.PipelineController;
 import de.embl.rieslab.accent.common.ui.GenPanel;
+import de.embl.rieslab.accent.mm2.MM2Controller;
 
 public class MainFrame extends JFrame{
 
@@ -22,7 +22,7 @@ public class MainFrame extends JFrame{
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame(Studio studio, PipelineController controller) {
+	public MainFrame(Studio studio, MM2Controller controller) {
 		
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setTitle("Accent");

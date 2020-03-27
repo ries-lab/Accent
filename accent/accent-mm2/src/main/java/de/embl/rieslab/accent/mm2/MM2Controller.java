@@ -47,12 +47,9 @@ public class MM2Controller extends AbstractController {
 		if(isReady()) {
 			acqDone = false;
 			acqSettings = settings;
-			
-			System.out.println("Before: "+acqSettings.folder_);
-			
+					
 			acq = new AlternatedAcquisition(studio, acqSettings, this);
 			
-			System.out.println("After: "+acqSettings.folder_);
 			acq.start();
 			
 			if(acqSettings.parallelProcessing) {
@@ -234,6 +231,10 @@ public class MM2Controller extends AbstractController {
 			return new StacksProcessor(path, this, (MMStacksLoader) loader);
 		}
 		return null;
+	}
+
+	public Studio getStudio() {
+		return studio;
 	}
 
 }

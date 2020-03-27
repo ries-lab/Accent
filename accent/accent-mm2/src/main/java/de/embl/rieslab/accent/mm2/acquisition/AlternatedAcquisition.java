@@ -168,6 +168,8 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 			
 			// write roi to disk
 			SimpleRoiWriter.write(new File(settings.folder_+"/roi.roi"), settings.roi_);
+		} else {
+			studio.getCMMCore().clearROI();
 		}
 
 		// prepares coordinates

@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -27,11 +28,14 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
+import org.micromanager.Studio;
+
 import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
 import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
 import de.embl.rieslab.accent.common.utils.utils;
+import de.embl.rieslab.accent.mm2.MM2Controller;
 
 public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 
@@ -59,9 +63,9 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	
 	private boolean preventTrigger = false;
 	
-	private PipelineController controller;
+	private MM2Controller controller;
 
-	public AcqPanel(String camera, PipelineController controller) {
+	public AcqPanel(String camera, MM2Controller controller) {
 		this.controller = controller;
 
 		AcquisitionSettings settings  = new AcquisitionSettings();
@@ -239,6 +243,14 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	}
 
 	protected void showOptionFrame() {
+		Studio studio = controller.getStudio();
+		try {
+			Rectangle r = studio.getCMMCore().getROI();
+			roi = new SimpleRoi(r.x,r.y,r.width,r.height);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		if(opFrame == null) {
 			opFrame = new AcqOptionFrame(this, preRunTime, saveAsStacks, parallelProcessing, roi);
 			opFrame.setVisible(true);

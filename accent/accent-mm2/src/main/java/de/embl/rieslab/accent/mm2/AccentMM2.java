@@ -14,25 +14,21 @@ public class AccentMM2 implements org.micromanager.MenuPlugin, SciJavaPlugin {
 	
 	@Override
 	public String getCopyright() {
-		// TODO Auto-generated method stub
 		return "LGPL";
 	}
 
 	@Override
 	public String getHelpText() {
-		// TODO Auto-generated method stub
 		return "";
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return "Accent";
+		return "ACCéNT";
 	}
 
 	@Override
 	public String getVersion() {
-		// TODO Auto-generated method stub
 		return "1";
 	}
 
@@ -43,7 +39,7 @@ public class AccentMM2 implements org.micromanager.MenuPlugin, SciJavaPlugin {
 
 	@Override
 	public String getSubMenu() {
-		return "Calibration";
+		return "Acquisition Tools";
 	}
 
 	@Override
