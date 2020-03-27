@@ -23,8 +23,9 @@ public class RoiIOTest {
 		int y = 85;
 		int h = 45;
 		int w = 26;
+		int imwidth = 512;
 		
-		SimpleRoi roi = new SimpleRoi(x,y,w,h);
+		SimpleRoi roi = new SimpleRoi(x,y,w,h,imwidth,imwidth);
 		
 		File f_roi = new File("myroi");
 		

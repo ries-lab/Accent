@@ -1,5 +1,12 @@
 package de.embl.rieslab.accent.common.data.image;
 
+/**
+ * Image representation with a type (byte, short or float), pixels object, width, height
+ * and exposure (ms) at which it was recorded.
+ * 
+ * @author Joran Deschamps
+ *
+ */
 public class BareImage {
 	
 	private DataType type;
@@ -8,6 +15,14 @@ public class BareImage {
 	private int height;
 	private double exposure;
 
+	/**
+	 * Constructor.
+	 * @param type DataType (BYTE, SHORT or FLOAT)
+	 * @param pixels Linear array of pixels of the corresponding type.
+	 * @param width Width of the image
+	 * @param height Height of the image
+	 * @param exposure Exposure in ms at which the image was recorded
+	 */
 	// should reconsider using the datatype object, not really useful here. But used in FloatImage to avoid recasting
 	public BareImage(DataType type, Object pixels, int width, int height, double exposure) {
 		if(pixels == null || type == null) {
@@ -44,7 +59,14 @@ public class BareImage {
 		this.height = height;
 		this.exposure = exposure;
 	}
-	
+	/**
+	 * Constructor.
+	 * @param type Bytes per pixels (1, 2 or >=3)
+	 * @param pixels Linear array of pixels of the corresponding type.
+	 * @param width Width of the image
+	 * @param height Height of the image
+	 * @param exposure Exposure in ms at which the image was recorded
+	 */
 	public BareImage(int bytesPerPixel, Object pixels, int width, int height, double exposure) {
 		if(pixels == null) {
 			throw new NullPointerException();
@@ -85,26 +107,49 @@ public class BareImage {
 		this.exposure = exposure;
 	}
 	
+	/**
+	 * Returns the data type.
+	 * @return DataType.BYTE, DataType.SHORT or DataType.FLOAT
+	 */
 	public DataType getDataType() {
 		return type;
 	}
 	
+	/**
+	 * Pixel array
+	 * @return Linear pixel array as Object
+	 */
 	public Object getPixels() {
 		return pixels;
 	}
 	
+	/**
+	 * Image width
+	 * @return
+	 */
 	public int getWidth() {
 		return width;
 	}
-
+	/**
+	 * Image height
+	 * @return
+	 */
 	public int getHeight() {
 		return height;
 	}
-	
+	/**
+	 * Exposure in ms at which the image was recorded
+	 * @return Exposure in ms
+	 */
 	public double getExposure() {
 		return exposure;
 	}
-		
+	/**
+	 * Class used to characterize the pixel array type of a BareImage
+	 * 
+	 * @author Joran Deschamps
+	 *
+	 */
 	public enum DataType{
 		BYTE, SHORT, FLOAT;
 	}

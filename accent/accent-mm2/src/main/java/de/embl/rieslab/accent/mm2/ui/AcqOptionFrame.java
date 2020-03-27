@@ -43,6 +43,9 @@ public class AcqOptionFrame extends JFrame {
 	private JTextField y0Field;
 	private JTextField widthField;
 	private JTextField heightField;
+
+	private int width;
+	private int height;
 	
 	private JSpinner prerunsSpinner;
 	
@@ -57,7 +60,7 @@ public class AcqOptionFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public AcqOptionFrame(AcquisitionPanelInterface owner, int preRun, boolean multiStacks, boolean parallelProcessing, SimpleRoi roi) {
+	public AcqOptionFrame(AcquisitionPanelInterface owner, int preRun, boolean multiStacks, boolean parallelProcessing, SimpleRoi roi, int im_width, int im_height) {
 		
 		this.owner = owner;
 		setUpFrame();
@@ -71,12 +74,15 @@ public class AcqOptionFrame extends JFrame {
 		if(!parallelProcessing) {
 			processCombo.setSelectedIndex(1);
 		}
+
+		this.width = im_width;
+		this.height = im_height;
 		
 		if(roi != null) {
 			x0Field.setText(String.valueOf(roi.x0));
 			y0Field.setText(String.valueOf(roi.y0));
-			widthField.setText(String.valueOf(roi.height));
-			heightField.setText(String.valueOf(roi.width));
+			widthField.setText(String.valueOf(roi.width));
+			heightField.setText(String.valueOf(roi.height));
 		}
 	}
 	
@@ -337,12 +343,13 @@ public class AcqOptionFrame extends JFrame {
 		y = getRoiY0();
 		w = getRoiW();
 		h = getRoiH();
-		
-		if(x == -1 || y == -1 || h ==-1 || w == -1) {
-			return null;
+				
+		SimpleRoi r = new SimpleRoi(x,y,w,h,width,height);
+		if(r.isSane()) {
+			return r;
+		} else {
+			return new SimpleRoi(0,0,width,height,width,height);
 		}
-		
-		return new SimpleRoi(x,y,w,h);
 	}	
 
 	public void notifyOwner() {

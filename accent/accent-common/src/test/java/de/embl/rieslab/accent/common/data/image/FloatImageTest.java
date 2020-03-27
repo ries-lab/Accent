@@ -1,6 +1,7 @@
 package de.embl.rieslab.accent.common.data.image;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
@@ -308,6 +309,32 @@ public class FloatImageTest {
 			for(int x=0;x<width;x++) {
 				float k = (float) ((y*width+x)*1.125);
 				assertEquals(k,im.getPixelValue(x, y), 0.001);
+			}
+		}
+	}
+
+	@Test
+	public void testFloatImageConstructor() {
+		int width = 3;
+		int height = 4;
+		double exposure = 10.5;
+		
+		float[] pixels = new float[width*height];
+		for(int i=0;i<width*height;i++) {
+			pixels[i] = (float) (i*1.125);
+			assertEquals(i*1.125,(float) pixels[i],0.0001);
+		}
+
+		BareImage bim = new BareImage(3,pixels,width,height,exposure);
+		FloatImage im = new FloatImage(bim);
+		FloatImage im2 = new FloatImage(im);
+		
+		im.addPixels(bim);
+
+		for(int y=0;y<height;y++) {
+			for(int x=0;x<width;x++) {
+				if(!(x==0 && y==0))
+					assertNotEquals(im2.getPixelValue(x, y),im.getPixelValue(x, y), 0.001);
 			}
 		}
 	}

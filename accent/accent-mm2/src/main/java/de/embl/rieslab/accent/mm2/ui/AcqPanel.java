@@ -243,21 +243,13 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	}
 
 	protected void showOptionFrame() {
-		Studio studio = controller.getStudio();
-		try {
-			Rectangle r = studio.getCMMCore().getROI();
-			roi = new SimpleRoi(r.x,r.y,r.width,r.height);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
 		if(opFrame == null) {
-			opFrame = new AcqOptionFrame(this, preRunTime, saveAsStacks, parallelProcessing, roi);
+			opFrame = new AcqOptionFrame(this, preRunTime, saveAsStacks, parallelProcessing, roi, controller.getImageWidth(), controller.getImageHeight());
 			opFrame.setVisible(true);
 		} else {
 			if(!opFrame.isVisible()) {
 				opFrame.dispose();
-				opFrame = new AcqOptionFrame(this, preRunTime, saveAsStacks, parallelProcessing, roi);
+				opFrame = new AcqOptionFrame(this, preRunTime, saveAsStacks, parallelProcessing, roi, controller.getImageWidth(), controller.getImageHeight());
 				opFrame.setVisible(true);
 			}
 		}
@@ -286,15 +278,15 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		return (int) framesSpinner.getValue();
 	}
 	
-	protected Integer[] getExposures() {
+	protected Double[] getExposures() {
 		String[] exp = acqExposuresField.getText().split(",");
 		
 		boolean badInput = false;
 		StringBuilder sb = new StringBuilder("The following exposures are invalid:\n");
-		ArrayList<Integer> list = new ArrayList<Integer>();
+		ArrayList<Double> list = new ArrayList<Double>();
 		for(int i=0;i<exp.length;i++) {
-			if(utils.isInteger(exp[i])) {
-				list.add(Integer.valueOf(exp[i]));
+			if(utils.isNumeric(exp[i])) {
+				list.add(Double.valueOf(exp[i]));
 			} else {
 				sb.append("<");
 				sb.append(exp[i]);
@@ -308,7 +300,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 					"Error", JOptionPane.INFORMATION_MESSAGE);
 		}
 		
-		return list.toArray(new Integer[0]);
+		return list.toArray(new Double[0]);
 	}
 
 	private void deselectAcquireToggle() {

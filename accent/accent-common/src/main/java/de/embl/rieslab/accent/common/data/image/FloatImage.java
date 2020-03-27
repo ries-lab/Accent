@@ -5,11 +5,21 @@ import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.process.FloatProcessor;
 
+/**
+ * Class holding a FloatProcessor and the exposure in ms at which the image was recorded.
+ * 
+ * @author Joran Deschamps
+ *
+ */
 public class FloatImage {
 
 	private final double exposure;
 	private FloatProcessor img;
 
+	/**
+	 * Constructor, builds a FloatProcessor by casting a BareImage pixel array.
+	 * @param image BareImage
+	 */
 	public FloatImage(BareImage image) {
 		this.exposure = image.getExposure();
 
@@ -24,7 +34,19 @@ public class FloatImage {
 		}
 	}
 
+	/**
+	 * Constructs a FloatProcessor from a byte array.
+	 * 
+	 * @param width Width of the image
+	 * @param height Height of the image
+	 * @param pixels Pixel array of length width*height
+	 * @param exposure Exposure in ms
+	 */
 	public FloatImage(int width, int height, byte[] pixels, double exposure) {
+		if(width*height != pixels.length) {
+			throw new IllegalArgumentException("The pixel array has the wrong size.");
+		}
+		
 		this.exposure = exposure;
 
 		img = new FloatProcessor(width, height);
@@ -32,30 +54,69 @@ public class FloatImage {
 		setPixels(width, height, pixels);
 	}
 
+	/**
+	 * Constructs a FloatProcessor from a short array.
+	 * 
+	 * @param width
+	 * @param height
+	 * @param pixels Pixel array of length width*height
+	 * @param exposure Exposure in ms
+	 */
 	public FloatImage(int width, int height, short[] pixels, double exposure) {
+		if(width*height != pixels.length) {
+			throw new IllegalArgumentException("The pixel array has the wrong size.");
+		}
+		
 		this.exposure = exposure;
 
 		img = new FloatProcessor(width, height);
 
 		setPixels(width, height, pixels);
 	}
-	
+
+	/**
+	 * Constructs a FloatProcessor from a double array.
+	 * 
+	 * @param width
+	 * @param height
+	 * @param pixels Pixel array of length width*height
+	 * @param exposure Exposure in ms
+	 */
 	public FloatImage(int width, int height, double[] pixels, double exposure) {
+		if(width*height != pixels.length) {
+			throw new IllegalArgumentException("The pixel array has the wrong size.");
+		}
+		
 		this.exposure = exposure;
 
 		img = new FloatProcessor(width, height);
 
 		setPixels(width, height, pixels);
 	}	
-	
-	public FloatImage(int width, int height, float[] pixels, double exposure) {
+
+	/**
+	 * Constructs a FloatProcessor from a float array.
+	 * 
+	 * @param width
+	 * @param height
+	 * @param pixels Pixel array of length width*height
+	 * @param exposure Exposure in ms
+	 */
+	public FloatImage(int width, int height, float[] pixels, double exposure) {			
+		if (width * height != pixels.length) {
+			throw new IllegalArgumentException("The pixel array has the wrong size.");
+		}
 		this.exposure = exposure;
 
 		img = new FloatProcessor(width, height);
 
 		setPixels(width, height, pixels);
 	}
-
+	/**
+	 * Copies a FloatImage pixel array.
+	 * 
+	 * @param image
+	 */
 	public FloatImage(FloatImage image) {
 		this.exposure = image.getExposure();
 		
@@ -102,22 +163,38 @@ public class FloatImage {
 		}
 	}
 	
+	/**
+	 * Returns the exposure in ms.
+	 * @return Exposure in ms.
+	 */
 	public double getExposure() {
 		return exposure;
 	}
-	
+	/**
+	 * Returns the image width.
+	 * @return
+	 */
 	public int getWidth() {
 		return img.getWidth();
 	}
-	
+	/**
+	 * Returns the image height.
+	 * @return
+	 */
 	public int getHeight() {
 		return  img.getHeight();
 	}
-	
+	/**
+	 * Returns the image.
+	 * @return
+	 */
 	public FloatProcessor getImage() {
 		return img;
 	}
-
+	/**
+	 * Adds the image pixel values pixel by pixel.
+	 * @param image
+	 */
 	public void addPixels(BareImage image) {
 		if(image.getDataType() == DataType.BYTE) {
 			addPixels((byte[]) image.getPixels());
@@ -195,7 +272,10 @@ public class FloatImage {
 			}
 		}
 	}
-	
+	/**
+	 * Divides all pixels by d.
+	 * @param d
+	 */
 	public void dividePixels(float d) {
 		if(Math.abs(d) > 0.01) {
 			for(int x=0;x<getWidth();x++) {
@@ -205,7 +285,10 @@ public class FloatImage {
 			}
 		}
 	}
-	
+	/**
+	 * Adds the square of the image pixels, pixel by pixel.
+	 * @param image
+	 */
 	public void addSquarePixels(BareImage image) {
 		if(image.getDataType() == DataType.BYTE) {
 			addSquarePixels((byte[]) image.getPixels());
@@ -282,7 +365,9 @@ public class FloatImage {
 			}
 		}
 	}*/
-	
+	/**
+	 * Squares the image pixel values.
+	 */
 	public void square() {
 		for(int x=0;x<getWidth();x++) {
 			for(int y=0;y<getHeight();y++) {
@@ -290,7 +375,11 @@ public class FloatImage {
 			}
 		}
 	}
-	
+	/**
+	 * Divides the image pixel values by size and substracts the square of imp pixel values.
+	 * @param imp
+	 * @param size
+	 */
 	public void toVariance(FloatProcessor imp, float size) {
 		if(imp == null) {
 			throw new NullPointerException();
@@ -306,12 +395,20 @@ public class FloatImage {
 			}
 		}
 	}
-	
+	/**
+	 * Saves the image as tiff.
+	 * @param path
+	 */
 	public void saveAsTiff(String path) {
 		FileSaver fs = new FileSaver(new ImagePlus("", img)); 
 		fs.saveAsTiff(path);
 	}
-	
+	/**
+	 * Returns the pixel value at (x,y)
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public float getPixelValue(int x, int y) { 
 		return img.getf(x, y);
 	}

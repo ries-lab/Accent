@@ -3,7 +3,9 @@ package de.embl.rieslab.accent.common.data.calibration;
 import java.util.Arrays;
 
 /**
- * 
+ * Represents a camera calibration, including different estimated measurements such as the baseline,
+ * the dark current per second, the read-noise square, the thermal noise square per second, the gain
+ * and the fit coefficient of determinations.
  * 
  * @author Joran Deschamps
  *
@@ -13,27 +15,65 @@ public class Calibration {
 	private int width;
 	private int height;
 	
-	// avg over time fit
-	private double[] baseline; // avg over time fit offset 
-	private double[] dc_per_sec; // dark current per time: slope of the fit
-	private double[] r_sq_avg; // fit coefficient of determination
-	
-	// var over time fit
-	private double[] rn_sq; // read-noise square: fit offset
-	private double[] tn_sq_per_sec; // thermal noise square: fit slope
-	private double[] r_sq_var; // fit coefficient of determination
-	
-	private double[] gain; // var vs avg, fit slope
-	private double[] r_sq_gain; // fit coefficient of determination
+	/**
+	 * Baseline: offset of the linear fit (average_pixel, exposure)
+	 */
+	private double[] baseline;
+	/**
+	 * Dark current per second: slope of the fit (average_pixel, exposure) 
+	 */
+	private double[] dc_per_sec;
+	/**
+	 * (average_pixel, exposure) fit coefficient of determination
+	 */
+	private double[] r_sq_avg;
 
-	public Calibration() {
-	}
+	/**
+	 * Read-noise square: offset of the linear fit (variance_pixel, exposure)
+	 */
+	private double[] rn_sq; 
+	/**
+	 * Thermal noise square: slope of the fit (variance_pixel, exposure) 
+	 */
+	private double[] tn_sq_per_sec;
+	/**
+	 * (variance_pixel, exposure) fit coefficient of determination
+	 */
+	private double[] r_sq_var;
+
+	/**
+	 * Thermal noise square: slope of the fit (variance_pixel, average_pixel) 
+	 */
+	private double[] gain; 
+	/**
+	 * (variance_pixel, average_pixel) fit coefficient of determination
+	 */
+	private double[] r_sq_gain; 
+
+	/**
+	 * Empty constructor used by JacksonJSON to build a Calibration object
+	 */
+	public Calibration() {}
 
 	public Calibration(int width, int height) {
 		this.width = width;
 		this.height = height;
 	}
 	
+	/**
+	 * Constructor.
+	 * 
+	 * @param width Width of the calibrated roi
+	 * @param height Height of the calibrated roi
+	 * @param baseline Baseline 
+	 * @param dc_per_sec Dark-current per second
+	 * @param r_sq_avg Average-exposure fit coefficient of determination
+	 * @param rn_sq Read-noise square
+	 * @param tn_sq_per_sec Thermal noise square per second
+	 * @param r_sq_var Variance-exposure fit coefficient of determination
+	 * @param gain Gain
+	 * @param r_sq_gain Variance-average fit coefficient of determination
+	 */
 	public Calibration(int width, int height, double[] baseline, double[] dc_per_sec, double[] r_sq_avg, double[] rn_sq,
 			double[] tn_sq_per_sec, double[] r_sq_var, double[] gain, double[] r_sq_gain) {
 		this.width = width;
@@ -51,18 +91,34 @@ public class Calibration {
 		setRSqGain(r_sq_gain);
 	}
 
+	/**
+	 * Returns calibration roi width in pixels.
+	 * @return Width in pixels.
+	 */
 	public int getWidth() {
 		return width;
 	}
-	
+
+	/**
+	 * Returns calibration roi height in pixels.
+	 * @return Height in pixels.
+	 */
 	public int getHeight() {
 		return height;
 	}
 	
+	/**
+	 * Returns the baseline for each pixel.
+	 * @return Baseline as a double array of length width*height
+	 */
 	public double[] getBaseline() {
 		return baseline;
 	}
 	
+	/**
+	 * Sets the baseline for each pixel.
+	 * @param baseline Baseline for each pixel
+	 */
 	public void setBaseline(double[] baseline) {
 		if(baseline == null)
 			throw new NullPointerException();
@@ -72,11 +128,17 @@ public class Calibration {
 		
 		this.baseline = baseline;
 	}
-	
+	/**
+	 * Returns the dark current per second for each pixel.
+	 * @return Dark current per second as a double array of length width*height
+	 */
 	public double[] getDcPerSec() {
 		return dc_per_sec;
 	}
-	
+	/**
+	 * Sets the dark current per second for each pixel.
+	 * @param dc_per_sec Dark current per second fo each pixel
+	 */
 	public void setDcPerSec(double[] dc_per_sec) {
 		if(dc_per_sec == null)
 			throw new NullPointerException();
@@ -87,11 +149,17 @@ public class Calibration {
 		this.dc_per_sec = dc_per_sec;
 	}
 
-	
+	/**
+	 * Returns the (average,exposure) fit coefficient of determination for each pixel.
+	 * @return Double array of length width*height.
+	 */
 	public double[] getRSqAvg() {
 		return r_sq_avg;
 	}
-	
+	/**
+	 * Sets the (average,exposure) fit coeff of determination for each pixel.
+	 * @param r_sq_avg 
+	 */
 	public void setRSqAvg(double[] r_sq_avg) {
 		if(r_sq_avg == null)
 			throw new NullPointerException();
@@ -177,6 +245,13 @@ public class Calibration {
 		this.r_sq_gain = r_sq_gain;
 	}
 	
+	/**
+	 * Compares two configurations.
+	 * 
+	 * @param c1 Configuration 1
+	 * @param c2 Configuration 2
+	 * @return True if all members of c1 are equal to those of c2, false otherwise.
+	 */
 	public static boolean areEquals(Calibration c1, Calibration c2) {
 		return c1.getWidth()==c2.getWidth() && c1.getHeight()==c2.getHeight() && Arrays.equals(c1.getBaseline(), c2.getBaseline()) 
 				&& Arrays.equals(c1.getDcPerSec(), c2.getDcPerSec()) && Arrays.equals(c1.getRSqAvg(), c2.getRSqAvg()) 

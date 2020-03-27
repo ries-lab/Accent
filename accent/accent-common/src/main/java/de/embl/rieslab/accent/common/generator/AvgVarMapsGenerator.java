@@ -11,6 +11,12 @@ import de.embl.rieslab.accent.common.data.image.FloatImage;
 import de.embl.rieslab.accent.common.interfaces.Generator;
 import de.embl.rieslab.accent.common.interfaces.PipelineController;
 
+/**
+ * Generates average and variance maps.
+ * 
+ * @author Joran Deschamps
+ *
+ */
 public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implements Generator {
 
 	private PipelineController controller;
@@ -18,14 +24,18 @@ public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implement
 	private double[] exposures;
 	private boolean running_ = false;
 	private String path;
-		
+	
+	/**
+	 * Constructor.
+	 * @param controller
+	 */
 	public AvgVarMapsGenerator(PipelineController controller) {
 		if(controller == null)
 			throw new NullPointerException("Controller cannot be null.");
 		
 		this.controller = controller;
 	}
-	
+
 	@Override
 	public boolean isRunning() {
 		return running_;

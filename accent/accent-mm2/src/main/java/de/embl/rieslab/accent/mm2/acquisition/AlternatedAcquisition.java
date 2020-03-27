@@ -102,7 +102,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 			prerun = true;
 			
 			int tot_expo = 0;
-			for(int i: settings.exposures_) {
+			for(double i: settings.exposures_) {
 				tot_expo += i;
 			}
 			prerunFrames = settings.preRunTime_*1000*60 / tot_expo;

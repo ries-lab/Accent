@@ -1,5 +1,6 @@
 package de.embl.rieslab.accent.mm2;
 
+import java.awt.Rectangle;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +33,8 @@ public class MM2Controller extends AbstractController {
 	private AcquisitionSettings acqSettings;
 	private String[] directoriesToLoad;
 	private ArrayList<ArrayBlockingQueue<BareImage>> queues;
-
+	private int image_width = -1;
+	private int image_height = -1;
 	private boolean acqDone;
 	
 	public MM2Controller(Studio studio) {
@@ -40,6 +42,17 @@ public class MM2Controller extends AbstractController {
 			throw new NullPointerException();
 		}
 		this.studio = studio;
+		
+		// hack to get image size
+		try {
+			studio.getCMMCore().clearROI();
+			Rectangle r = studio.getCMMCore().getROI();
+
+			image_width = r.width;
+			image_height = r.height;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/////////////// Acquisition
@@ -237,4 +250,11 @@ public class MM2Controller extends AbstractController {
 		return studio;
 	}
 
+	public int getImageHeight() {
+		return image_height;
+	}
+	
+	public int getImageWidth() {
+		return image_width;
+	}
 }

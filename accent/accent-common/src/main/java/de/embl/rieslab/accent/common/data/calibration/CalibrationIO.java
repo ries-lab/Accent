@@ -12,10 +12,24 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+/**
+ * A class to read/write calibrations to/from the disk. It uses JacksonJSON to serialize objects.
+ * 
+ * @author Joran Deschamps
+ *
+ */
 public class CalibrationIO {
-	
+	/**
+	 * Accent calibration file extension.
+	 */
 	public final static String CALIB_EXT = "calb";
 	
+	/**
+	 * Attempts to read a calibration from a file. 
+	 * 
+	 * @param fileToReadFrom Calibration file
+	 * @return Read calibration, or null if reading was unsuccessful.
+	 */
 	public static Calibration read(File fileToReadFrom) {
 		
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -38,6 +52,13 @@ public class CalibrationIO {
 		return null;
 	}
 
+	/**
+	 * Writes a calibration to a file.
+	 * 
+	 * @param fileToWriteTo FIle to which the calibration is written.
+	 * @param calibration Calibration to write.
+	 * @return True if the write was successful, false otherwise.
+	 */
 	public static boolean write(File fileToWriteTo, Calibration calibration) {
 
 		ObjectMapper objectMapper = new ObjectMapper();
