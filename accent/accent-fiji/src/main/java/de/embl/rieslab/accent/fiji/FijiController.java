@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JFrame;
@@ -48,6 +49,14 @@ public class FijiController extends AbstractController {
 		}
 	}
 	 
+	public FijiController(Map<Double, String> c, DatasetService dataService2, LogService logService2) {
+		this.windowIDs = null;
+		this.dataService = dataService;
+		this.logService = logService;
+		
+		ij1 = false;
+	}
+
 	@Override
 	public boolean startProcessor(String path, HashMap<String, Double> openedDatasets) {
 

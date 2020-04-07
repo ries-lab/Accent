@@ -1,5 +1,13 @@
 package de.embl.rieslab.accent.fiji;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 import org.scijava.command.Command;
@@ -7,6 +15,7 @@ import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
+import de.embl.rieslab.accent.common.utils.AccentUtils;
 import de.embl.rieslab.accent.common.utils.Dialogs;
 import ij.WindowManager;
 import net.imagej.DatasetService;
@@ -23,7 +32,39 @@ public class AccentFiji implements Command{
     
 	@Override
 	public void run() {
+	    JFileChooser chooser = new JFileChooser();
+	    chooser.setCurrentDirectory(new java.io.File("."));
+	    chooser.setDialogTitle("choosertitle");
+	    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	    chooser.setAcceptAllFileFilterUsed(false);
 
+	    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+	    	try {
+	    		String path = chooser.getSelectedFile().getPath();
+	    		
+				Map<Double, String> c = Files
+				.list(Paths.get(path))
+				.filter(Files::isDirectory)
+				.map(Path::getFileName)
+				.collect(Collectors.toMap(AccentUtils::extractExposureMs, Path::toString));
+				
+				c.remove(0); // folders without ###ms in the name
+
+				if(c.size()< 3) {
+					FijiController controller = new FijiController(c, dataService, logService);
+					JFrame frame = controller.getMainFrame();
+					frame.setVisible(true);
+				} else {
+					Dialogs.showErrorMessage("Not enough datasets open (minimum of 3).");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    } else {
+	    	return;
+	    }
+		
+/*
 		// check if IJ1 can grab the frames
 		String[] ids = WindowManager.getImageTitles();
 		if(ids.length > 2) {
@@ -38,17 +79,14 @@ public class AccentFiji implements Command{
 			frame.setVisible(true);
 		} else {
 			Dialogs.showErrorMessage("Not enough datasets open (minimum of 3).");
-		}		
+		}	
+		*/
 	}
 
 	public static void main(final String... args) throws Exception {
         // create the ImageJ application context with all available services
         final ImageJ ijlaunch = new net.imagej.ImageJ();
         ijlaunch.ui().showUI();
-        
-		ij.IJ.open("D:/Accent/fiji/MMStack_Default.ome_10ms.tif");
-		ij.IJ.open("D:/Accent/fiji/MMStack_Default.ome_50ms.tif");
-		ij.IJ.open("D:/Accent/fiji/MMStack_Default.ome_100ms.tif");
         
 		ijlaunch.command().run(AccentFiji.class, true);
     }

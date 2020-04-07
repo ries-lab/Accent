@@ -11,7 +11,7 @@ import javax.swing.table.DefaultTableModel;
 
 import de.embl.rieslab.accent.common.interfaces.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
-import de.embl.rieslab.accent.common.utils.utils;
+import de.embl.rieslab.accent.common.utils.AccentUtils;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
@@ -214,7 +214,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 		
 		for(int i=0;i<n;i++) {
 			String ms = (String) table.getValueAt(i, 1);
-			if(!ms.equals("") && utils.isNumeric(ms)) {
+			if(!ms.equals("") && AccentUtils.isNumeric(ms)) {
 				Double exposure = Double.parseDouble(ms);
 				
 				map.put(datasets.get(i),exposure);
@@ -266,7 +266,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 		
 		for(int i=0;i<datasets.size();i++) {
 			// check if name contains "ms"
-			double expo = utils.extractExposureMs(datasets.get(i));
+			double expo = AccentUtils.extractExposureMs(datasets.get(i));
 			if(Double.compare(expo, 0) != 0)
 				map.put(datasets.get(i), expo);
 		}

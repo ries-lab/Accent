@@ -23,7 +23,7 @@ import javax.swing.border.TitledBorder;
 
 import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
-import de.embl.rieslab.accent.common.utils.utils;
+import de.embl.rieslab.accent.common.utils.AccentUtils;
 
 import javax.swing.UIManager;
 import java.awt.Component;
@@ -307,7 +307,7 @@ public class AcqOptionFrame extends JFrame {
 	
 	protected int getRoiX0() {
 		String s = x0Field.getText();
-		if(utils.isInteger(s)) {
+		if(AccentUtils.isInteger(s)) {
 			return Integer.parseInt(s);
 		}
 		return -1;
@@ -315,7 +315,7 @@ public class AcqOptionFrame extends JFrame {
 	
 	protected int getRoiY0() {
 		String s = y0Field.getText();
-		if(utils.isInteger(s)) {
+		if(AccentUtils.isInteger(s)) {
 			return Integer.parseInt(s);
 		}
 		return -1;
@@ -323,7 +323,7 @@ public class AcqOptionFrame extends JFrame {
 	
 	protected int getRoiW() {
 		String s = widthField.getText();
-		if(utils.isInteger(s)) {
+		if(AccentUtils.isInteger(s)) {
 			return Integer.parseInt(s);
 		}
 		return -1;
@@ -331,7 +331,7 @@ public class AcqOptionFrame extends JFrame {
 	
 	protected int getRoiH() {
 		String s = heightField.getText();
-		if(utils.isInteger(s)) {
+		if(AccentUtils.isInteger(s)) {
 			return Integer.parseInt(s);
 		}
 		return -1;

@@ -19,7 +19,7 @@ import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.data.roi.SimpleRoiWriter;
 import de.embl.rieslab.accent.common.interfaces.PipelineController;
 import de.embl.rieslab.accent.common.utils.Dialogs;
-import de.embl.rieslab.accent.common.utils.utils;
+import de.embl.rieslab.accent.common.utils.AccentUtils;
 
 public class AlternatedAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
 
@@ -260,7 +260,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		int i;
 		for(i=folder.length()-1; i>=0; i--) {
 			if(folder.charAt(i) == '_') {
-				if(utils.isInteger(folder.substring(i+1))){
+				if(AccentUtils.isInteger(folder.substring(i+1))){
 					num = Integer.parseInt(folder.substring(i+1));
 					break;
 				}

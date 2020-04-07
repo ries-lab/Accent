@@ -34,7 +34,7 @@ import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
 import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
-import de.embl.rieslab.accent.common.utils.utils;
+import de.embl.rieslab.accent.common.utils.AccentUtils;
 import de.embl.rieslab.accent.mm2.MM2Controller;
 
 public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
@@ -285,7 +285,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		StringBuilder sb = new StringBuilder("The following exposures are invalid:\n");
 		ArrayList<Double> list = new ArrayList<Double>();
 		for(int i=0;i<exp.length;i++) {
-			if(utils.isNumeric(exp[i])) {
+			if(AccentUtils.isNumeric(exp[i])) {
 				list.add(Double.valueOf(exp[i]));
 			} else {
 				sb.append("<");

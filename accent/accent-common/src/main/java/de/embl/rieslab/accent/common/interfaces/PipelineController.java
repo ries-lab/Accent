@@ -88,7 +88,7 @@ public interface PipelineController {
 	
 	/**
 	 * Checks if the processor is ready.
-	 * @return
+	 * @return True if it is, false otherwise
 	 */
 	public boolean isProcessorReady();
 	

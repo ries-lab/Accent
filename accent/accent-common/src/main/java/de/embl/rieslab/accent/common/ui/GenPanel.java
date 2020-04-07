@@ -22,7 +22,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
 import de.embl.rieslab.accent.common.interfaces.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
-import de.embl.rieslab.accent.common.utils.utils;
+import de.embl.rieslab.accent.common.utils.AccentUtils;
 
 public class GenPanel extends JPanel implements GeneratePanelInterface{
 
@@ -134,7 +134,7 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 		StringBuilder sb = new StringBuilder("The following exposures are invalid:\n");
 		ArrayList<Double> list = new ArrayList<Double>();
 		for(int i=0;i<exp.length;i++) {
-			if(utils.isNumeric(exp[i])) {
+			if(AccentUtils.isNumeric(exp[i])) {
 				list.add(Double.valueOf(exp[i]));
 			} else {
 				sb.append("<");

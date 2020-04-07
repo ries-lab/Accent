@@ -10,7 +10,7 @@ import org.micromanager.data.internal.DefaultCoords;
 
 import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.interfaces.Loader;
-import de.embl.rieslab.accent.common.utils.utils;
+import de.embl.rieslab.accent.common.utils.AccentUtils;
 
 public class MMStacksLoader implements Loader{
 
@@ -85,7 +85,7 @@ public class MMStacksLoader implements Loader{
 					store.close();
 				}
 				store = studio.data().loadData(directories[currentDirectory], true);
-				currentExposure = utils.extractExposureMs(directories[currentDirectory]);
+				currentExposure = AccentUtils.extractExposureMs(directories[currentDirectory]);
 
 			} catch (IOException e) {
 				e.printStackTrace();

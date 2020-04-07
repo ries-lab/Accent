@@ -1,8 +1,9 @@
 package de.embl.rieslab.accent.common.utils;
 
+import java.nio.file.Path;
 import java.util.regex.Pattern;
 
-public class utils {
+public class AccentUtils {
 
 
 	public static boolean isInteger(String str) {
@@ -28,10 +29,14 @@ public class utils {
 	    }
 	    return true;
 	}
+		
+	public static double extractExposureMs(Path path) {
+		return extractExposureMs(path.toString());
+	}
 	
 	public static double extractExposureMs(String fileName) {
 		if (fileName == null || fileName.length() < 3)
-			return 0;
+			return 0.;
 		
 		// inverts string, gets the first occurrence of "sm" to get the last "ms" in fileName
 		String inv = (new StringBuilder(fileName)).reverse().toString(); 
@@ -53,7 +58,7 @@ public class utils {
 			}
 			return Double.parseDouble(sb.reverse().toString());
 		}
-		return 0;
+		return 0.;
 	}      
 	
 	/*
