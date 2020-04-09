@@ -17,7 +17,7 @@ import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 
 public abstract class CalibrationProcessor<T extends CalibrationImage> extends Thread {
 
-	private PipelineController controller;
+	private PipelineController<T> controller;
 	private Loader<T> loader;
 	protected boolean stop = false;
 	private boolean running = false;
@@ -33,7 +33,7 @@ public abstract class CalibrationProcessor<T extends CalibrationImage> extends T
 	public final static int STOP = -2;
 	public final static int PROGRESS = -3;
 	
-	public CalibrationProcessor(String folder, PipelineController controller, Loader<T> loader) {
+	public CalibrationProcessor(String folder, PipelineController<T> controller, Loader<T> loader) {
 		if(folder == null || controller == null || loader == null)		
 			throw new NullPointerException();
 		
@@ -89,9 +89,9 @@ public abstract class CalibrationProcessor<T extends CalibrationImage> extends T
 		showProgressOnEDT(START, null, 0, 0, 0);
 		
 		// compute avg and var images
-		AvgVarStacks avgvar = computeAvgAndVar();
-		FloatImage[] avgs = avgvar.getAvgs();
-		FloatImage[] vars = avgvar.getVars();
+		AvgVarStacks<T> avgvar = computeAvgAndVar();
+		T[] avgs = avgvar.getAvgs();
+		T[] vars = avgvar.getVars();
 		
 		if(stop) {
 			showProgressOnEDT(STOP, null, 0, 0, 0);
@@ -201,9 +201,9 @@ public abstract class CalibrationProcessor<T extends CalibrationImage> extends T
 	/**
 	 * Compute the average and variance images from the Loader input and store them in avgs and vars.
 	 */
-	protected abstract AvgVarStacks computeAvgAndVar();
+	protected abstract AvgVarStacks<T> computeAvgAndVar();
 	
-	protected Calibration performLinearRegressions(FloatImage[] avgs, FloatImage[] vars) {
+	protected Calibration performLinearRegressions(T[] avgs, T[] vars) {
 		int width = (int) avgs[0].getWidth();
 		int height = (int) avgs[0].getHeight();
 		int totalLength = height * width;
@@ -340,7 +340,7 @@ public abstract class CalibrationProcessor<T extends CalibrationImage> extends T
 		//HistogramWindow hw_r_sq_gain = new HistogramWindow(new ImagePlus("R square of the gain", r_sq_gain.getImage()));
 	}
 	
-	protected PipelineController getController() {
+	protected PipelineController<T> getController() {
 		return controller;
 	}
 

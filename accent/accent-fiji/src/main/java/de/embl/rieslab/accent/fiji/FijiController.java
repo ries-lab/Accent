@@ -20,21 +20,29 @@ import de.embl.rieslab.accent.common.processor.StacksProcessor;
 import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.fiji.data.image.FijiDataset;
 import de.embl.rieslab.accent.fiji.data.image.ImagePlusDataset;
+import de.embl.rieslab.accent.fiji.data.image.ImgCalibrationImage;
 import de.embl.rieslab.accent.fiji.loader.CurrentImgsLoader;
 import de.embl.rieslab.accent.fiji.loader.ImagePlusLoader;
 import de.embl.rieslab.accent.fiji.ui.MainFrame;
 import ij.ImagePlus;
 import ij.WindowManager;
+import io.scif.services.DatasetIOService;
 import net.imagej.Dataset;
 import net.imagej.DatasetService;
 
-public class FijiController extends AbstractController {
+public class FijiController extends AbstractController<ImgCalibrationImage> {
 
-	private LogService logService;
-	private Map
+	public final static String LOADER_STACK = "load stacks";
+	public final static String LOADER_SINGLES = "load singles";
 	
-	public FijiController(LogService logService) {
-		this.logService = logService;
+	private DatasetIOService ioservice_;
+	private LogService logService_;
+	private Map<Double, String> datasets_;
+	
+	public FijiController(DatasetIOService ioservice, LogService logService, Map<Double, String> datasets) {
+		this.logService_ = logService;
+		this.ioservice_ = ioservice;
+		this.datasets_ = datasets;
 	}
 
 	@Override
@@ -162,17 +170,17 @@ public class FijiController extends AbstractController {
 	}
 
 	@Override
-	public Loader getLoader(String parameter) {
-		if(!ij1 && datasetsToProcess != null && datasetsToProcess.size() > 2) {
+	public Loader<ImgCalibrationImage> getLoader(String parameter) {
+		if() {
 			return new CurrentImgsLoader(datasetsToProcess); 
-		} else if(ij1 && ipdatasetsToProcess != null && ipdatasetsToProcess.size() > 2) {
+		} else if() {
 			return new ImagePlusLoader(ipdatasetsToProcess); 
 		}
 		return null;
 	}
 
 	@Override
-	public CalibrationProcessor getProcessor(String path, Loader loader) {
+	public CalibrationProcessor<ImgCalibrationImage> getProcessor(String path, Loader<ImgCalibrationImage> loader) {
 		if(loader != null) {
 			return new StacksProcessor(path, this, loader);
 		}
@@ -200,8 +208,8 @@ public class FijiController extends AbstractController {
 	}
 
 	@Override
-	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<BareImage>> queues) {
-		// Do nothing
+	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<ImgCalibrationImage>> queues) {
+		// do nothing
 		return false;
 	}
 }

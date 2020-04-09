@@ -402,9 +402,10 @@ public class FloatImage implements CalibrationImage {
 	 * Saves the image as tiff.
 	 * @param path
 	 */
-	public void saveAsTiff(String path) {
+	@Override
+	public boolean saveAsTiff(String path) {
 		FileSaver fs = new FileSaver(new ImagePlus("", img)); 
-		fs.saveAsTiff(path);
+		return fs.saveAsTiff(path);
 	}
 	/**
 	 * Returns the pixel value at (x,y)
@@ -412,6 +413,7 @@ public class FloatImage implements CalibrationImage {
 	 * @param y
 	 * @return
 	 */
+	@Override
 	public float getPixelValue(int x, int y) { 
 		return img.getf(x, y);
 	}

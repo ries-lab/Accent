@@ -22,7 +22,6 @@ import net.imglib2.type.numeric.real.FloatType;
 
 public class SingleImgLoaderTest {
 
-
 	int width = 10;
 	int height = 20;
 	int numFrames = 100;

@@ -151,6 +151,21 @@ public class BareImage implements CalibrationImage{
 		return exposure;
 	}
 	
+	@Override
+	public float getPixelValue(int x, int y) {
+		if(x>=0 && x<width && y>=0 && y<height) {
+			if(type.equals(DataType.BYTE)){
+				return (float) Byte.toUnsignedInt( ( (byte[]) pixels)[y*width+x] );
+			} else if(type.equals(DataType.SHORT)){
+				return (float) Short.toUnsignedInt( ( (short[]) pixels)[y*width+x] );
+			} else {
+				return ( (float[]) pixels)[y*width+x];
+			}
+		}
+
+		return (float) 0.;
+	}
+	
 	/**
 	 * Class used to characterize the pixel array type of a BareImage
 	 * 
@@ -159,5 +174,11 @@ public class BareImage implements CalibrationImage{
 	 */
 	public enum DataType{
 		BYTE, SHORT, FLOAT;
+	}
+
+	@Override
+	public boolean saveAsTiff(String fileName) {
+		// do nothing
+		return false;
 	}
 }
