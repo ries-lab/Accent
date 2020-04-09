@@ -1,6 +1,7 @@
 package de.embl.rieslab.accent.common.data.image;
 
 import de.embl.rieslab.accent.common.data.image.BareImage.DataType;
+import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
 import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.process.FloatProcessor;
@@ -11,7 +12,7 @@ import ij.process.FloatProcessor;
  * @author Joran Deschamps
  *
  */
-public class FloatImage {
+public class FloatImage implements CalibrationImage {
 
 	private final double exposure;
 	private FloatProcessor img;
@@ -26,11 +27,11 @@ public class FloatImage {
 		img = new FloatProcessor(image.getWidth(), image.getHeight());
 
 		if(image.getDataType() == DataType.BYTE) {
-			setPixels(image.getWidth(), image.getHeight(), (byte[]) image.getPixels());
+			setPixels(image.getWidth(), image.getHeight(), (byte[]) image.getImage());
 		} else if(image.getDataType() == DataType.SHORT) {
-			setPixels(image.getWidth(), image.getHeight(), (short[]) image.getPixels());
+			setPixels(image.getWidth(), image.getHeight(), (short[]) image.getImage());
 		} else {
-			setPixels(image.getWidth(), image.getHeight(), (float[]) image.getPixels());
+			setPixels(image.getWidth(), image.getHeight(), (float[]) image.getImage());
 		}
 	}
 
@@ -167,6 +168,7 @@ public class FloatImage {
 	 * Returns the exposure in ms.
 	 * @return Exposure in ms.
 	 */
+	@Override
 	public double getExposure() {
 		return exposure;
 	}
@@ -188,6 +190,7 @@ public class FloatImage {
 	 * Returns the image.
 	 * @return
 	 */
+	@Override
 	public FloatProcessor getImage() {
 		return img;
 	}
@@ -197,11 +200,11 @@ public class FloatImage {
 	 */
 	public void addPixels(BareImage image) {
 		if(image.getDataType() == DataType.BYTE) {
-			addPixels((byte[]) image.getPixels());
+			addPixels((byte[]) image.getImage());
 		} else if(image.getDataType() == DataType.SHORT) {
-			addPixels((short[]) image.getPixels());
+			addPixels((short[]) image.getImage());
 		} else {
-			addPixels((float[]) image.getPixels());
+			addPixels((float[]) image.getImage());
 		}
 	}
 	
@@ -291,11 +294,11 @@ public class FloatImage {
 	 */
 	public void addSquarePixels(BareImage image) {
 		if(image.getDataType() == DataType.BYTE) {
-			addSquarePixels((byte[]) image.getPixels());
+			addSquarePixels((byte[]) image.getImage());
 		} else if(image.getDataType() == DataType.SHORT) {
-			addSquarePixels((short[]) image.getPixels());
+			addSquarePixels((short[]) image.getImage());
 		} else {
-			addSquarePixels((float[]) image.getPixels());
+			addSquarePixels((float[]) image.getImage());
 		}
 	}
 	

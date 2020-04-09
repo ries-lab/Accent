@@ -1,8 +1,18 @@
 package de.embl.rieslab.accent.fiji.datagen;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Test;
+
+import de.embl.rieslab.accent.fiji.utils.AccentFijiUtils;
 
 import net.imagej.ImageJ;
 import net.imglib2.Cursor;
@@ -20,6 +30,9 @@ import net.imglib2.view.Views;
 
 public class GenerateDataTest {
 	
+	/**
+	 * Tests if the generated UnsignedByte images have the expected average and variance per pixel (within 1% and 5% tolerance respectively).
+	 */
 	@Test
 	public void testByteAverageVariance() {
 		int width = 10;
@@ -80,7 +93,10 @@ public class GenerateDataTest {
 			}
 		}
 	}	
-
+	
+	/**
+	 * Tests if the generated Float images have the expected average and variance per pixel (within 1% and 5% tolerance respectively).
+	 */
 	@Test
 	public void testFloatAverageVariance() {
 		int width = 10;
@@ -142,6 +158,9 @@ public class GenerateDataTest {
 		}
 	}
 	
+	/**
+	 * Tests if the generated UnsignedShort images have the expected average and variance per pixel (within 1% and 5% tolerance respectively).
+	 */
 	@Test
 	public void testShortAverageVariance() {
 		int width = 10;
@@ -202,6 +221,7 @@ public class GenerateDataTest {
 		}
 	}
 	
+	// takes too long, kept for reference
 	//@Test
 	public void testShortAverageVarianceImageJOp() {
 		final ImageJ ij = new ImageJ();
@@ -272,17 +292,7 @@ public class GenerateDataTest {
 		res = (end-start)/n/1000.;
 		System.out.println(res);
 	}
-	
-	public void testGenerateAndSave() {
-		int width = 100;
-		int height = 200;
-		int numFrames = 200;
-		double[] exps = {0.1, 10, 50, 300};
 		
-		String path = "D:/Accent/fiji";
-		GenerateData.generateImagesToDisk(path, width, height, numFrames, exps);
-	}
-	
 	@Test
 	public void testGaussian() {
 		double[] d = GenerateData.generateGaussianDistributedValues(3.5,10,200000);
@@ -296,5 +306,60 @@ public class GenerateDataTest {
 
 		assertEquals(3.5, mean, 0.01*3.5);
 		assertEquals(10, var, 0.01*10);
+	}
+	
+	@Test
+	public void testWritingToDisk() {
+		String dir = "AccentTemp";		
+		File f_dir = new File(dir);
+		if(!f_dir.exists()) {
+			f_dir.mkdir();
+		}
+
+		int width = 10;
+		int height = 20;
+		int numFrames = 100;
+		double[] exps = {0.1, 1, 10};
+		
+		
+		// stacks
+		GenerateData.generateAndWriteToDisk(dir, width, height, numFrames, exps, true, new UnsignedShortType());
+		Map<Double, String> m = AccentFijiUtils.getExposures(dir);
+
+		assertEquals(exps.length, m.size());
+		assertEquals(exps.length, AccentFijiUtils.getNumberTifsContainMs(dir));
+		
+		// deletes all
+		for(Entry<Double, String> e: m.entrySet()) {
+			File f = new File(e.getValue());
+			if(f.exists())
+				assertTrue(f.delete());
+		}
+		
+		// single images
+		GenerateData.generateAndWriteToDisk(dir, width, height, numFrames, exps, false, new UnsignedShortType());
+		
+		m = AccentFijiUtils.getExposures(dir);
+		assertEquals(exps.length, m.size());
+		assertEquals(exps.length, AccentFijiUtils.getNumberDirectoriesContainMs(dir));
+		
+		for(Entry<Double, String> el: m.entrySet()) {
+			assertEquals(numFrames, AccentFijiUtils.getNumberTifs(el.getValue()));
+			
+			try {
+				Files.list(Paths.get(el.getValue()))
+					.forEach(e -> (new File(e.toString())).delete());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+			// deletes all
+			File f = new File(el.getValue());
+			if(f.exists())
+				assertTrue(f.delete());
+		}
+		
+		// attempts to delete folder
+		f_dir.delete();
 	}
 }

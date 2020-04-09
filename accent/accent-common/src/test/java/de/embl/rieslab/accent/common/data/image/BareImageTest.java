@@ -25,37 +25,37 @@ public class BareImageTest {
 		assertEquals(width, b1.getWidth());
 		assertEquals(height, b1.getHeight());
 		assertEquals(exposure, b1.getExposure(),0.0001);
-		assertEquals(bytes, b1.getPixels());
+		assertEquals(bytes, b1.getImage());
 		
 		BareImage b2 = new BareImage(1, bytes, width, height, exposure);
 		assertEquals(width, b2.getWidth());
 		assertEquals(height, b2.getHeight());
 		assertEquals(exposure, b2.getExposure(),0.0001);
-		assertEquals(bytes, b2.getPixels());
+		assertEquals(bytes, b2.getImage());
 
 		BareImage s1 = new BareImage(BareImage.DataType.SHORT, shorts, width, height, exposure);
 		assertEquals(width, s1.getWidth());
 		assertEquals(height, s1.getHeight());
 		assertEquals(exposure, s1.getExposure(),0.0001);
-		assertEquals(shorts, s1.getPixels());
+		assertEquals(shorts, s1.getImage());
 		
 		BareImage s2 = new BareImage(BareImage.DataType.SHORT, shorts, width, height, exposure);
 		assertEquals(width, s2.getWidth());
 		assertEquals(height, s2.getHeight());
 		assertEquals(exposure, s2.getExposure(),0.0001);
-		assertEquals(shorts, s2.getPixels());
+		assertEquals(shorts, s2.getImage());
 
 		BareImage f1 = new BareImage(BareImage.DataType.FLOAT, floats, width, height, exposure);
 		assertEquals(width, f1.getWidth());
 		assertEquals(height, f1.getHeight());
 		assertEquals(exposure, f1.getExposure(),0.0001);
-		assertEquals(floats, f1.getPixels());
+		assertEquals(floats, f1.getImage());
 		
 		BareImage f2 = new BareImage(BareImage.DataType.FLOAT, floats, width, height, exposure);
 		assertEquals(width, f2.getWidth());
 		assertEquals(height, f2.getHeight());
 		assertEquals(exposure, f2.getExposure(),0.0001);
-		assertEquals(floats, f2.getPixels());
+		assertEquals(floats, f2.getImage());
 	}
 	
 	@Test

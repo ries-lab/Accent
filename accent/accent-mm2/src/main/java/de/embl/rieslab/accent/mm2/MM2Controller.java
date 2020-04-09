@@ -14,7 +14,7 @@ import org.micromanager.Studio;
 import de.embl.rieslab.accent.common.AbstractController;
 import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
 import de.embl.rieslab.accent.common.data.image.BareImage;
-import de.embl.rieslab.accent.common.interfaces.Loader;
+import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import de.embl.rieslab.accent.common.processor.StacksProcessor;
 import de.embl.rieslab.accent.mm2.acquisition.Acquisition;
@@ -24,7 +24,7 @@ import de.embl.rieslab.accent.mm2.loader.QueuesLoader;
 import de.embl.rieslab.accent.mm2.processor.QueuesProcessor;
 import de.embl.rieslab.accent.mm2.ui.MainFrame;
 
-public class MM2Controller extends AbstractController {
+public class MM2Controller extends AbstractController<BareImage> {
 
 	public static String QUEUES_LOADER = "Queues";
 	
@@ -219,7 +219,7 @@ public class MM2Controller extends AbstractController {
 	}
 
 	@Override
-	public Loader getLoader(String parameter) {
+	public Loader<BareImage> getLoader(String parameter) {
 		if(parameter.equals(DEFAULT_LOADER)) {
 			if(directoriesToLoad != null) {
 				return new MMStacksLoader(studio, directoriesToLoad);
@@ -237,7 +237,7 @@ public class MM2Controller extends AbstractController {
 	}
 
 	@Override
-	public CalibrationProcessor getProcessor(String path, Loader loader) {
+	public CalibrationProcessor<BareImage> getProcessor(String path, Loader<BareImage> loader) {
 		if(loader instanceof QueuesLoader) {
 			return new QueuesProcessor(path, this, (QueuesLoader) loader);
 		} else if (loader instanceof MMStacksLoader) {

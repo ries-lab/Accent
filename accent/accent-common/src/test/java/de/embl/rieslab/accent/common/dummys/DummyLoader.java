@@ -2,9 +2,9 @@ package de.embl.rieslab.accent.common.dummys;
 
 import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.data.image.FloatImage;
-import de.embl.rieslab.accent.common.interfaces.Loader;
+import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 
-public class DummyLoader implements Loader {
+public class DummyLoader implements Loader<BareImage> {
 
 	public int nChannels;
 	public double[] exposures;
@@ -49,8 +49,7 @@ public class DummyLoader implements Loader {
 			}
 			avgs[i] = new FloatImage(width, height, f_avg, exposures[i]);
 			vars[i] = new FloatImage(width, height, f_var, exposures[i]);
-		}
-		
+		}	
 	}
 	
 	@Override
@@ -78,28 +77,9 @@ public class DummyLoader implements Loader {
 	}
 
 	@Override
-	public boolean isDone() {
-		for(int i: curr_ind) {
-			if(i < 2) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public void close() {}
-
-	@Override
 	public int getNumberOfChannels() {
 		return nChannels;
 	}
-
-	@Override
-	public boolean isOpen(int channel) {
-		return curr_channel == channel;
-	}
-
 	@Override
 	public boolean openChannel(int channel) {
 		if(channel < 0 || channel >= nChannels)

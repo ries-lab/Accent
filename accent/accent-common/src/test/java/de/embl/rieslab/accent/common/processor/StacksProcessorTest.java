@@ -18,7 +18,7 @@ public class StacksProcessorTest {
 		String dir = "/temp_proc/";
 		StacksProcessor proc = new StacksProcessor(dir, cont, load);
 		
-		AvgVarStacks a = proc.computeAvgAndVar(load);
+		AvgVarStacks a = proc.computeAvgAndVar();
 		assertEquals(num_exp, a.getAvgs().length);
 		assertEquals(num_exp, a.getVars().length);
 		

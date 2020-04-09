@@ -1,4 +1,4 @@
-package de.embl.rieslab.accent.common.interfaces;
+package de.embl.rieslab.accent.common.interfaces.pipeline;
 
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 /**

@@ -11,13 +11,14 @@ import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
 import de.embl.rieslab.accent.common.data.image.FloatImage;
-import de.embl.rieslab.accent.common.interfaces.Loader;
-import de.embl.rieslab.accent.common.interfaces.PipelineController;
+import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
+import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
+import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 
-public abstract class CalibrationProcessor extends Thread {
+public abstract class CalibrationProcessor<T extends CalibrationImage> extends Thread {
 
 	private PipelineController controller;
-	private Loader loader;
+	private Loader<T> loader;
 	protected boolean stop = false;
 	private boolean running = false;
 	
@@ -32,7 +33,7 @@ public abstract class CalibrationProcessor extends Thread {
 	public final static int STOP = -2;
 	public final static int PROGRESS = -3;
 	
-	public CalibrationProcessor(String folder, PipelineController controller, Loader loader) {
+	public CalibrationProcessor(String folder, PipelineController controller, Loader<T> loader) {
 		if(folder == null || controller == null || loader == null)		
 			throw new NullPointerException();
 		
@@ -88,7 +89,7 @@ public abstract class CalibrationProcessor extends Thread {
 		showProgressOnEDT(START, null, 0, 0, 0);
 		
 		// compute avg and var images
-		AvgVarStacks avgvar = computeAvgAndVar(loader);
+		AvgVarStacks avgvar = computeAvgAndVar();
 		FloatImage[] avgs = avgvar.getAvgs();
 		FloatImage[] vars = avgvar.getVars();
 		
@@ -200,7 +201,7 @@ public abstract class CalibrationProcessor extends Thread {
 	/**
 	 * Compute the average and variance images from the Loader input and store them in avgs and vars.
 	 */
-	protected abstract AvgVarStacks computeAvgAndVar(Loader loader);
+	protected abstract AvgVarStacks computeAvgAndVar();
 	
 	protected Calibration performLinearRegressions(FloatImage[] avgs, FloatImage[] vars) {
 		int width = (int) avgs[0].getWidth();
@@ -343,7 +344,7 @@ public abstract class CalibrationProcessor extends Thread {
 		return controller;
 	}
 
-	public Loader getLoader() {
+	public Loader<T> getLoader() {
 		return loader;
 	}
 }

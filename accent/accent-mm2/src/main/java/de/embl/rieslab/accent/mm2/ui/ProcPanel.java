@@ -20,7 +20,7 @@ import javax.swing.JToggleButton;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
-import de.embl.rieslab.accent.common.interfaces.PipelineController;
+import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
 
 public class ProcPanel  extends JPanel implements ProcessingPanelInterface {

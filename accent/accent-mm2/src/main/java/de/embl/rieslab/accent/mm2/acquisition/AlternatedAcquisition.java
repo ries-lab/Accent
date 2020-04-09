@@ -17,15 +17,15 @@ import org.micromanager.data.internal.DefaultCoords;
 import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
 import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.data.roi.SimpleRoiWriter;
-import de.embl.rieslab.accent.common.interfaces.PipelineController;
 import de.embl.rieslab.accent.common.utils.Dialogs;
+import de.embl.rieslab.accent.mm2.MM2Controller;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 
 public class AlternatedAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
 
 	private Studio studio;
 	private AcquisitionSettings settings;
-	private PipelineController controller;
+	private MM2Controller controller;
 	private boolean stop = false;
 	private boolean running = false;
 	private boolean prerun = false;
@@ -39,13 +39,13 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 	
 	private ArrayList<ArrayBlockingQueue<BareImage>> queues;
 	
-	public AlternatedAcquisition(Studio studio, AcquisitionSettings settings, PipelineController controller) {
-		if(studio == null || settings == null || controller == null) {
+	public AlternatedAcquisition(Studio studio, AcquisitionSettings settings, MM2Controller mm2Controller) {
+		if(studio == null || settings == null || mm2Controller == null) {
 			throw new NullPointerException();
 		}
 		
 		this.studio = studio;
-		this.controller = controller;
+		this.controller = mm2Controller;
 		this.settings = settings;
 		
 		// sanity check the folder

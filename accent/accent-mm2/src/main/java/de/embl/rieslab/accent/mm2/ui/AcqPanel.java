@@ -32,7 +32,7 @@ import org.micromanager.Studio;
 
 import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
 import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
-import de.embl.rieslab.accent.common.interfaces.PipelineController;
+import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 import de.embl.rieslab.accent.mm2.MM2Controller;

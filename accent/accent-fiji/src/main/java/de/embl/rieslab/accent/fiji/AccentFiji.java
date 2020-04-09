@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 
 import org.scijava.command.Command;
 import org.scijava.log.LogService;
@@ -16,16 +15,15 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
 import de.embl.rieslab.accent.common.utils.AccentUtils;
-import de.embl.rieslab.accent.common.utils.Dialogs;
-import ij.WindowManager;
-import net.imagej.DatasetService;
+import de.embl.rieslab.accent.fiji.utils.AccentFijiUtils;
+import io.scif.services.DatasetIOService;
 import net.imagej.ImageJ;
 
 @Plugin(type = Command.class, menuPath = "Plugins>Accent")
 public class AccentFiji implements Command{
-
-    @Parameter
-    private DatasetService dataService;
+	
+	@Parameter
+	private DatasetIOService ioservice;
 	
     @Parameter
     private LogService logService;
@@ -42,6 +40,19 @@ public class AccentFiji implements Command{
 	    	try {
 	    		String path = chooser.getSelectedFile().getPath();
 	    		
+	    		int nTiffs = AccentFijiUtils.getNumberTifsContainMs(path);
+	    		if(nTiffs > 2) {
+	    			FijiController controller = new FijiController(logService);
+	    		} else {
+	    			int nDir = AccentFijiUtils.getNumberDirectoriesContainMs(path);
+	    			if(nDir > 2) {
+	    				
+	    			}
+	    		}
+	    		
+	    		
+	    		
+	    		
 				Map<Double, String> c = Files
 				.list(Paths.get(path))
 				.filter(Files::isDirectory)
@@ -50,13 +61,14 @@ public class AccentFiji implements Command{
 				
 				c.remove(0); // folders without ###ms in the name
 
+				/*
 				if(c.size()< 3) {
 					FijiController controller = new FijiController(c, dataService, logService);
 					JFrame frame = controller.getMainFrame();
 					frame.setVisible(true);
 				} else {
 					Dialogs.showErrorMessage("Not enough datasets open (minimum of 3).");
-				}
+				}*/
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -14,7 +14,7 @@ import org.scijava.log.LogService;
 
 import de.embl.rieslab.accent.common.AbstractController;
 import de.embl.rieslab.accent.common.data.image.BareImage;
-import de.embl.rieslab.accent.common.interfaces.Loader;
+import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import de.embl.rieslab.accent.common.processor.StacksProcessor;
 import de.embl.rieslab.accent.common.utils.Dialogs;
@@ -30,31 +30,11 @@ import net.imagej.DatasetService;
 
 public class FijiController extends AbstractController {
 
-	private DatasetService dataService;
 	private LogService logService;
-	private List<FijiDataset> datasetsToProcess;
-	private List<ImagePlusDataset> ipdatasetsToProcess;
-	private String[] windowIDs;
-	private boolean ij1;
-
-	public FijiController(String[] windowIDs, DatasetService dataService, LogService logService) {
-		this.windowIDs = windowIDs;
-		this.dataService = dataService;
+	private Map
+	
+	public FijiController(LogService logService) {
 		this.logService = logService;
-		
-		if(windowIDs.length == 0) {
-			ij1 = false;
-		} else {
-			ij1 = true;
-		}
-	}
-	 
-	public FijiController(Map<Double, String> c, DatasetService dataService2, LogService logService2) {
-		this.windowIDs = null;
-		this.dataService = dataService;
-		this.logService = logService;
-		
-		ij1 = false;
 	}
 
 	@Override

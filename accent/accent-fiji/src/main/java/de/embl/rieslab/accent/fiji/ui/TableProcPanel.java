@@ -9,7 +9,7 @@ import javax.swing.JToggleButton;
 import java.awt.GridBagConstraints;
 import javax.swing.table.DefaultTableModel;
 
-import de.embl.rieslab.accent.common.interfaces.PipelineController;
+import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 
@@ -40,7 +40,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 	
 	private JTable table;
 	private JToggleButton btnProcess;
-	private de.embl.rieslab.accent.common.interfaces.PipelineController controller;
+	private de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController controller;
 	private JProgressBar progressBar;
 	
 	private final static String START = "Process";

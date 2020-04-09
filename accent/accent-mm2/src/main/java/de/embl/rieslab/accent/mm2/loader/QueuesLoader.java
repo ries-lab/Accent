@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import de.embl.rieslab.accent.common.data.image.BareImage;
-import de.embl.rieslab.accent.common.interfaces.Loader;
+import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 
-public class QueuesLoader implements Loader{
+public class QueuesLoader implements Loader<BareImage>{
 
 	private ArrayList<ArrayBlockingQueue<BareImage>> queues;
-	private boolean done = false;
 	
 	public QueuesLoader(ArrayList<ArrayBlockingQueue<BareImage>> queues) {
 		if(queues == null) {
@@ -30,23 +29,8 @@ public class QueuesLoader implements Loader{
 	}
 
 	@Override
-	public boolean isDone() {
-		return done;
-	}
-	
-	@Override
-	public void close() {
-		done = true;
-	}
-
-	@Override
 	public int getNumberOfChannels() {
 		return queues.size();
-	}
-
-	@Override
-	public boolean isOpen(int channel) {
-		return true;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
-package de.embl.rieslab.accent.common.interfaces;
+package de.embl.rieslab.accent.common.interfaces.pipeline;
 
-import de.embl.rieslab.accent.common.data.image.BareImage;
+import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
 
 /**
  * Interface for an image loader. A loader has a certain number of channels (= image stream at a certain exposure). 
@@ -8,14 +8,14 @@ import de.embl.rieslab.accent.common.data.image.BareImage;
  * @author Joran Deschamps
  *
  */
-public interface Loader {
+public interface Loader<T extends CalibrationImage> {
 
 	/**
-	 * Returns the next BareImage in the specified channel.
+	 * Returns the next CalibrationImage in the specified channel.
 	 * @param channel Channel to poll from.
 	 * @return Next image
 	 */
-	public BareImage getNext(int channel);
+	public T getNext(int channel);
 	/**
 	 * Checks if there is a next image in the specified channel.
 	 * @param channel Channel to poll from.
@@ -24,30 +24,12 @@ public interface Loader {
 	public boolean hasNext(int channel);
 	
 	/**
-	 * Checks if all images from all channels have been polled.
-	 * 
-	 * @return True if there is no more image, false otherwise.
-	 */
-	public boolean isDone();
-	
-	/**
-	 * Closes the currently opened channel.
-	 */
-	public void close();
-	
-	/**
 	 * Returns the number of channels.
 	 * 
 	 * @return Number of channels.
 	 */
 	public int getNumberOfChannels();
 	
-	/**
-	 * Checks if the specified channel is opened.
-	 * @param channel Channel to probe.
-	 * @return True if the channel is open, false otherwise.
-	 */
-	public boolean isOpen(int channel);
 	
 	/**
 	 * Opens the specified channel

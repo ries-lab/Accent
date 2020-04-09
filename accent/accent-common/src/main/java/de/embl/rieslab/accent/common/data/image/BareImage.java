@@ -1,5 +1,7 @@
 package de.embl.rieslab.accent.common.data.image;
 
+import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
+
 /**
  * Image representation with a type (byte, short or float), pixels object, width, height
  * and exposure (ms) at which it was recorded.
@@ -7,7 +9,7 @@ package de.embl.rieslab.accent.common.data.image;
  * @author Joran Deschamps
  *
  */
-public class BareImage {
+public class BareImage implements CalibrationImage{
 	
 	private DataType type;
 	private Object pixels;
@@ -59,6 +61,7 @@ public class BareImage {
 		this.height = height;
 		this.exposure = exposure;
 	}
+	
 	/**
 	 * Constructor.
 	 * @param type Bytes per pixels (1, 2 or >=3)
@@ -116,10 +119,11 @@ public class BareImage {
 	}
 	
 	/**
-	 * Pixel array
+	 * Returns the linear pixel array. See getWtidth, getHeight and getType to access the correct pixels.
 	 * @return Linear pixel array as Object
 	 */
-	public Object getPixels() {
+	@Override
+	public Object getImage() {
 		return pixels;
 	}
 	
@@ -137,13 +141,16 @@ public class BareImage {
 	public int getHeight() {
 		return height;
 	}
+	
 	/**
 	 * Exposure in ms at which the image was recorded
 	 * @return Exposure in ms
 	 */
+	@Override
 	public double getExposure() {
 		return exposure;
 	}
+	
 	/**
 	 * Class used to characterize the pixel array type of a BareImage
 	 * 

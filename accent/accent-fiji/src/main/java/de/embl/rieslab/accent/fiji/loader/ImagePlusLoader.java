@@ -3,12 +3,12 @@ package de.embl.rieslab.accent.fiji.loader;
 import java.util.List;
 
 import de.embl.rieslab.accent.common.data.image.BareImage;
-import de.embl.rieslab.accent.common.interfaces.Loader;
+import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.fiji.data.image.ImagePlusDataset;
 import ij.ImageStack;
 
+@Deprecated
 public class ImagePlusLoader implements Loader{
-
 
 	private List<ImagePlusDataset> list;
 	private ImageStack currentDataset;
@@ -45,26 +45,8 @@ public class ImagePlusLoader implements Loader{
 	}
 
 	@Override
-	public boolean isDone() {
-		return (currentFile == getNumberOfChannels()-1 && currentPlane == getChannelLength());
-	}
-
-	@Override
-	public void close() {
-		// do nothing
-	}
-
-	@Override
 	public int getNumberOfChannels() {
 		return list.size();
-	}
-
-	@Override
-	public boolean isOpen(int channel) {
-		if(channel == currentFile) {
-			return true;
-		}
-		return false;
 	}
 
 	@Override

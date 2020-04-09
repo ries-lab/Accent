@@ -9,14 +9,14 @@ import javax.swing.JFrame;
 
 import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
 import de.embl.rieslab.accent.common.data.image.BareImage;
-import de.embl.rieslab.accent.common.interfaces.Loader;
-import de.embl.rieslab.accent.common.interfaces.PipelineController;
+import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
+import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 
-public class DummyController implements PipelineController {
+public class DummyController implements PipelineController<BareImage> {
 	public List<String> gen_progress;
 	public List<String> proc_progress;
 	
@@ -50,10 +50,10 @@ public class DummyController implements PipelineController {
 	public void stopAcquisition() {}
 
 	@Override
-	public Loader getLoader(String parameter) {return null;}
+	public Loader<BareImage> getLoader(String parameter) {return null;}
 
 	@Override
-	public CalibrationProcessor getProcessor(String path, Loader loader) {return null;}
+	public CalibrationProcessor<BareImage> getProcessor(String path, Loader<BareImage> loader) {return null;}
 
 	@Override
 	public boolean isProcessorReady() {return false;}
@@ -111,5 +111,6 @@ public class DummyController implements PipelineController {
 	public void setGeneratePanel(GeneratePanelInterface genpane) {}
 
 	@Override
-	public boolean isReady() {return false;}		
+	public boolean isReady() {return false;}
+
 }

@@ -1,4 +1,4 @@
-package de.embl.rieslab.accent.common.interfaces;
+package de.embl.rieslab.accent.common.interfaces.pipeline;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import javax.swing.JFrame;
 
 import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
-import de.embl.rieslab.accent.common.data.image.BareImage;
+import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
 import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
@@ -19,7 +19,7 @@ import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
  * @author Joran Deschamps
  *
  */
-public interface PipelineController {
+public interface PipelineController<T extends CalibrationImage> {
 	
 	/**
 	 * Returns the plugin main frame.
@@ -75,7 +75,7 @@ public interface PipelineController {
 	 * @param parameter Optional parameter.
 	 * @return
 	 */
-	public Loader getLoader(String parameter);
+	public Loader<T> getLoader(String parameter);
 	
 	/**
 	 * Gets processor.
@@ -84,7 +84,7 @@ public interface PipelineController {
 	 * @param loader
 	 * @return
 	 */
-	public CalibrationProcessor getProcessor(String path, Loader loader);
+	public CalibrationProcessor<T> getProcessor(String path, Loader<T> loader);
 	
 	/**
 	 * Checks if the processor is ready.
@@ -96,7 +96,7 @@ public interface PipelineController {
 
 	public boolean startProcessor(String path, HashMap<String, Double> openedDatasets);
 	
-	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<BareImage>> queues);
+	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<T>> queues);
 
 	public void stopProcessor();
 	

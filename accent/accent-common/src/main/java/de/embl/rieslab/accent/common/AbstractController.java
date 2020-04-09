@@ -8,8 +8,9 @@ import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
 import de.embl.rieslab.accent.common.generator.AvgVarMapsGenerator;
-import de.embl.rieslab.accent.common.interfaces.Generator;
-import de.embl.rieslab.accent.common.interfaces.PipelineController;
+import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
+import de.embl.rieslab.accent.common.interfaces.pipeline.Generator;
+import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
@@ -17,13 +18,13 @@ import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import de.embl.rieslab.accent.common.utils.Dialogs;
 
 
-public abstract class AbstractController implements PipelineController{
+public abstract class AbstractController<T extends CalibrationImage> implements PipelineController<T>{
 
 	public static String DEFAULT_LOADER = "Default";
 	
 	protected ProcessingPanelInterface procPanel;
 	protected AcquisitionPanelInterface acqPanel;
-	protected CalibrationProcessor processor;
+	protected CalibrationProcessor<T> processor;
 	protected GeneratePanelInterface genPanel;
 	protected Generator generator;
 	

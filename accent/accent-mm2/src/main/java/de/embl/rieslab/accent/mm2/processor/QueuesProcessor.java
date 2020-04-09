@@ -3,19 +3,21 @@ package de.embl.rieslab.accent.mm2.processor;
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
 import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.data.image.FloatImage;
-import de.embl.rieslab.accent.common.interfaces.Loader;
-import de.embl.rieslab.accent.common.interfaces.PipelineController;
+import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
+import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import de.embl.rieslab.accent.mm2.loader.QueuesLoader;
 
-public class QueuesProcessor extends CalibrationProcessor {
+public class QueuesProcessor extends CalibrationProcessor<BareImage> {
 	
-	public QueuesProcessor(String folder, PipelineController controller, QueuesLoader loader) {
+	public QueuesProcessor(String folder, PipelineController<BareImage> controller, QueuesLoader loader) {
 		super(folder, controller, loader);
 	}
 
 	@Override
-	protected AvgVarStacks computeAvgAndVar(Loader loader) {
+	protected AvgVarStacks computeAvgAndVar() {
+		Loader<BareImage> loader = getLoader();
+		
 		FloatImage[] avgs = new FloatImage[loader.getNumberOfChannels()];
 		FloatImage[] vars = new FloatImage[loader.getNumberOfChannels()];
 		int[] stackSizes = new int[loader.getNumberOfChannels()];

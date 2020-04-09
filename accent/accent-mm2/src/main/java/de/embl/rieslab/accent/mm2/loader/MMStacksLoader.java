@@ -9,10 +9,10 @@ import org.micromanager.data.Image;
 import org.micromanager.data.internal.DefaultCoords;
 
 import de.embl.rieslab.accent.common.data.image.BareImage;
-import de.embl.rieslab.accent.common.interfaces.Loader;
+import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 
-public class MMStacksLoader implements Loader{
+public class MMStacksLoader implements Loader<BareImage>{
 
 	private Studio studio;
 	private String[] directories;
@@ -25,11 +25,6 @@ public class MMStacksLoader implements Loader{
 		this.directories = directories;
 		currentDirectory = -1;
 		currentPlane = 0;
-	}
-
-	@Override
-	public boolean isDone() {
-		return (currentDirectory == directories.length-1 && currentPlane == store.getNumImages());
 	}
 
 	@Override
@@ -66,14 +61,6 @@ public class MMStacksLoader implements Loader{
 	}
 
 	@Override
-	public boolean isOpen(int channel) {
-		if(channel == currentDirectory) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
 	public boolean openChannel(int channel) {
 		if(channel == currentDirectory+1) {
 			currentDirectory = channel;
@@ -99,15 +86,6 @@ public class MMStacksLoader implements Loader{
 
 	public int getCurrentChannel() {
 		return currentDirectory;
-	}
-
-	@Override
-	public void close() {
-		try {
-			store.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
