@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -49,35 +52,45 @@ public class SingleImgLoaderTest {
 		// loads each file 
 		for(int i=0; i<loader.getNumberOfChannels(); i++) {
 			assertTrue(loader.openChannel(i));
-			assertTrue(loader.hasNext(i));
-			
-			ImgCalibrationImage img = loader.getNext(i);
-			boolean foundExposure = false;
-			for(Double e: exps) {
-				if(Double.compare(e, img.getExposure()) == 0) {
-					foundExposure = true;
-				}
-			}
-			assertTrue(foundExposure);
 
-			assertEquals(3, img.getImage().numDimensions());
-			assertEquals(width, img.getImage().dimension(0));
-			assertEquals(height, img.getImage().dimension(1));
-			assertEquals(numFrames, img.getImage().dimension(2));
+			int nFrames = 0;
+			while(loader.hasNext(i)) {
+				ImgCalibrationImage img = loader.getNext(i);
+				boolean foundExposure = false;
+				for(Double e: exps) {
+					if(Double.compare(e, img.getExposure()) == 0) {
+						foundExposure = true;
+					}
+				}
+				assertTrue(foundExposure);
+	
+				assertEquals(2, img.getImage().numDimensions());
+				assertEquals(width, img.getImage().dimension(0));
+				assertEquals(height, img.getImage().dimension(1));
+				assertEquals(1, img.getImage().dimension(2));
+				
+				nFrames++;
+			}
+			assertEquals(numFrames, nFrames);
 		}
 		
 		// deletes all
-		for(Entry<Double, String> e: m.entrySet()) {
-			String path = e.getValue();
-
-			File f = new File(path);
+		for(Entry<Double, String> el: m.entrySet()) {
+			try {
+				Files.list(Paths.get(el.getValue()))
+					.forEach(e -> (new File(e.toString())).delete());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+			File f = new File(el.getValue());
 			if(f.exists())
 				assertTrue(f.delete());
 		}
 		
 		f_dir.delete();
 	}
-/*
+
 	@Test
 	public void testUnsignedByteLoader() {
 		final ImageJ ij = new ImageJ();
@@ -183,6 +196,6 @@ public class SingleImgLoaderTest {
 		}
 		
 		f_dir.delete();
-	}*/
+	}
 }
 

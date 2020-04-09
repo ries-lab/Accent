@@ -1,96 +1,108 @@
 package de.embl.rieslab.accent.fiji.loader;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.fiji.data.image.ImgCalibrationImage;
-import io.scif.config.SCIFIOConfig;
 import io.scif.services.DatasetIOService;
 import net.imagej.Dataset;
 
 public class SingleImgLoader implements Loader<ImgCalibrationImage>{
 
-	private Map<Double, String> stacks_;
+	private Map<Double, String> folders_;
+	private List<String> currImgs_;
+	private int currIndex_;
 	private double[] mapping_;
-	private boolean[] polled_;
-	private Dataset currImg_;
 	private DatasetIOService ioservice_;
 	
-	public SingleImgLoader(DatasetIOService ioservice, Map<Double, String> stacks) {
-		stacks_ = stacks;
+	public SingleImgLoader(DatasetIOService ioservice, Map<Double, String> folders) {
+		folders_ = folders;
 		ioservice_ = ioservice;
 		
-		polled_ = new boolean[stacks_.size()];
-		mapping_ = new double[stacks_.size()];
+		mapping_ = new double[folders_.size()];
 		
 		int i = 0;
-		for(Entry<Double, String> e: stacks_.entrySet()) {
-			polled_[i] = false;
+		for(Entry<Double, String> e: folders_.entrySet()) {
 			mapping_[i] = e.getKey();
 			i++;
 		}
+		
+		currIndex_ = 0;
+		currImgs_ = new ArrayList<String>();
 	}
 	
 	@Override
 	public ImgCalibrationImage getNext(int channel) {
-		if(!(channel >= stacks_.size() || channel < 0) && !polled_[channel]) {
-			polled_[channel] = true;
-			return new ImgCalibrationImage(currImg_, mapping_[channel]);
+		if(!(channel >= folders_.size() || channel < 0) && hasNext(channel)) {
+			return new ImgCalibrationImage(loadNext(channel), mapping_[channel]);
 		}
 		return null;
 	}
 
 	@Override
 	public boolean hasNext(int channel) {
-		if(channel >= stacks_.size() || channel < 0) {
+		if(channel >= folders_.size() || channel < 0) {
 			return false;
 		}
-		return !polled_[channel];
+		return currIndex_ < getChannelLength();
 	}
 
 	@Override
 	public int getNumberOfChannels() {
-		return stacks_.size();
+		return folders_.size();
 	}
 
-	private Dataset load(int channel) {
+	private Dataset loadNext(int channel) {
 		Dataset img = null;
-		//if(ioservice_.canOpen(stacks_.get(mapping_[channel]))) {
-			try {
-				SCIFIOConfig config = new SCIFIOConfig();
-				config.groupableSetGroupFiles(true);
-				
-				img = ioservice_.open(stacks_.get(mapping_[channel]), config);
-				System.out.println("");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		//}
+	
+		try {
+			img = ioservice_.open(currImgs_.get(currIndex_));
+			currIndex_++;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return img;
 	}
 	
 	@Override
 	public boolean openChannel(int channel) {
-		if(channel >= stacks_.size() || channel < 0) {
+		if(channel >= folders_.size() || channel < 0) {
 			return false;
 		}
-		if(!polled_[channel]) {
-			Dataset img = load(channel);
-			
-			if(img != null) {
-				currImg_ = img;
-				return true;
-			}
-		} 
-			
+
+		List<String> c = null;
+		try {
+			c = Files.list( Paths.get( folders_.get(mapping_[channel]) ) )
+					.map(Path::toString)
+					.filter(e -> e.endsWith(".tif") || e.endsWith(".tiff") || e.endsWith(".TIF") || e.endsWith(".TIFF"))
+					.filter(e -> ioservice_.canOpen(e))
+					.collect(Collectors.toList());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		if(c != null && !c.isEmpty()) {
+			currImgs_.clear();
+			currImgs_.addAll(c);
+			currIndex_ = 0;
+			return true;
+		}
+		
 		return false;
 	}
 
 	@Override
 	public int getChannelLength() {
-		return (int) currImg_.dimension(2);
+		return currImgs_.size();
 	}
 
 }
