@@ -1,6 +1,6 @@
 package de.embl.rieslab.accent.common.data.calibration;
 
-import de.embl.rieslab.accent.common.data.image.FloatImage;
+import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
 /**
  * A class used to generate the average and variance map for a specific exposure.

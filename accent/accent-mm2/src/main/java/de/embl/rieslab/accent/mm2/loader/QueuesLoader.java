@@ -3,8 +3,8 @@ package de.embl.rieslab.accent.mm2.loader;
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
+import de.embl.rieslab.accent.mm2.data.image.BareImage;
 
 public class QueuesLoader implements Loader<BareImage>{
 

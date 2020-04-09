@@ -11,10 +11,10 @@ import org.junit.Test;
 
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
-import de.embl.rieslab.accent.common.data.image.FloatImage;
 import de.embl.rieslab.accent.common.dummys.DummyController;
 import de.embl.rieslab.accent.common.dummys.DummyLoader;
 import de.embl.rieslab.accent.common.dummys.DummyProcessor;
+import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
 public class CalibrationProcessorTest {
 

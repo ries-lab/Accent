@@ -8,9 +8,9 @@ import org.micromanager.data.Datastore;
 import org.micromanager.data.Image;
 import org.micromanager.data.internal.DefaultCoords;
 
-import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
+import de.embl.rieslab.accent.mm2.data.image.BareImage;
 
 public class MMStacksLoader implements Loader<BareImage>{
 

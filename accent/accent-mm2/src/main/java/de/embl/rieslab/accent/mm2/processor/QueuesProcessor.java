@@ -1,14 +1,14 @@
 package de.embl.rieslab.accent.mm2.processor;
 
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
-import de.embl.rieslab.accent.common.data.image.BareImage;
-import de.embl.rieslab.accent.common.data.image.FloatImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
+import de.embl.rieslab.accent.mm2.data.image.BareImage;
+import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 import de.embl.rieslab.accent.mm2.loader.QueuesLoader;
 
-public class QueuesProcessor extends CalibrationProcessor<BareImage> {
+public class QueuesProcessor extends MM2Processor {
 	
 	public QueuesProcessor(String folder, PipelineController<BareImage> controller, QueuesLoader loader) {
 		super(folder, controller, loader);

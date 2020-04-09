@@ -1,4 +1,4 @@
-package de.embl.rieslab.accent.common.processor;
+package de.embl.rieslab.accent.mm2.processor;
 
 import static org.junit.Assert.assertEquals;
 

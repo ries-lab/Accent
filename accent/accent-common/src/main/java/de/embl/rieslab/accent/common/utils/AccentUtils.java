@@ -5,7 +5,11 @@ import java.util.regex.Pattern;
 
 public class AccentUtils {
 
-
+	/**
+	 * Tests if str represents an integer.
+	 * @param str
+	 * @return
+	 */
 	public static boolean isInteger(String str) {
 	    if (str == null) {
 	        return false;

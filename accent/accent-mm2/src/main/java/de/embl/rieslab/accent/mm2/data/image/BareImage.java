@@ -1,4 +1,4 @@
-package de.embl.rieslab.accent.common.data.image;
+package de.embl.rieslab.accent.mm2.data.image;
 
 import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
 

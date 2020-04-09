@@ -1,8 +1,11 @@
-package de.embl.rieslab.accent.common.data.image;
+package de.embl.rieslab.accent.mm2.data.image;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.Test;
+
+import de.embl.rieslab.accent.mm2.data.image.BareImage;
 
 public class BareImageTest {
 

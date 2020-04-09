@@ -1,7 +1,7 @@
-package de.embl.rieslab.accent.common.data.image;
+package de.embl.rieslab.accent.mm2.data.image;
 
-import de.embl.rieslab.accent.common.data.image.BareImage.DataType;
 import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
+import de.embl.rieslab.accent.mm2.data.image.BareImage.DataType;
 import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.process.FloatProcessor;

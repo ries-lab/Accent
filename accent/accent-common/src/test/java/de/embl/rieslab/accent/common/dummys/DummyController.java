@@ -8,13 +8,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import javax.swing.JFrame;
 
 import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
-import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
+import de.embl.rieslab.accent.mm2.data.image.BareImage;
 
 public class DummyController implements PipelineController<BareImage> {
 	public List<String> gen_progress;

@@ -2,9 +2,9 @@ package de.embl.rieslab.accent.fiji.loader;
 
 import java.util.List;
 
-import de.embl.rieslab.accent.common.data.image.BareImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.fiji.data.image.FijiDataset;
+import de.embl.rieslab.accent.mm2.data.image.BareImage;
 
 @Deprecated
 public class CurrentImgsLoader implements Loader{

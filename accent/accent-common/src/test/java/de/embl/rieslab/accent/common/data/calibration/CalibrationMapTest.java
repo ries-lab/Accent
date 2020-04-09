@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.embl.rieslab.accent.common.data.image.FloatImage;
+import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
 public class CalibrationMapTest {
 

@@ -1,11 +1,11 @@
 package de.embl.rieslab.accent.common.dummys;
 
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
-import de.embl.rieslab.accent.common.data.image.BareImage;
-import de.embl.rieslab.accent.common.data.image.FloatImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
+import de.embl.rieslab.accent.mm2.data.image.BareImage;
+import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
 public class DummyProcessor extends CalibrationProcessor<FloatImage> {
 

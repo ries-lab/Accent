@@ -7,9 +7,9 @@ import javax.swing.SwingWorker;
 
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationMap;
-import de.embl.rieslab.accent.common.data.image.FloatImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Generator;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
+import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
 /**
  * Generates average and variance maps.
