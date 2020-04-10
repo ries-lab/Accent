@@ -7,9 +7,9 @@ import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
 import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
-public class StacksProcessor extends MM2Processor{
+public class StacksProcessor extends CalibrationProcessor<BareImage, FloatImage> {
 
-	public StacksProcessor(String folder, PipelineController<BareImage> controller, Loader<BareImage> loader) {
+	public StacksProcessor(String folder, PipelineController<BareImage, FloatImage> controller, Loader<BareImage> loader) {
 		super(folder, controller, loader);
 	}
 

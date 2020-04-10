@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -28,18 +27,16 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
-import org.micromanager.Studio;
-
-import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
-import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
-import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
-import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 import de.embl.rieslab.accent.mm2.MM2Controller;
+import de.embl.rieslab.accent.mm2.acquisition.AcquisitionSettings;
+import de.embl.rieslab.accent.mm2.acquisition.MM2AcquisitionController;
+import de.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
+import de.embl.rieslab.accent.mm2.interfaces.AcquisitionPanelInterface;
 
 public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 
-	
+	private static final long serialVersionUID = 1L;
 	private boolean saveAsStacks;
 	private boolean parallelProcessing;
 	private int preRunTime;
@@ -62,11 +59,13 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	private final static String ACQ_STOP = "Stop";
 	
 	private boolean preventTrigger = false;
-	
-	private MM2Controller controller;
 
-	public AcqPanel(String camera, MM2Controller controller) {
+	private MM2Controller controller;
+	private MM2AcquisitionController acqController;
+
+	public AcqPanel(String camera, MM2Controller controller, MM2AcquisitionController acqcontroller) {
 		this.controller = controller;
+		this.acqController = acqcontroller;
 
 		AcquisitionSettings settings  = new AcquisitionSettings();
 		saveAsStacks = settings.saveAsStacks_;
@@ -354,7 +353,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		
 		settings.preRunTime_ = preRunTime;
 				
-		boolean b = controller.startAcquisition(settings);
+		boolean b = acqController.startAcquisition(settings);
 		
 		if(!b) {
 			acqHasStopped();
@@ -362,7 +361,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	}
 	
 	private void stopAcquisition() {
-			controller.stopAcquisition();
+		acqController.stopAcquisition();
 	}
 
 	@Override

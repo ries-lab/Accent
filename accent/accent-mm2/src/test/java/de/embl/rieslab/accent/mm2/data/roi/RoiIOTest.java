@@ -1,4 +1,4 @@
-package de.embl.rieslab.accent.common.data.roi;
+package de.embl.rieslab.accent.mm2.data.roi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,6 +14,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
+import de.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
+import de.embl.rieslab.accent.mm2.data.roi.SimpleRoiWriter;
 
 public class RoiIOTest {
 

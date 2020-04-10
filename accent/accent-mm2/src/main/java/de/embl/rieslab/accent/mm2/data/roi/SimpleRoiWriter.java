@@ -1,4 +1,4 @@
-package de.embl.rieslab.accent.common.data.roi;
+package de.embl.rieslab.accent.mm2.data.roi;
 
 import java.io.File;
 import java.io.FileNotFoundException;

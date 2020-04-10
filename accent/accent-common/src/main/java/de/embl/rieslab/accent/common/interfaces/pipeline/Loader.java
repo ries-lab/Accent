@@ -1,6 +1,6 @@
 package de.embl.rieslab.accent.common.interfaces.pipeline;
 
-import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
+import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 
 /**
  * Interface for an image loader. A loader has a certain number of channels (= image stream at a certain exposure). 
@@ -8,7 +8,7 @@ import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
  * @author Joran Deschamps
  *
  */
-public interface Loader<T extends CalibrationImage> {
+public interface Loader<T extends RawImage> {
 
 	/**
 	 * Returns the next CalibrationImage in the specified channel.

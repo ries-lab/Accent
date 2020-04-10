@@ -1,6 +1,6 @@
-package de.embl.rieslab.accent.common.interfaces.ui;
+package de.embl.rieslab.accent.mm2.interfaces;
 
-import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
+import de.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
 /**
  * Interface for an acquisition UI panel.
  * @author Joran Deschamps

@@ -14,7 +14,7 @@ import de.embl.rieslab.accent.mm2.MM2Controller;
 
 public class MainFrame extends JFrame{
 
-
+	private static final long serialVersionUID = 1L;
 	private AcqPanel acqpane;
 	private ProcPanel procpane;
 	private GenPanel genpane;
@@ -37,8 +37,8 @@ public class MainFrame extends JFrame{
 
 		int counter = 0;
 		
-		acqpane = new AcqPanel(studio.getCMMCore().getCameraDevice(), controller);
-		controller.setAcquisitionPanel(acqpane);
+		acqpane = new AcqPanel(studio.getCMMCore().getCameraDevice(), controller, controller.getAcqController());
+		controller.getAcqController().setAcquisitionPanel(acqpane);
 		GridBagConstraints gbc_acqpane = new GridBagConstraints();
 		gbc_acqpane.weighty = 0.2;
 		gbc_acqpane.weightx = 0.2;

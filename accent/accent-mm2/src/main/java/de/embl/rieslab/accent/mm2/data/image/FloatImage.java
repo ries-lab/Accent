@@ -2,8 +2,6 @@ package de.embl.rieslab.accent.mm2.data.image;
 
 import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
 import de.embl.rieslab.accent.mm2.data.image.BareImage.DataType;
-import ij.ImagePlus;
-import ij.io.FileSaver;
 import ij.process.FloatProcessor;
 
 /**
@@ -398,15 +396,7 @@ public class FloatImage implements CalibrationImage {
 			}
 		}
 	}
-	/**
-	 * Saves the image as tiff.
-	 * @param path
-	 */
-	@Override
-	public boolean saveAsTiff(String path) {
-		FileSaver fs = new FileSaver(new ImagePlus("", img)); 
-		return fs.saveAsTiff(path);
-	}
+
 	/**
 	 * Returns the pixel value at (x,y)
 	 * @param x

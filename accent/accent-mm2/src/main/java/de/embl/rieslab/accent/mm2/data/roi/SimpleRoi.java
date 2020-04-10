@@ -1,5 +1,5 @@
 
-package de.embl.rieslab.accent.common.data.roi;
+package de.embl.rieslab.accent.mm2.data.roi;
 
 /**
  * A simple roi representation with a sanity check during instantiation.

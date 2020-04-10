@@ -4,18 +4,19 @@ import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
+import de.embl.rieslab.accent.mm2.MM2Controller;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
 import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 import de.embl.rieslab.accent.mm2.loader.QueuesLoader;
 
-public class QueuesProcessor extends MM2Processor {
+public class QueuesProcessor extends CalibrationProcessor<BareImage, FloatImage> {
 	
-	public QueuesProcessor(String folder, PipelineController<BareImage> controller, QueuesLoader loader) {
+	public QueuesProcessor(String folder, PipelineController<BareImage, FloatImage> controller, QueuesLoader loader) {
 		super(folder, controller, loader);
 	}
 
 	@Override
-	protected AvgVarStacks computeAvgAndVar() {
+	protected AvgVarStacks<FloatImage> computeAvgAndVar() {
 		Loader<BareImage> loader = getLoader();
 		
 		FloatImage[] avgs = new FloatImage[loader.getNumberOfChannels()];
@@ -59,7 +60,7 @@ public class QueuesProcessor extends MM2Processor {
 			}
 			
 			// all queues were empty
-			if(allEmpty && getController().isAcquisitionDone()) {
+			if(allEmpty && ((MM2Controller) getController()).isAcquisitionDone()) {
 				done = true;
 			}	
 		}
@@ -72,7 +73,7 @@ public class QueuesProcessor extends MM2Processor {
 			}
 		}
 		
-		return new AvgVarStacks(avgs, vars);
+		return new AvgVarStacks<FloatImage>(avgs, vars);
 	}
 
 }

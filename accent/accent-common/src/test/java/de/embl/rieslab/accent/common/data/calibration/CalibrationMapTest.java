@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
 public class CalibrationMapTest {
 
@@ -15,21 +14,16 @@ public class CalibrationMapTest {
 		for(int i=0;i<1;i++) {
 			double exp = 5+i*10.5; 
 
-			FloatImage avg = CalibrationMap.generateAvgMap(cal, exp);
-			for(int y=0; y<avg.getHeight(); y++) {
-				for(int x=0; x<avg.getWidth(); x++) {
-					int p = x+y*avg.getWidth();
-					float pix = (float) (cal.getBaseline()[p]+cal.getDcPerSec()[p]*exp/1000.0);
-					assertEquals(pix, avg.getPixelValue(x, y), 0.0001);
-				}
+			float[] avg = CalibrationMap.generateAvgMap(cal, exp);
+			for(int p=0; p< cal.getHeight()*cal.getWidth(); p++) {
+				float pix = (float) (cal.getBaseline()[p]+cal.getDcPerSec()[p]*exp/1000.0);
+				assertEquals(pix, avg[p], 0.0001);
 			}
-			FloatImage var = CalibrationMap.generateVarMap(cal, exp);
-			for(int y=0; y<var.getHeight(); y++) {
-				for(int x=0; x<var.getWidth(); x++) {
-					int p = x+y*var.getWidth();
-					float pix = (float) (cal.getRnSq()[p]+cal.getTnSqPerSec()[p]*exp/1000.0);
-					assertEquals(pix, var.getPixelValue(x, y), 0.0001);
-				}
+			
+			float[] var = CalibrationMap.generateVarMap(cal, exp);
+			for(int p=0; p< cal.getHeight()*cal.getWidth(); p++) {
+				float pix = (float) (cal.getRnSq()[p]+cal.getTnSqPerSec()[p]*exp/1000.0);
+				assertEquals(pix, var[p], 0.0001);
 			}
 		}
 		

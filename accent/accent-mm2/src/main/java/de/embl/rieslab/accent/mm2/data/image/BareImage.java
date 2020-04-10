@@ -1,6 +1,6 @@
 package de.embl.rieslab.accent.mm2.data.image;
 
-import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
+import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 
 /**
  * Image representation with a type (byte, short or float), pixels object, width, height
@@ -9,7 +9,7 @@ import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
  * @author Joran Deschamps
  *
  */
-public class BareImage implements CalibrationImage{
+public class BareImage implements RawImage {
 	
 	private DataType type;
 	private Object pixels;
@@ -26,7 +26,7 @@ public class BareImage implements CalibrationImage{
 	 * @param exposure Exposure in ms at which the image was recorded
 	 */
 	// should reconsider using the datatype object, not really useful here. But used in FloatImage to avoid recasting
-	public BareImage(DataType type, Object pixels, int width, int height, double exposure) {
+/*	public BareImage(DataType type, Object pixels, int width, int height, double exposure) {
 		if(pixels == null || type == null) {
 			throw new NullPointerException();
 		}
@@ -61,7 +61,7 @@ public class BareImage implements CalibrationImage{
 		this.height = height;
 		this.exposure = exposure;
 	}
-	
+*/
 	/**
 	 * Constructor.
 	 * @param type Bytes per pixels (1, 2 or >=3)
@@ -152,6 +152,18 @@ public class BareImage implements CalibrationImage{
 	}
 	
 	@Override
+	public int getBytesPerPixel() {
+		if(type.equals(DataType.BYTE)){
+			return 1;
+		} else if(type.equals(DataType.SHORT)){
+			return 2;
+		} else {
+			return 3;
+		}
+	}
+	
+	/*
+	@Override
 	public float getPixelValue(int x, int y) {
 		if(x>=0 && x<width && y>=0 && y<height) {
 			if(type.equals(DataType.BYTE)){
@@ -164,7 +176,7 @@ public class BareImage implements CalibrationImage{
 		}
 
 		return (float) 0.;
-	}
+	}*/
 	
 	/**
 	 * Class used to characterize the pixel array type of a BareImage
@@ -174,11 +186,5 @@ public class BareImage implements CalibrationImage{
 	 */
 	public enum DataType{
 		BYTE, SHORT, FLOAT;
-	}
-
-	@Override
-	public boolean saveAsTiff(String fileName) {
-		// do nothing
-		return false;
 	}
 }

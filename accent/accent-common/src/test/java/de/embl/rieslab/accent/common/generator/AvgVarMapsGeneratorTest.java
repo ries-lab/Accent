@@ -11,6 +11,7 @@ import org.junit.Test;
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIOTest;
 import de.embl.rieslab.accent.common.dummys.DummyController;
+import de.embl.rieslab.accent.common.dummys.DummyImage;
 
 public class AvgVarMapsGeneratorTest {
 
@@ -18,14 +19,14 @@ public class AvgVarMapsGeneratorTest {
 	public void testGeneration() {
 		DummyController cont = new DummyController();
 		Calibration cal = CalibrationIOTest.generateCalibration();
-		AvgVarMapsGenerator gen = new AvgVarMapsGenerator(cont);
+		AvgVarMapsGenerator<DummyImage, DummyImage> gen = new AvgVarMapsGenerator<DummyImage, DummyImage>(cont);
 
 		double[] expo = new double[10];
 		for(int i=0;i<expo.length;i++)
 			expo[i] = i*10.5;
 		
 		// creates temp folder
-		String dir = "/temp_test/";
+		String dir = "temp_test";
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();
@@ -53,11 +54,11 @@ public class AvgVarMapsGeneratorTest {
 		for(int i=0;i<expo.length;i++) {
 			File s_var, s_avg;
 			if(i%2==0) {
-				s_avg = new File(dir+"generated_Avg_"+((int)expo[i])+"ms.tiff");
-				s_var = new File(dir+"generated_Var_"+((int)expo[i])+"ms.tiff");
+				s_avg = new File(dir+"\\generated_Avg_"+((int)expo[i])+"ms.tiff");
+				s_var = new File(dir+"\\generated_Var_"+((int)expo[i])+"ms.tiff");
 			} else {
-				s_avg = new File(dir+"generated_Avg_"+expo[i]+"ms.tiff");
-				s_var = new File(dir+"generated_Var_"+expo[i]+"ms.tiff");
+				s_avg = new File(dir+"\\generated_Avg_"+expo[i]+"ms.tiff");
+				s_var = new File(dir+"\\generated_Var_"+expo[i]+"ms.tiff");
 			}
 			
 			assertTrue(s_avg.exists());
@@ -73,12 +74,12 @@ public class AvgVarMapsGeneratorTest {
 	public void testIllegalArgumentsGenerations() {
 		DummyController cont = new DummyController();
 		Calibration cal = CalibrationIOTest.generateCalibration();
-		AvgVarMapsGenerator gen = new AvgVarMapsGenerator(cont);
+		AvgVarMapsGenerator<DummyImage, DummyImage> gen = new AvgVarMapsGenerator<DummyImage, DummyImage>(cont);
 
 		double[] expo = new double[0];
 		
 		// creates temp folder
-		String dir = "/temp_test/";
+		String dir = "temp_test";
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();
@@ -95,14 +96,14 @@ public class AvgVarMapsGeneratorTest {
 	public void testNullGenerations() {
 		DummyController cont = new DummyController();
 		Calibration cal = CalibrationIOTest.generateCalibration();
-		AvgVarMapsGenerator gen = new AvgVarMapsGenerator(cont);
+		AvgVarMapsGenerator<DummyImage, DummyImage> gen = new AvgVarMapsGenerator<DummyImage, DummyImage>(cont);
 
 		double[] expo = new double[10];
 		for(int i=0;i<expo.length;i++)
 			expo[i] = i*10;
 		
 		// creates temp folder
-		String dir = "/temp_test/";
+		String dir = "temp_test";
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();
@@ -129,7 +130,7 @@ public class AvgVarMapsGeneratorTest {
 	@Test
 	public void testNullConstructor() {
 		assertThrows(NullPointerException.class, () -> {
-			new AvgVarMapsGenerator(null);
+			new AvgVarMapsGenerator<DummyImage, DummyImage>(null);
 		});
 	}
 }

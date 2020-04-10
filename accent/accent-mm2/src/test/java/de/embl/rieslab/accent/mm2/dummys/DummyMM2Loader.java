@@ -1,10 +1,10 @@
-package de.embl.rieslab.accent.common.dummys;
+package de.embl.rieslab.accent.mm2.dummys;
 
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
 import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
-public class DummyLoader implements Loader<BareImage> {
+public class DummyMM2Loader implements Loader<BareImage> {
 
 	public int nChannels;
 	public double[] exposures;
@@ -23,7 +23,7 @@ public class DummyLoader implements Loader<BareImage> {
 	public int width = 2;
 	public int height = 3;
 	
-	public DummyLoader(int nChannels) {
+	public DummyMM2Loader(int nChannels) {
 		this.nChannels = nChannels;
 		curr_ind = new int[nChannels];
 		for(int i=0;i<nChannels;i++)
@@ -93,5 +93,4 @@ public class DummyLoader implements Loader<BareImage> {
 	public int getChannelLength() {
 		return numImages;
 	}
-
 }

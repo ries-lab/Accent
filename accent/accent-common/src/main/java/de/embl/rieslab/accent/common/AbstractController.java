@@ -4,59 +4,27 @@ import java.io.File;
 
 import javax.swing.JOptionPane;
 
-import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
 import de.embl.rieslab.accent.common.generator.AvgVarMapsGenerator;
 import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
+import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Generator;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
-import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import de.embl.rieslab.accent.common.utils.Dialogs;
 
 
-public abstract class AbstractController<T extends CalibrationImage> implements PipelineController<T>{
+public abstract class AbstractController<U extends RawImage, T extends CalibrationImage> implements PipelineController<U, T>{
 
 	public static String DEFAULT_LOADER = "Default";
 	
 	protected ProcessingPanelInterface procPanel;
-	protected AcquisitionPanelInterface acqPanel;
-	protected CalibrationProcessor<T> processor;
+	protected CalibrationProcessor<U,T> processor;
 	protected GeneratePanelInterface genPanel;
 	protected Generator generator;
-	
-	// Acquisition, do nothing
-	public void updateAcquisitionProgress(String message, int progress) {
-		// Do nothing
-	}
-
-	public void acquisitionHasStarted() {
-		// Do nothing
-	}
-	
-	public void acquisitionHasStopped() {
-		// Do nothing
-	}
-
-	public void acquisitionHasEnded() {
-		// Do nothing
-	}
-	
-
-	public boolean isAcquisitionDone() {
-		return true;
-	}
-	
-	public boolean startAcquisition(AcquisitionSettings settings) {
-		return true;
-	}
-	
-	public void stopAcquisition() {
-		// Do nothing
-	}
 	
 	// Processor		
 	public boolean startProcessor(String path) {
@@ -115,7 +83,7 @@ public abstract class AbstractController<T extends CalibrationImage> implements 
 			
 			double[] exposures = genPanel.getExposures();
 			if(exposures.length > 0) {
-				generator = new AvgVarMapsGenerator(this);
+				generator = new AvgVarMapsGenerator<U,T>(this);
 				generator.generate(new File(processor.getCalibrationPath()).getParentFile().getAbsolutePath(), 
 						processor.getCalibration(), exposures);
 			}
@@ -138,7 +106,7 @@ public abstract class AbstractController<T extends CalibrationImage> implements 
 				File calibFile = new File(path);
 				Calibration calib = CalibrationIO.read(calibFile);		
 				String parent = calibFile.getParentFile().getAbsolutePath();
-				generator = new AvgVarMapsGenerator(this);
+				generator = new AvgVarMapsGenerator<U,T>(this);
 				generator.generate(parent, calib, exposures);
 				return true;
 			} else {
@@ -171,10 +139,6 @@ public abstract class AbstractController<T extends CalibrationImage> implements 
 	}
 	
 	//////////////////////// Other methods
-	public void setAcquisitionPanel(AcquisitionPanelInterface acqpane) {
-		this.acqPanel = acqpane;
-	}
-
 	public void setProcessingPanel(ProcessingPanelInterface procpane) {
 		this.procPanel = procpane;
 	}

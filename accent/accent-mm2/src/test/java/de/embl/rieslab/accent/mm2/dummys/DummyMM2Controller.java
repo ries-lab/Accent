@@ -1,4 +1,4 @@
-package de.embl.rieslab.accent.common.dummys;
+package de.embl.rieslab.accent.mm2.dummys;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,20 +7,21 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JFrame;
 
-import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
+import de.embl.rieslab.accent.common.interfaces.data.ArrayToImage;
+import de.embl.rieslab.accent.common.interfaces.data.ImageSaver;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
-import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
+import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
-public class DummyController implements PipelineController<BareImage> {
+public class DummyMM2Controller implements PipelineController<BareImage, FloatImage> {
 	public List<String> gen_progress;
 	public List<String> proc_progress;
 	
-	public DummyController (){
+	public DummyMM2Controller (){
 		gen_progress = new ArrayList<String>();
 		proc_progress = new ArrayList<String>();
 	}
@@ -29,31 +30,10 @@ public class DummyController implements PipelineController<BareImage> {
 	public JFrame getMainFrame() {return null;}
 
 	@Override
-	public void updateAcquisitionProgress(String message, int progress) {}
-
-	@Override
-	public void acquisitionHasStarted() {}
-
-	@Override
-	public void acquisitionHasStopped() {}
-
-	@Override
-	public void acquisitionHasEnded() {}
-
-	@Override
-	public boolean isAcquisitionDone() {return false;}
-
-	@Override
-	public boolean startAcquisition(AcquisitionSettings settings) {return false;}
-
-	@Override
-	public void stopAcquisition() {}
-
-	@Override
 	public Loader<BareImage> getLoader(String parameter) {return null;}
 
 	@Override
-	public CalibrationProcessor<BareImage> getProcessor(String path, Loader<BareImage> loader) {return null;}
+	public CalibrationProcessor<BareImage, FloatImage> getProcessor(String path, Loader<BareImage> loader) {return null;}
 
 	@Override
 	public boolean isProcessorReady() {return false;}
@@ -102,9 +82,6 @@ public class DummyController implements PipelineController<BareImage> {
 	}
 
 	@Override
-	public void setAcquisitionPanel(AcquisitionPanelInterface procpane) {}
-
-	@Override
 	public void setProcessingPanel(ProcessingPanelInterface procpane) {}
 
 	@Override
@@ -112,5 +89,11 @@ public class DummyController implements PipelineController<BareImage> {
 
 	@Override
 	public boolean isReady() {return false;}
+
+	@Override
+	public ArrayToImage<FloatImage> getImageConverter() {return null;}
+
+	@Override
+	public ImageSaver<FloatImage> getImageSaver() {return null;}
 
 }

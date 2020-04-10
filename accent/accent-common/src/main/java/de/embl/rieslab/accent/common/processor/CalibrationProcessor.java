@@ -11,13 +11,14 @@ import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
 import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
+import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 
-public abstract class CalibrationProcessor<T extends CalibrationImage> extends Thread {
+public abstract class CalibrationProcessor<U extends RawImage, T extends CalibrationImage> extends Thread {
 
-	private PipelineController<T> controller;
-	private Loader<T> loader;
+	private PipelineController<U,T> controller;
+	private Loader<U> loader;
 	protected boolean stop = false;
 	private boolean running = false;
 	
@@ -32,7 +33,7 @@ public abstract class CalibrationProcessor<T extends CalibrationImage> extends T
 	public final static int STOP = -2;
 	public final static int PROGRESS = -3;
 	
-	public CalibrationProcessor(String folder, PipelineController<T> controller, Loader<T> loader) {
+	public CalibrationProcessor(String folder, PipelineController<U,T> controller, Loader<U> loader) {
 		if(folder == null || controller == null || loader == null)		
 			throw new NullPointerException();
 		
@@ -103,11 +104,11 @@ public abstract class CalibrationProcessor<T extends CalibrationImage> extends T
 		for(int q=0;q<loader.getNumberOfChannels();q++) {
 			if(avgs[q] != null && vars[q]!=null) {
 				if(Double.compare(avgs[q].getExposure(), (int)avgs[q].getExposure()) == 0) {
-					avgs[q].saveAsTiff(folder + "\\Avg_" + (int) avgs[q].getExposure() + "ms.tiff"); // to avoid "10.0ms"
-					vars[q].saveAsTiff(folder + "\\Var_" + (int) vars[q].getExposure() + "ms.tiff");
+					controller.getImageSaver().saveAsTiff(avgs[q], folder + "\\Avg_" + (int) avgs[q].getExposure() + "ms.tiff"); // cast to avoid .0 decimal in the name
+					controller.getImageSaver().saveAsTiff(vars[q], folder + "\\Var_" + (int) vars[q].getExposure() + "ms.tiff");
 				} else {
-					avgs[q].saveAsTiff(folder + "\\Avg_" + avgs[q].getExposure() + "ms.tiff");
-					vars[q].saveAsTiff(folder + "\\Var_" + vars[q].getExposure() + "ms.tiff");
+					controller.getImageSaver().saveAsTiff(avgs[q], folder + "\\Avg_" + avgs[q].getExposure() + "ms.tiff");
+					controller.getImageSaver().saveAsTiff(vars[q], folder + "\\Var_" + vars[q].getExposure() + "ms.tiff");
 				}
 			}
 		}
@@ -196,11 +197,6 @@ public abstract class CalibrationProcessor<T extends CalibrationImage> extends T
 			controller.updateProcessorProgress(message, percentage);
 		}	
 	}
-	
-	/**
-	 * Compute the average and variance images from the Loader input and store them in avgs and vars.
-	 */
-	protected abstract AvgVarStacks<T> computeAvgAndVar();
 	
 	protected Calibration performLinearRegressions(T[] avgs, T[] vars) {
 		int width = (int) avgs[0].getWidth();
@@ -302,14 +298,49 @@ public abstract class CalibrationProcessor<T extends CalibrationImage> extends T
 		CalibrationIO.write(new File(calibPath), results);
 		return calibPath;
 	}
-	
-	protected abstract void writeCalibrationToImages(String folder, Calibration results);
-	
-	protected PipelineController<T> getController() {
+		
+	protected PipelineController<U,T> getController() {
 		return controller;
 	}
 
-	public Loader<T> getLoader() {
+	public Loader<U> getLoader() {
 		return loader;
 	}
+	
+	/**
+	 * Writes calibration images to the disk.
+	 * 
+	 * @param folder Folder in which to save the images
+	 * @param results Calibration results
+	 */
+	protected void writeCalibrationToImages(String folder, Calibration results) {
+		T baseline = controller.getImageConverter().getImage(6, results.getBaseline(), results.getWidth(), results.getHeight(), 0);
+		getController().getImageSaver().saveAsTiff(baseline,folder+"\\Baseline.tiff");
+		
+		T dc_per_sec = controller.getImageConverter().getImage(6, results.getDcPerSec(), results.getWidth(), results.getHeight(), 0);
+		getController().getImageSaver().saveAsTiff(dc_per_sec,folder+"\\DC_per_sec.tiff");
+		
+		T gain = controller.getImageConverter().getImage(6, results.getGain(), results.getWidth(), results.getHeight(), 0);
+		getController().getImageSaver().saveAsTiff(gain,folder+"\\Gain.tiff");
+		
+		T rn_sq = controller.getImageConverter().getImage(6, results.getRnSq(), results.getWidth(), results.getHeight(), 0);
+		getController().getImageSaver().saveAsTiff(rn_sq,folder+"\\RN_sq.tiff");
+		
+		T tn_sq_per_sec = controller.getImageConverter().getImage(6, results.getTnSqPerSec(), results.getWidth(), results.getHeight(), 0);
+		getController().getImageSaver().saveAsTiff(tn_sq_per_sec,folder+"\\TN_sq_per_sec.tiff");
+		
+		T r_sq_avg = controller.getImageConverter().getImage(6,  results.getRSqAvg(), results.getWidth(), results.getHeight(), 0);
+		getController().getImageSaver().saveAsTiff(r_sq_avg,folder+"\\R_sq_avg.tiff");
+		
+		T r_sq_var = controller.getImageConverter().getImage(6, results.getRSqVar(), results.getWidth(), results.getHeight(), 0);
+		getController().getImageSaver().saveAsTiff(r_sq_var,folder+"\\R_sq_var.tiff");
+		
+		T r_sq_gain = controller.getImageConverter().getImage(6, results.getRSqGain(), results.getWidth(), results.getHeight(), 0);
+		getController().getImageSaver().saveAsTiff(r_sq_gain,folder+"\\R_sq_gain.tiff");
+	}
+
+	/**
+	 * Compute the average and variance images from the Loader input and store them in avgs and vars.
+	 */
+	protected abstract AvgVarStacks<T> computeAvgAndVar();
 }

@@ -12,25 +12,28 @@ import javax.swing.JOptionPane;
 import org.micromanager.Studio;
 
 import de.embl.rieslab.accent.common.AbstractController;
-import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
+import de.embl.rieslab.accent.common.interfaces.data.ArrayToImage;
+import de.embl.rieslab.accent.common.interfaces.data.ImageSaver;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
-import de.embl.rieslab.accent.mm2.acquisition.Acquisition;
-import de.embl.rieslab.accent.mm2.acquisition.AlternatedAcquisition;
+import de.embl.rieslab.accent.mm2.acquisition.MM2AcquisitionController;
+import de.embl.rieslab.accent.mm2.data.image.ArrayToFloatImage;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
+import de.embl.rieslab.accent.mm2.data.image.FloatImage;
+import de.embl.rieslab.accent.mm2.data.image.FloatImageSaver;
 import de.embl.rieslab.accent.mm2.loader.MMStacksLoader;
 import de.embl.rieslab.accent.mm2.loader.QueuesLoader;
 import de.embl.rieslab.accent.mm2.processor.QueuesProcessor;
 import de.embl.rieslab.accent.mm2.processor.StacksProcessor;
 import de.embl.rieslab.accent.mm2.ui.MainFrame;
 
-public class MM2Controller extends AbstractController<BareImage> {
+public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 
 	public static String QUEUES_LOADER = "Queues";
 	
 	private Studio studio;
-	private Acquisition acq;
-	private AcquisitionSettings acqSettings;
+	
+	private MM2AcquisitionController acqController;
 	private String[] directoriesToLoad;
 	private ArrayList<ArrayBlockingQueue<BareImage>> queues;
 	private int image_width = -1;
@@ -38,9 +41,6 @@ public class MM2Controller extends AbstractController<BareImage> {
 	private boolean acqDone;
 	
 	public MM2Controller(Studio studio) {
-		if(studio == null) {
-			throw new NullPointerException();
-		}
 		this.studio = studio;
 		
 		// hack to get image size
@@ -53,57 +53,9 @@ public class MM2Controller extends AbstractController<BareImage> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	/////////////// Acquisition
-	public boolean startAcquisition(AcquisitionSettings settings) {
-		if(isReady()) {
-			acqDone = false;
-			acqSettings = settings;
-					
-			acq = new AlternatedAcquisition(studio, acqSettings, this);
-			
-			acq.start();
-			
-			if(acqSettings.parallelProcessing) {
-				boolean b = startProcessor(settings.folder_, acq.getQueues());
-				if(!b) {
-					System.out.println("Processor failed to start");
-				}
-			} 
-			
-			return true;
-		}
-		return false;
-	}
-	
-	public void stopAcquisition() {
-		if(acq != null) {
-			acq.stop();
-			acqDone = true;
-		}
-	}
-	
-	public void updateAcquisitionProgress(String progressText, int progress) {
-		acqPanel.setProgress(progressText, progress);
-	}
-	
-	public void acquisitionHasStarted() {
-		acqPanel.acqHasStarted();
-	}
-	
-	public void acquisitionHasStopped() {
-		acqPanel.acqHasStopped();
 		
-		setProcessorPanelPath(acqSettings.folder_);
+		acqController = new MM2AcquisitionController(this);
 	}
-	
-	public void acquisitionHasEnded() {
-		acqDone = true;
-		acqPanel.acqHasEnded();
-		setProcessorPanelPath(acqSettings.folder_);
-		System.out.println("Acquisition running time (s): "+acq.getExecutionTime());
-	}	
 	
 	//////// Processing
 	@Override
@@ -166,18 +118,17 @@ public class MM2Controller extends AbstractController<BareImage> {
 	}
 	
 	//////////////////////// Other methods
-	
 	public boolean isAcquisitionDone() {
 		return acqDone;
 	}
 
 	@Override
 	public boolean isReady() {
-		if(acqPanel == null || procPanel == null || genPanel == null) {
+		if(acqController.isReady() || procPanel == null || genPanel == null) {
 			return false;
 		}
 		
-		if(acq != null && acq.isRunning()) {
+		if(acqController.acqExists() && acqController.acqRunning()) {
 			return false;
 		}
 		
@@ -206,12 +157,9 @@ public class MM2Controller extends AbstractController<BareImage> {
 	}
 
 	private boolean isAcqPathKnown(String path) {
-		if(acqSettings != null && acqSettings.folder_ != null) {
-			return acqSettings.folder_.equals(path);
-		}
-		return false;
+		return acqController.isAcqPathKnown(path);
 	}
-
+	
 	@Override
 	public JFrame getMainFrame() {		
 		MainFrame frame = new MainFrame(studio, this);		
@@ -237,7 +185,7 @@ public class MM2Controller extends AbstractController<BareImage> {
 	}
 
 	@Override
-	public CalibrationProcessor<BareImage> getProcessor(String path, Loader<BareImage> loader) {
+	public CalibrationProcessor<BareImage,FloatImage> getProcessor(String path, Loader<BareImage> loader) {
 		if(loader instanceof QueuesLoader) {
 			return new QueuesProcessor(path, this, (QueuesLoader) loader);
 		} else if (loader instanceof MMStacksLoader) {
@@ -256,5 +204,19 @@ public class MM2Controller extends AbstractController<BareImage> {
 	
 	public int getImageWidth() {
 		return image_width;
+	}
+
+	@Override
+	public ArrayToImage<FloatImage> getImageConverter() {
+		return new ArrayToFloatImage();
+	}
+
+	@Override
+	public ImageSaver<FloatImage> getImageSaver() {
+		return new FloatImageSaver();
+	}
+
+	public MM2AcquisitionController getAcqController() {
+		return acqController;
 	}
 }

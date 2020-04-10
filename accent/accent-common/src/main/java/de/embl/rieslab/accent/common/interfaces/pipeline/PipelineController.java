@@ -6,9 +6,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JFrame;
 
-import de.embl.rieslab.accent.common.data.acquisition.AcquisitionSettings;
+import de.embl.rieslab.accent.common.interfaces.data.ArrayToImage;
 import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
-import de.embl.rieslab.accent.common.interfaces.ui.AcquisitionPanelInterface;
+import de.embl.rieslab.accent.common.interfaces.data.ImageSaver;
+import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
@@ -19,55 +20,19 @@ import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
  * @author Joran Deschamps
  *
  */
-public interface PipelineController<T extends CalibrationImage> {
+public interface PipelineController<U extends RawImage, T extends CalibrationImage> {
 	
 	/**
 	 * Returns the plugin main frame.
 	 * @return
 	 */
 	public JFrame getMainFrame();
-	
-	//////// acquisition
-	/**
-	 * Updates the acquisition panel.
-	 * @param message Current acquisition status
-	 * @param progress Acquisition progress percentage
-	 */
-	public void updateAcquisitionProgress(String message, int progress);
 
-	/**
-	 * Reflects on the acquisition panel that the acquisition has started. 
-	 */
-	public void acquisitionHasStarted();
-
-	/**
-	 * Reflects on the acquisition panel that the acquisition has stopped. 
-	 */
-	public void acquisitionHasStopped();
-
-	/**
-	 * Reflects on the acquisition panel that the acquisition has ended. 
-	 */
-	public void acquisitionHasEnded();
+	public ArrayToImage<T> getImageConverter();
 	
-	/**
-	 * Checks if the acquisition is done.
-	 * @return True if it is, false otherwise.
-	 */
-	public boolean isAcquisitionDone();
+	public ImageSaver<T> getImageSaver();
 	
-	/**
-	 * Starts an acquisition with the specified acquisition settings.
-	 * @param settings
-	 * @return True if the acquisition was started, false otherwise.
-	 */
-	public boolean startAcquisition(AcquisitionSettings settings);
-	
-	/**
-	 * Stops acquisition.
-	 */
-	public void stopAcquisition();
-	
+		
 	//////// Processing
 	/**
 	 * Gets Loader.
@@ -75,7 +40,7 @@ public interface PipelineController<T extends CalibrationImage> {
 	 * @param parameter Optional parameter.
 	 * @return
 	 */
-	public Loader<T> getLoader(String parameter);
+	public Loader<U> getLoader(String parameter);
 	
 	/**
 	 * Gets processor.
@@ -84,7 +49,7 @@ public interface PipelineController<T extends CalibrationImage> {
 	 * @param loader
 	 * @return
 	 */
-	public CalibrationProcessor<T> getProcessor(String path, Loader<T> loader);
+	public CalibrationProcessor<U,T> getProcessor(String path, Loader<U> loader);
 	
 	/**
 	 * Checks if the processor is ready.
@@ -96,7 +61,7 @@ public interface PipelineController<T extends CalibrationImage> {
 
 	public boolean startProcessor(String path, HashMap<String, Double> openedDatasets);
 	
-	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<T>> queues);
+	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<U>> queues);
 
 	public void stopProcessor();
 	
@@ -120,8 +85,6 @@ public interface PipelineController<T extends CalibrationImage> {
 	public void updateGeneratorProgress(String progress);
 	
 	//////////////////////// Other methods
-	public void setAcquisitionPanel(AcquisitionPanelInterface procpane);
-	
 	public void setProcessingPanel(ProcessingPanelInterface procpane);
 	
 	public void setGeneratePanel(GeneratePanelInterface genpane);

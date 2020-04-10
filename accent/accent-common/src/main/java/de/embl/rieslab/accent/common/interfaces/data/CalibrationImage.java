@@ -4,8 +4,8 @@ package de.embl.rieslab.accent.common.interfaces.data;
 public interface CalibrationImage {
 
 	/**
-	 * Returns the image.
-	 * @return Image
+	 * Returns the pixel representation.
+	 * @return pixel representation
 	 */
 	public Object getImage();
 	
@@ -16,7 +16,7 @@ public interface CalibrationImage {
 	public double getExposure();
 	
 	/**
-	 * Returns the value of the pixel at (x,y).
+	 * Returns the value of the pixel at (x,y). If the image has a 3rd dimension, then it is always returned at frame 0.
 	 * 
 	 * @param x Dimension 0
 	 * @param y Dimension 1
@@ -36,10 +36,4 @@ public interface CalibrationImage {
 	 */
 	public int getHeight();
 	
-	/**
-	 * Saves image as tiff under the specific fileName (must contain extension).
-	 * @param path File name with extension.
-	 * @return True if successful, false otherwise.
-	 */
-	public boolean saveAsTiff(String fileName);
 }

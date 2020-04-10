@@ -12,9 +12,9 @@ import org.junit.Test;
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
 import de.embl.rieslab.accent.common.dummys.DummyController;
+import de.embl.rieslab.accent.common.dummys.DummyImage;
 import de.embl.rieslab.accent.common.dummys.DummyLoader;
 import de.embl.rieslab.accent.common.dummys.DummyProcessor;
-import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
 public class CalibrationProcessorTest {
 
@@ -58,8 +58,8 @@ public class CalibrationProcessorTest {
 		double gain = tn_sq_per_sec/dc_per_sec; 
 		double r_sq_gain = 1;
 
-		FloatImage[] avgs = new FloatImage[Ne];
-		FloatImage[] vars = new FloatImage[Ne];
+		DummyImage[] avgs = new DummyImage[Ne];
+		DummyImage[] vars = new DummyImage[Ne];
 		for(int i =0; i< Ne; i++) {
 			float[] f_avg = new float[width*height];
 			float[] f_var = new float[width*height];
@@ -70,8 +70,8 @@ public class CalibrationProcessorTest {
 					f_var[p] = (float) (rn_sq+tn_sq_per_sec*exposure[i]/1000.);
 				}
 			}
-			avgs[i] = new FloatImage(width, height, f_avg, exposure[i]);
-			vars[i] = new FloatImage(width, height, f_var, exposure[i]);
+			avgs[i] = new DummyImage(3, f_avg, width, height, exposure[i]);
+			vars[i] = new DummyImage(3, f_var, width, height, exposure[i]);
 		}
 		
 		// perform linear regressions
@@ -95,7 +95,7 @@ public class CalibrationProcessorTest {
 	
 	@Test
 	public void testProcessorPipeline() {
-		String dir = "/temp_proc/";
+		String dir = "temp_proc";
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();
@@ -121,11 +121,11 @@ public class CalibrationProcessorTest {
 		for(int i=0;i<load.exposures.length;i++) {
 			File s_var, s_avg;
 			if(i%2==0) {
-				s_avg = new File(dir+"Avg_"+((int)load.exposures[i])+"ms.tiff");
-				s_var = new File(dir+"Var_"+((int)load.exposures[i])+"ms.tiff");
+				s_avg = new File(dir+"\\Avg_"+((int)load.exposures[i])+"ms.tiff");
+				s_var = new File(dir+"\\Var_"+((int)load.exposures[i])+"ms.tiff");
 			} else {
-				s_avg = new File(dir+"Avg_"+load.exposures[i]+"ms.tiff");
-				s_var = new File(dir+"Var_"+load.exposures[i]+"ms.tiff");
+				s_avg = new File(dir+"\\Avg_"+load.exposures[i]+"ms.tiff");
+				s_var = new File(dir+"\\Var_"+load.exposures[i]+"ms.tiff");
 			}
 
 			assertTrue(s_avg.exists());
@@ -135,35 +135,34 @@ public class CalibrationProcessorTest {
 			assertTrue(s_var.delete());
 		}
 		
-		
 		// checks saved calibration
-		File calib = new File(dir+"results."+CalibrationIO.CALIB_EXT);
+		File calib = new File(dir+"\\results."+CalibrationIO.CALIB_EXT);
 		assertTrue(calib.exists());
 		assertTrue(calib.delete());
 		
 		// checks calibration images
-		File f = new File(dir+"Baseline.tiff");
+		File f = new File(dir+"\\Baseline.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"DC_per_sec.tiff");
+		f = new File(dir+"\\DC_per_sec.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"Gain.tiff");
+		f = new File(dir+"\\Gain.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"RN_sq.tiff");
+		f = new File(dir+"\\RN_sq.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"TN_sq_per_sec.tiff");
+		f = new File(dir+"\\TN_sq_per_sec.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"R_sq_avg.tiff");
+		f = new File(dir+"\\R_sq_avg.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"R_sq_var.tiff");
+		f = new File(dir+"\\R_sq_var.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"R_sq_gain.tiff");
+		f = new File(dir+"\\R_sq_gain.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
 		

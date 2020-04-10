@@ -7,9 +7,12 @@ import javax.swing.SwingWorker;
 
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationMap;
+import de.embl.rieslab.accent.common.interfaces.data.ArrayToImage;
+import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
+import de.embl.rieslab.accent.common.interfaces.data.ImageSaver;
+import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Generator;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
-import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
 /**
  * Generates average and variance maps.
@@ -17,9 +20,11 @@ import de.embl.rieslab.accent.mm2.data.image.FloatImage;
  * @author Joran Deschamps
  *
  */
-public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implements Generator {
+public class AvgVarMapsGenerator<U extends RawImage, T extends CalibrationImage> extends SwingWorker<Integer, Integer> implements Generator {
 
-	private PipelineController controller;
+	private PipelineController<U,T> controller;
+	private ArrayToImage<T> imconverter;
+	private ImageSaver<T> imsaver;
 	private Calibration calib;
 	private double[] exposures;
 	private boolean running_ = false;
@@ -29,11 +34,13 @@ public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implement
 	 * Constructor.
 	 * @param controller
 	 */
-	public AvgVarMapsGenerator(PipelineController controller) {
+	public AvgVarMapsGenerator(PipelineController<U,T> controller) {
 		if(controller == null)
 			throw new NullPointerException("Controller cannot be null.");
 		
 		this.controller = controller;
+		this.imconverter = controller.getImageConverter();
+		this.imsaver = controller.getImageSaver();
 	}
 
 	@Override
@@ -66,17 +73,15 @@ public class AvgVarMapsGenerator extends SwingWorker<Integer, Integer> implement
 
 			publish(counter ++);
 
-			FloatImage avg_im = CalibrationMap.generateAvgMap(calib, exp);
-			FloatImage var_im = CalibrationMap.generateVarMap(calib, exp);
+			T avg_im = imconverter.getImage(3, CalibrationMap.generateAvgMap(calib, exp), calib.getWidth(), calib.getHeight(), exp);
+			T var_im = imconverter.getImage(3, CalibrationMap.generateVarMap(calib, exp), calib.getWidth(), calib.getHeight(), exp);
+
 			if(Double.compare(exp, (int) exp) == 0){
-				avg_im.saveAsTiff(path+"\\"+"generated_Avg_"+((int) exp)+"ms.tiff");
-
-				var_im.saveAsTiff(path+"\\"+"generated_Var_"+((int) exp)+"ms.tiff");
-				
+				imsaver.saveAsTiff(avg_im, path+"\\"+"generated_Avg_"+((int) exp)+"ms.tiff");
+				imsaver.saveAsTiff(var_im, path+"\\"+"generated_Var_"+((int) exp)+"ms.tiff");
 			} else {
-				avg_im.saveAsTiff(path+"\\"+"generated_Avg_"+exp+"ms.tiff");
-
-				var_im.saveAsTiff(path+"\\"+"generated_Var_"+exp+"ms.tiff");
+				imsaver.saveAsTiff(avg_im, path+"\\"+"generated_Avg_"+exp+"ms.tiff");
+				imsaver.saveAsTiff(var_im, path+"\\"+"generated_Var_"+exp+"ms.tiff");
 			}
 			
 		}
