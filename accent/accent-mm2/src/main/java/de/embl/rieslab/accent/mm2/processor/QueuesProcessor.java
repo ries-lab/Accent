@@ -4,15 +4,18 @@ import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
-import de.embl.rieslab.accent.mm2.MM2Controller;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
 import de.embl.rieslab.accent.mm2.data.image.FloatImage;
+import de.embl.rieslab.accent.mm2.interfaces.AcquisitionController;
 import de.embl.rieslab.accent.mm2.loader.QueuesLoader;
 
 public class QueuesProcessor extends CalibrationProcessor<BareImage, FloatImage> {
 	
-	public QueuesProcessor(String folder, PipelineController<BareImage, FloatImage> controller, QueuesLoader loader) {
+	private AcquisitionController acqcontroller;
+	
+	public QueuesProcessor(String folder, PipelineController<BareImage, FloatImage> controller, QueuesLoader loader, AcquisitionController acqcontroller) {
 		super(folder, controller, loader);
+		this.acqcontroller = acqcontroller;
 	}
 
 	@Override
@@ -60,7 +63,7 @@ public class QueuesProcessor extends CalibrationProcessor<BareImage, FloatImage>
 			}
 			
 			// all queues were empty
-			if(allEmpty && ((MM2Controller) getController()).isAcquisitionDone()) {
+			if(allEmpty && acqcontroller.isAcquisitionDone()) {
 				done = true;
 			}	
 		}

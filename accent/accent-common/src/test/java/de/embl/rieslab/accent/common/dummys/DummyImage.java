@@ -27,9 +27,9 @@ public class DummyImage implements CalibrationImage, RawImage{
 				this.pixels[i] = Byte.toUnsignedInt(((byte[]) pixels)[i]);
 			} else if(bytesPerPixels == 2) {
 				this.pixels[i] = Short.toUnsignedInt(((short[]) pixels)[i]);
-			} else if(bytesPerPixels == 3) {
+			} else if(bytesPerPixels > 2 && bytesPerPixels <= 4) {
 				this.pixels[i] = ((float[]) pixels)[i];
-			} else if(bytesPerPixels == 3) {
+			} else { // a bit stupid
 				this.pixels[i] = (float) ((double[]) pixels)[i];
 			}
 		}

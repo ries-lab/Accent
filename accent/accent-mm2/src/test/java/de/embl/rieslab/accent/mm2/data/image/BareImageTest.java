@@ -1,6 +1,7 @@
 package de.embl.rieslab.accent.mm2.data.image;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -48,8 +49,9 @@ public class BareImageTest {
 		assertEquals(floats, f2.getImage());
 	}
 	
+	// didn't manage to get the configuration to run JUnit5, so had to go with JUnit4
 	@Test
-	public void testByteBareImageExceptions() {
+	public void testBytesBareImageExceptions() {
 		int width = 2;
 		int height = 3;
 		double exposure = 465.16;
@@ -62,41 +64,70 @@ public class BareImageTest {
 			((short[]) shorts)[i] = new Integer(i).shortValue();
 			((float[]) floats)[i] = (float) (i*1.125);
 		}
-	/*	
-		// wrong types
-		assertThrows(IllegalArgumentException.class, () -> {
+
+		try {
 			new BareImage(1, shorts, width, height, exposure);
-		});
-		assertThrows(IllegalArgumentException.class, () -> {
+			fail("Expected an IllegalArgumentException to be thrown");
+		} catch (IllegalArgumentException e) {
+			assertEquals("pixels is not a byte array.", e.getMessage());
+		}
+		
+
+		try {
+			new BareImage(1, shorts, width, height, exposure);
+			fail("Expected an IllegalArgumentException to be thrown");
+		} catch (IllegalArgumentException e) {
+			assertEquals("pixels is not a byte array.", e.getMessage());
+		}
+		try {
 			new BareImage(1, floats, width, height, exposure);
-		});
-		assertThrows(IllegalArgumentException.class, () -> {
-			new BareImage(2, bytes, width, height, exposure);
-		});
-		assertThrows(IllegalArgumentException.class, () -> {
+			fail("Expected an IllegalArgumentException to be thrown");
+		} catch (IllegalArgumentException e) {
+			assertEquals("pixels is not a byte array.", e.getMessage());
+		}
+		try {
 			new BareImage(2, floats, width, height, exposure);
-		});
-		assertThrows(IllegalArgumentException.class, () -> {
+			fail("Expected an IllegalArgumentException to be thrown");
+		} catch (IllegalArgumentException e) {
+			assertEquals("pixels is not a short array.", e.getMessage());
+		}
+		try {
+			new BareImage(2, bytes, width, height, exposure);
+			fail("Expected an IllegalArgumentException to be thrown");
+		} catch (IllegalArgumentException e) {
+			assertEquals("pixels is not a short array.", e.getMessage());
+		}
+		try {
 			new BareImage(3, bytes, width, height, exposure);
-		});
-		assertThrows(IllegalArgumentException.class, () -> {
-			new BareImage(3, shorts, width, height, exposure);
-		});
+			fail("Expected an IllegalArgumentException to be thrown");
+		} catch (IllegalArgumentException e) {
+			assertEquals("pixels is not a float array.", e.getMessage());
+		}
+		try {
+			new BareImage(4, shorts, width, height, exposure);
+			fail("Expected an IllegalArgumentException to be thrown");
+		} catch (IllegalArgumentException e) {
+			assertEquals("pixels is not a float array.", e.getMessage());
+		}
 		
 		// wrong sizes
-		assertThrows(IllegalArgumentException.class, () -> {
+		try {
 			new BareImage(1, bytes, width+1, height, exposure);
-		});
-		assertThrows(IllegalArgumentException.class, () -> {
+			fail("Expected an IllegalArgumentException to be thrown");
+		} catch (IllegalArgumentException e) {
+			assertEquals("Pixel array has the wrong size.", e.getMessage());
+		}
+		try {
 			new BareImage(2, shorts, width+1, height, exposure);
-		});
-		assertThrows(IllegalArgumentException.class, () -> {
-			new BareImage(3, floats, width+1, height, exposure);
-		});
-		
-		// null types
-		assertThrows(NullPointerException.class, () -> {
-			new BareImage(2, null, width+1, height, exposure);
-		});*/
+			fail("Expected an IllegalArgumentException to be thrown");
+		} catch (IllegalArgumentException e) {
+			assertEquals("Pixel array has the wrong size.", e.getMessage());
+		}
+		try {
+			new BareImage(4, floats, width+1, height, exposure);
+			fail("Expected an IllegalArgumentException to be thrown");
+		} catch (IllegalArgumentException e) {
+			assertEquals("Pixel array has the wrong size.", e.getMessage());
+		}
 	}
 }

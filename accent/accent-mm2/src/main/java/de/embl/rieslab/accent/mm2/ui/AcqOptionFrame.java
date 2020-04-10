@@ -116,7 +116,7 @@ public class AcqOptionFrame extends JFrame {
 		contentPane.add(preWarmLabel, gbc_preWarmLabel);
 		
 		prerunsSpinner = new JSpinner();
-		prerunsSpinner.setModel(new SpinnerNumberModel(0, null, 500, 1));
+		prerunsSpinner.setModel(new SpinnerNumberModel(0, 0, 500, 1));
 		GridBagConstraints gbc_spinner = new GridBagConstraints();
 		gbc_spinner.fill = GridBagConstraints.HORIZONTAL;
 		gbc_spinner.insets = new Insets(0, 20, 5, 20);

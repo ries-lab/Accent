@@ -23,7 +23,9 @@ public class DummyMM2Loader implements Loader<BareImage> {
 	public int width = 2;
 	public int height = 3;
 	
-	public DummyMM2Loader(int nChannels) {
+	// HERE: need to implement something similar to fiji to have at least some real number
+	
+	public DummyMM2Loader(int nChannels) {aa
 		this.nChannels = nChannels;
 		curr_ind = new int[nChannels];
 		for(int i=0;i<nChannels;i++)
@@ -66,7 +68,7 @@ public class DummyMM2Loader implements Loader<BareImage> {
 		}
 		curr_ind[curr_channel]++;
 		
-		return new BareImage(3, pix, width, height, exposures[curr_channel]);
+		return new BareImage(4, pix, width, height, exposures[curr_channel]);
 	}
 
 	@Override

@@ -17,4 +17,6 @@ public interface AcquisitionController {
 	public void acquisitionHasEnded();
 
 	public void setAcquisitionPanel(AcquisitionPanelInterface acqpane);
+	
+	public boolean isAcquisitionDone();
 }

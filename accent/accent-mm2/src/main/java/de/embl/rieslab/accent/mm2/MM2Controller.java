@@ -38,7 +38,6 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 	private ArrayList<ArrayBlockingQueue<BareImage>> queues;
 	private int image_width = -1;
 	private int image_height = -1;
-	private boolean acqDone;
 	
 	public MM2Controller(Studio studio) {
 		this.studio = studio;
@@ -118,10 +117,6 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 	}
 	
 	//////////////////////// Other methods
-	public boolean isAcquisitionDone() {
-		return acqDone;
-	}
-
 	@Override
 	public boolean isReady() {
 		if(!acqController.isReady() || procPanel == null || genPanel == null) {
@@ -187,7 +182,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 	@Override
 	public CalibrationProcessor<BareImage,FloatImage> getProcessor(String path, Loader<BareImage> loader) {
 		if(loader instanceof QueuesLoader) {
-			return new QueuesProcessor(path, this, (QueuesLoader) loader);
+			return new QueuesProcessor(path, this, (QueuesLoader) loader, acqController);
 		} else if (loader instanceof MMStacksLoader) {
 			return new StacksProcessor(path, this, (MMStacksLoader) loader);
 		}

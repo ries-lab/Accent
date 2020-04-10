@@ -70,8 +70,8 @@ public class CalibrationProcessorTest {
 					f_var[p] = (float) (rn_sq+tn_sq_per_sec*exposure[i]/1000.);
 				}
 			}
-			avgs[i] = new DummyImage(3, f_avg, width, height, exposure[i]);
-			vars[i] = new DummyImage(3, f_var, width, height, exposure[i]);
+			avgs[i] = new DummyImage(4, f_avg, width, height, exposure[i]);
+			vars[i] = new DummyImage(4, f_var, width, height, exposure[i]);
 		}
 		
 		// perform linear regressions

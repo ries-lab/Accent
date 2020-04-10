@@ -80,7 +80,7 @@ public class BareImage implements RawImage {
 				throw new IllegalArgumentException("pixels is not a byte array.");
 			}
 			if(width*height != ((byte[]) pixels).length) {
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Pixel array has the wrong size.");
 			} else {
 				type = DataType.BYTE;
 			}
@@ -89,7 +89,7 @@ public class BareImage implements RawImage {
 				throw new IllegalArgumentException("pixels is not a short array.");
 			}
 			if(width*height != ((short[]) pixels).length) {
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Pixel array has the wrong size.");
 			} else {
 				type = DataType.SHORT;
 			}
@@ -98,7 +98,7 @@ public class BareImage implements RawImage {
 				throw new IllegalArgumentException("pixels is not a float array.");
 			}
 			if(width*height != ((float[]) pixels).length) {
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Pixel array has the wrong size.");
 			} else {
 				type = DataType.FLOAT;
 			}

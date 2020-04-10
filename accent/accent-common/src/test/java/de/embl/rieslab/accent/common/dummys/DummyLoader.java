@@ -44,8 +44,8 @@ public class DummyLoader implements Loader<DummyImage>{
 					f_var[p] = (float) (rn_sq+tn_sq_per_sec*exposures[i]/1000.);
 				}
 			}
-			avgs[i] = new DummyImage(3, f_avg, width, height, exposures[i]);
-			vars[i] = new DummyImage(3, f_var, width, height, exposures[i]);
+			avgs[i] = new DummyImage(4, f_avg, width, height, exposures[i]);
+			vars[i] = new DummyImage(4, f_var, width, height, exposures[i]);
 		}	
 	}
 	
@@ -63,7 +63,7 @@ public class DummyLoader implements Loader<DummyImage>{
 		}
 		curr_ind[curr_channel]++;
 		
-		return new DummyImage(3, pix, width, height, exposures[curr_channel]);
+		return new DummyImage(4, pix, width, height, exposures[curr_channel]);
 	}
 
 	@Override

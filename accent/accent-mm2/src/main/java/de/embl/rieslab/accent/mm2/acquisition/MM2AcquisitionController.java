@@ -104,4 +104,9 @@ public class MM2AcquisitionController implements AcquisitionController {
 	public boolean acqRunning() {
 		return acq.isRunning();
 	}
+
+	@Override
+	public boolean isAcquisitionDone() {
+		return acqDone;
+	}
 }

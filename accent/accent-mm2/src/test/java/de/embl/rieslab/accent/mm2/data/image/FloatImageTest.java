@@ -301,7 +301,7 @@ public class FloatImageTest {
 			assertEquals(i*1.125,(float) pixels[i],0.0001);
 		}
 
-		BareImage bim = new BareImage(3,pixels,width,height,exposure);
+		BareImage bim = new BareImage(4,pixels,width,height,exposure);
 		FloatImage im = new FloatImage(bim);
 
 		assertEquals(width, im.getWidth());
@@ -328,7 +328,7 @@ public class FloatImageTest {
 			assertEquals(i*1.125,(float) pixels[i],0.0001);
 		}
 
-		BareImage bim = new BareImage(3,pixels,width,height,exposure);
+		BareImage bim = new BareImage(4,pixels,width,height,exposure);
 		FloatImage im = new FloatImage(bim);
 		FloatImage im2 = new FloatImage(im);
 		
@@ -354,7 +354,7 @@ public class FloatImageTest {
 			assertEquals(i*1.125,(float) pixels[i],0.0001);
 		}
 
-		BareImage bim = new BareImage(3,pixels,width,height,exposure);
+		BareImage bim = new BareImage(4,pixels,width,height,exposure);
 		FloatImage im = new FloatImage(bim);
 		im.addPixels(bim);
 
@@ -379,7 +379,7 @@ public class FloatImageTest {
 			assertEquals(i*1.125,(float) pixels[i],0.0001);
 		}
 
-		BareImage bim = new BareImage(3,pixels,width,height,exposure);
+		BareImage bim = new BareImage(4,pixels,width,height,exposure);
 		FloatImage im = new FloatImage(bim);
 		im.addSquarePixels(bim);
 
