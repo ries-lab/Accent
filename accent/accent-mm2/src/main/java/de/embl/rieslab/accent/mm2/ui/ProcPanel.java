@@ -22,9 +22,12 @@ import javax.swing.border.TitledBorder;
 
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
+import de.embl.rieslab.accent.mm2.data.image.BareImage;
+import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
-public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
+public class ProcPanel extends JPanel implements ProcessingPanelInterface {
 	
+	private static final long serialVersionUID = 1L;
 	private JTextField folderField;
 	private JProgressBar procProgressBar;
 	private JButton folderButton;
@@ -34,13 +37,13 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 	private final static String START = "Process";
 	private final static String STOP = "Stop";
 		
-	private PipelineController controller;
+	private PipelineController<BareImage, FloatImage> controller;
 	private boolean preventTrigger = false;
 
 	/**
 	 * Create the panel.
 	 */
-	public ProcPanel(PipelineController controller) {
+	public ProcPanel(PipelineController<BareImage, FloatImage> controller) {
 		this.controller = controller;
 		
 		this.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Process raw data", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
@@ -143,7 +146,7 @@ public class ProcPanel  extends JPanel implements ProcessingPanelInterface {
 			String path = folderField.getText();
 			if(!path.isEmpty()) {
 				boolean b = controller.startProcessor(path);
-				if(!b) {
+				if(b) {
 					processButton.setText(STOP);
 					selectProcessToggle(true);
 				}	

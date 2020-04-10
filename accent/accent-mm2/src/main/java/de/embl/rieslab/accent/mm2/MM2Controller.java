@@ -86,7 +86,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 	}
 	
 	@Override
-	public boolean startProcessor(String path) {		
+	public boolean startProcessor(String path) {	
 		if(isReady() && path != null &&
 				(isAcqPathKnown(path) || new File(path).exists())) {
 
@@ -124,7 +124,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 
 	@Override
 	public boolean isReady() {
-		if(acqController.isReady() || procPanel == null || genPanel == null) {
+		if(!acqController.isReady() || procPanel == null || genPanel == null) {
 			return false;
 		}
 		
