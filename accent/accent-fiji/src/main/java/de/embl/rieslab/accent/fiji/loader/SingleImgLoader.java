@@ -11,11 +11,11 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
-import de.embl.rieslab.accent.fiji.data.image.ImgCalibrationImage;
+import de.embl.rieslab.accent.fiji.data.image.StackImg;
 import io.scif.services.DatasetIOService;
 import net.imagej.Dataset;
 
-public class SingleImgLoader implements Loader<ImgCalibrationImage>{
+public class SingleImgLoader implements Loader<StackImg>{
 
 	private Map<Double, String> folders_;
 	private List<String> currImgs_;
@@ -40,9 +40,9 @@ public class SingleImgLoader implements Loader<ImgCalibrationImage>{
 	}
 	
 	@Override
-	public ImgCalibrationImage getNext(int channel) {
+	public StackImg getNext(int channel) {
 		if(!(channel >= folders_.size() || channel < 0) && hasNext(channel)) {
-			return new ImgCalibrationImage(loadNext(channel), mapping_[channel]);
+			return new StackImg(loadNext(channel), mapping_[channel]);
 		}
 		return null;
 	}

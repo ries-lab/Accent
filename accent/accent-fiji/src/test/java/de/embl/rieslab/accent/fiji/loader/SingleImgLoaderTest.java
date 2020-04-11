@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 
 import org.junit.Test;
 
-import de.embl.rieslab.accent.fiji.data.image.ImgCalibrationImage;
+import de.embl.rieslab.accent.fiji.data.image.StackImg;
 import de.embl.rieslab.accent.fiji.datagen.GenerateData;
 import de.embl.rieslab.accent.fiji.utils.AccentFijiUtils;
 import net.imagej.ImageJ;
@@ -30,7 +30,7 @@ public class SingleImgLoaderTest {
 	@Test
 	public void testUnsignedShortLoader() {
 		final ImageJ ij = new ImageJ();
-		String dir = "AccentTemp-s";		
+		String dir = "AccentTemp-single-s";		
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();
@@ -54,7 +54,7 @@ public class SingleImgLoaderTest {
 
 			int nFrames = 0;
 			while(loader.hasNext(i)) {
-				ImgCalibrationImage img = loader.getNext(i);
+				StackImg img = loader.getNext(i);
 				boolean foundExposure = false;
 				for(Double e: exps) {
 					if(Double.compare(e, img.getExposure()) == 0) {
@@ -93,7 +93,7 @@ public class SingleImgLoaderTest {
 	@Test
 	public void testUnsignedByteLoader() {
 		final ImageJ ij = new ImageJ();
-		String dir = "AccentTemp-b";		
+		String dir = "AccentTemp-single-b";		
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();
@@ -116,7 +116,7 @@ public class SingleImgLoaderTest {
 			assertTrue(loader.openChannel(i));
 			assertTrue(loader.hasNext(i));
 			
-			ImgCalibrationImage img = loader.getNext(i);
+			StackImg img = loader.getNext(i);
 			boolean foundExposure = false;
 			for(Double e: exps) {
 				if(Double.compare(e, img.getExposure()) == 0) {
@@ -147,7 +147,7 @@ public class SingleImgLoaderTest {
 	@Test
 	public void testFloatLoader() {
 		final ImageJ ij = new ImageJ();
-		String dir = "AccentTemp-f";		
+		String dir = "AccentTemp-single-f";		
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();
@@ -170,7 +170,7 @@ public class SingleImgLoaderTest {
 			assertTrue(loader.openChannel(i));
 			assertTrue(loader.hasNext(i));
 			
-			ImgCalibrationImage img = loader.getNext(i);
+			StackImg img = loader.getNext(i);
 			boolean foundExposure = false;
 			for(Double e: exps) {
 				if(Double.compare(e, img.getExposure()) == 0) {

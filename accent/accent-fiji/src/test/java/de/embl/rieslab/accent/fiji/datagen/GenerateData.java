@@ -370,7 +370,7 @@ public class GenerateData {
 							s=s+"0";
 						}
 						s = s+i+".tif";
-						
+
 						saver.saveImg(s, img_f.get(i));
 					}
 				}

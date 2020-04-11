@@ -11,13 +11,16 @@ import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
 import de.embl.rieslab.accent.common.ui.GenPanel;
+import de.embl.rieslab.accent.fiji.data.image.PlaneImg;
+import de.embl.rieslab.accent.fiji.data.image.StackImg;
 
 public class MainFrame extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private TableProcPanel procpane;
-	private GenPanel genpane;
+	private GenPanel<StackImg,PlaneImg> genpane;
 	
-	public MainFrame(PipelineController controller, List<String> datasets) {
+	public MainFrame(PipelineController<StackImg,PlaneImg> controller, List<String> datasets) {
 
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setTitle("Accent");
@@ -42,7 +45,7 @@ public class MainFrame extends JFrame {
 		gbc_procpane.gridy = counter++;
 		content.add(procpane, gbc_procpane);
 
-		genpane = new GenPanel(controller);
+		genpane = new GenPanel<StackImg,PlaneImg>(controller);
 		controller.setGeneratePanel(genpane);
 		GridBagConstraints gbc_genpane = new GridBagConstraints();
 		gbc_genpane.weighty = 0.2;

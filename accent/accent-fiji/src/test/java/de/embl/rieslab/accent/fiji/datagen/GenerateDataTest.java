@@ -85,10 +85,10 @@ public class GenerateDataTest {
 				
 				if(curs.getIntPosition(0) % 10 == 0 && curs.getIntPosition(1) % 20 == 0) {
 					assertEquals(lowpix_avg, t.get(), 0.01*lowpix_avg);
-					assertEquals(lowpix_var, u.get(), 0.05*lowpix_var); 
+					assertEquals(lowpix_var, u.get(), 0.06*lowpix_var); 
 				} else {
 					assertEquals(dimpix_avg, t.get(), 0.01*dimpix_avg);
-					assertEquals(dimpix_var, u.get(), 0.05*dimpix_var);
+					assertEquals(dimpix_var, u.get(), 0.06*dimpix_var);
 				}
 			}
 		}
@@ -149,10 +149,10 @@ public class GenerateDataTest {
 				
 				if(curs.getIntPosition(0) % 10 == 0 && curs.getIntPosition(1) % 20 == 0) {
 					assertEquals(hotpix_avg, t.get(), 0.01*hotpix_avg);
-					assertEquals(hotpix_var, u.get(), 0.05*hotpix_var); // larger tolerance on the variance
+					assertEquals(hotpix_var, u.get(), 0.06*hotpix_var); // larger tolerance on the variance
 				} else {
 					assertEquals(lowpix_avg, t.get(), 0.01*lowpix_avg);
-					assertEquals(lowpix_var, u.get(), 0.05*lowpix_var); // larger tolerance on the variance
+					assertEquals(lowpix_var, u.get(), 0.06*lowpix_var); // larger tolerance on the variance
 				}
 			}
 		}
@@ -212,10 +212,10 @@ public class GenerateDataTest {
 				
 				if(curs.getIntPosition(0) % 10 == 0 && curs.getIntPosition(1) % 20 == 0) {
 					assertEquals(hotpix_avg, t.get(), 0.01*hotpix_avg);
-					assertEquals(hotpix_var, u.get(), 0.05*hotpix_var); 
+					assertEquals(hotpix_var, u.get(), 0.06*hotpix_var); 
 				} else {
 					assertEquals(lowpix_avg, t.get(), 0.01*lowpix_avg);
-					assertEquals(lowpix_var, u.get(), 0.05*lowpix_var);
+					assertEquals(lowpix_var, u.get(), 0.06*lowpix_var);
 				}
 			}
 		}

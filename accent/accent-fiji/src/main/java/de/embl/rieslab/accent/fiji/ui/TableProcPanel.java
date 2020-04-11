@@ -12,6 +12,8 @@ import javax.swing.table.DefaultTableModel;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
+import de.embl.rieslab.accent.fiji.data.image.PlaneImg;
+import de.embl.rieslab.accent.fiji.data.image.StackImg;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
@@ -38,9 +40,10 @@ import java.awt.Font;
 
 public class TableProcPanel extends JPanel implements ProcessingPanelInterface  {
 	
+	private static final long serialVersionUID = 1L;
 	private JTable table;
 	private JToggleButton btnProcess;
-	private de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController controller;
+	private PipelineController<StackImg,PlaneImg> controller;
 	private JProgressBar progressBar;
 	
 	private final static String START = "Process";
@@ -57,7 +60,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 	 * @param dataservice 
 	 * @param controller 
 	 */
-	public TableProcPanel(PipelineController controller, List<String> datasets) {
+	public TableProcPanel(PipelineController<StackImg,PlaneImg> controller, List<String> datasets) {
 		
 		if(datasets == null) {
 			throw new NullPointerException();
@@ -101,6 +104,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
 		table.setModel(new DefaultTableModel(buildList(), new String[] { "Dataset", "Exposure (ms)" }) { // expects an array, not a map
 
+			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[] { false, true };
 
 			public boolean isCellEditable(int row, int column) {

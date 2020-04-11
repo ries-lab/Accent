@@ -20,13 +20,17 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
+import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
+import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 
-public class GenPanel extends JPanel implements GeneratePanelInterface{
+public class GenPanel<U extends RawImage, T extends CalibrationImage> extends JPanel implements GeneratePanelInterface{
 
-	private PipelineController controller;
+	private static final long serialVersionUID = 1L;
+
+	private PipelineController<U, T> controller;
 	
 	private JTextField calibField;
 	private JTextField genExposuresField;
@@ -34,7 +38,7 @@ public class GenPanel extends JPanel implements GeneratePanelInterface{
 	private JButton calibButton;
 	private JLabel feedbackLabel;
 	
-	public GenPanel(PipelineController controller) {
+	public GenPanel(PipelineController<U,T> controller) {
 		this.controller = controller;
 		
 		this.setBorder(new TitledBorder(null, "Generate exposure library", TitledBorder.LEADING, TitledBorder.TOP, null, null));

@@ -15,7 +15,7 @@ public class AccentFijiUtilsTest {
 
 	@Test
 	public void test() {
-		String dir = "AccentTemp";		
+		String dir = "AccentTemp-u";		
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();

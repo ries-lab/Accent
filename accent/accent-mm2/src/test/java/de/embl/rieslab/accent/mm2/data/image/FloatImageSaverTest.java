@@ -6,8 +6,8 @@ import java.io.File;
 
 import org.junit.Test;
 
-public class FloatImageSaverTest {
-
+public class FloatImageSaverTest {ss
+	//TODO read the tif and see if the pixels are the same
 	@Test
 	public void testFlotImageSaver() {
 		String dir = "AccentTemp";		

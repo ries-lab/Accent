@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
-import de.embl.rieslab.accent.fiji.data.image.ImgCalibrationImage;
+import de.embl.rieslab.accent.fiji.data.image.StackImg;
 import io.scif.services.DatasetIOService;
 import net.imagej.Dataset;
 
-public class StackLoader implements Loader<ImgCalibrationImage> {
+public class StackLoader implements Loader<StackImg> {
 
 	private Map<Double, String> stacks_;
 	private double[] mapping_;
@@ -33,10 +33,10 @@ public class StackLoader implements Loader<ImgCalibrationImage> {
 	}
 	
 	@Override
-	public ImgCalibrationImage getNext(int channel) {
+	public StackImg getNext(int channel) {
 		if(!(channel >= stacks_.size() || channel < 0) && !polled_[channel]) {
 			polled_[channel] = true;
-			return new ImgCalibrationImage(currImg_, mapping_[channel]);
+			return new StackImg(currImg_, mapping_[channel]);
 		}
 		return null;
 	}

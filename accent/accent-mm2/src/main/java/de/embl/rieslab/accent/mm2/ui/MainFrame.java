@@ -11,13 +11,15 @@ import org.micromanager.Studio;
 
 import de.embl.rieslab.accent.common.ui.GenPanel;
 import de.embl.rieslab.accent.mm2.MM2Controller;
+import de.embl.rieslab.accent.mm2.data.image.BareImage;
+import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
 public class MainFrame extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 	private AcqPanel acqpane;
 	private ProcPanel procpane;
-	private GenPanel genpane;
+	private GenPanel<BareImage,FloatImage> genpane;
 	
 	/**
 	 * Create the frame.
@@ -57,7 +59,7 @@ public class MainFrame extends JFrame{
 		gbc_procpane.gridy = counter++;
 		content.add(procpane, gbc_procpane);
 
-		genpane = new GenPanel(controller);
+		genpane = new GenPanel<BareImage,FloatImage>(controller);
 		controller.setGeneratePanel(genpane);
 		GridBagConstraints gbc_genpane = new GridBagConstraints();
 		gbc_genpane.weighty = 0.2;
