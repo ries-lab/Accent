@@ -110,7 +110,7 @@ public class QueueProcessorTest {
 						assertEquals(DummyMM2Loader.getHotPixVariance(exps[i]), a.getVars()[i].getPixelValue(x, y), 0.05*DummyMM2Loader.getHotPixVariance(exps[i]));
 					} else {
 						assertEquals(DummyMM2Loader.getLowPixAverage(exps[i]), a.getAvgs()[i].getPixelValue(x, y), 0.01*DummyMM2Loader.getLowPixAverage(exps[i]));
-						assertEquals(DummyMM2Loader.getLowPixVariance(exps[i]), a.getVars()[i].getPixelValue(x, y), 0.05*DummyMM2Loader.getLowPixVariance(exps[i]));
+						assertEquals(DummyMM2Loader.getLowPixVariance(exps[i]), a.getVars()[i].getPixelValue(x, y), 0.06*DummyMM2Loader.getLowPixVariance(exps[i]));
 					}
 				}
 			}
@@ -160,7 +160,7 @@ public class QueueProcessorTest {
 						assertEquals(DummyMM2Loader.getHotPixVariance(exps[i]), a.getVars()[i].getPixelValue(x, y), 0.05*DummyMM2Loader.getHotPixVariance(exps[i]));
 					} else {
 						assertEquals(DummyMM2Loader.getLowPixAverage(exps[i]), a.getAvgs()[i].getPixelValue(x, y), 0.01*DummyMM2Loader.getLowPixAverage(exps[i]));
-						assertEquals(DummyMM2Loader.getLowPixVariance(exps[i]), a.getVars()[i].getPixelValue(x, y), 0.05*DummyMM2Loader.getLowPixVariance(exps[i]));
+						assertEquals(DummyMM2Loader.getLowPixVariance(exps[i]), a.getVars()[i].getPixelValue(x, y), 0.06*DummyMM2Loader.getLowPixVariance(exps[i]));
 					}
 				}
 			}
