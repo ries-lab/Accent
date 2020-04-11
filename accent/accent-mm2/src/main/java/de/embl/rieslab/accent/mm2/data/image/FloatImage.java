@@ -29,7 +29,7 @@ public class FloatImage implements CalibrationImage {
 		} else if(image.getDataType() == DataType.SHORT) {
 			setPixels(image.getWidth(), image.getHeight(), (short[]) image.getImage());
 		} else {
-			setPixels(image.getWidth(), image.getHeight(), (float[]) image.getImage());
+			setPixels(image.getWidth(), image.getHeight(), (int[]) image.getImage());
 		}
 	}
 
@@ -162,6 +162,16 @@ public class FloatImage implements CalibrationImage {
 		}
 	}
 	
+	private void setPixels(int width, int height, int[] pixels) {
+		if(img != null) {
+			for(int x=0;x<width;x++) {
+				for(int y=0;y<height;y++) {
+					img.setf(x, y, (float) Integer.toUnsignedLong(pixels[x+width*y]));
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Returns the exposure in ms.
 	 * @return Exposure in ms.
@@ -202,7 +212,7 @@ public class FloatImage implements CalibrationImage {
 		} else if(image.getDataType() == DataType.SHORT) {
 			addPixels((short[]) image.getImage());
 		} else {
-			addPixels((float[]) image.getImage());
+			addPixels((int[]) image.getImage());
 		}
 	}
 	
@@ -223,7 +233,7 @@ public class FloatImage implements CalibrationImage {
 		}
 	}
 
-	private void addPixels(float[] pixels) {
+	private void addPixels(int[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
 		}
@@ -235,28 +245,10 @@ public class FloatImage implements CalibrationImage {
 		
 		for(int x=0;x<getWidth();x++) {
 			for(int y=0;y<getHeight();y++) {
-				img.setf(x, y, img.getf(x,y)+pixels[x+getWidth()*y]);
+				img.setf(x, y, img.getf(x,y)+Integer.toUnsignedLong(pixels[x+getWidth()*y]));
 			}
 		}
 	}
-
-	/*
-	public void addPixels(float[][] pixels) {
-		if(pixels == null) {
-			throw new NullPointerException();
-		}
-		
-		// assumes here a square 2D array
-		if(pixels.length*pixels[0].length != getWidth()*getHeight()) {
-			throw new IllegalArgumentException();
-		}
-		
-		for(int x=0;x<getWidth();x++) {
-			for(int y=0;y<getHeight();y++) {
-				img.setf(x, y, img.getf(x,y)+pixels[x][y]);
-			}
-		}
-	}*/
 	
 	private void addPixels(short[] pixels) {
 		if(pixels == null) {
@@ -296,7 +288,7 @@ public class FloatImage implements CalibrationImage {
 		} else if(image.getDataType() == DataType.SHORT) {
 			addSquarePixels((short[]) image.getImage());
 		} else {
-			addSquarePixels((float[]) image.getImage());
+			addSquarePixels((int[]) image.getImage());
 		}
 	}
 	
@@ -334,7 +326,7 @@ public class FloatImage implements CalibrationImage {
 		}
 	}
 	
-	private void addSquarePixels(float[] pixels) {
+	private void addSquarePixels(int[] pixels) {
 		if(pixels == null) {
 			throw new NullPointerException();
 		}
@@ -345,27 +337,12 @@ public class FloatImage implements CalibrationImage {
 		
 		for(int x=0;x<getWidth();x++) {
 			for(int y=0;y<getHeight();y++) {
-				img.setf(x, y, img.getf(x,y)+pixels[x+getWidth()*y]*pixels[x+getWidth()*y]);
+				long v = Integer.toUnsignedLong(pixels[x+getWidth()*y]);
+				img.setf(x, y, img.getf(x,y)+v*v);
 			}
 		}
 	}
 	
-	/*
-	public void addSquarePixels(float[][] pixels) {
-		if(pixels == null) {
-			throw new NullPointerException();
-		}
-		
-		if(pixels.length*pixels[0].length != getWidth()*getHeight()) {
-			throw new IllegalArgumentException();
-		}
-		
-		for(int x=0;x<getWidth();x++) {
-			for(int y=0;y<getHeight();y++) {
-				img.setf(x, y, img.getf(x,y)+pixels[x][y]*pixels[x][y]);
-			}
-		}
-	}*/
 	/**
 	 * Squares the image pixel values.
 	 */

@@ -3,8 +3,9 @@ package de.embl.rieslab.accent.mm2.data.image;
 import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 
 /**
- * Image representation with a type (byte, short or float), pixels object, width, height
- * and exposure (ms) at which it was recorded.
+ * Image representation with a type (byte, short or int), pixels object, width, height
+ * and exposure (ms) at which it was recorded. Note MM2 seems to only support byte[], 
+ * short[] or int[] arrays.
  * 
  * @author Joran Deschamps
  *
@@ -19,52 +20,7 @@ public class BareImage implements RawImage {
 
 	/**
 	 * Constructor.
-	 * @param type DataType (BYTE, SHORT or FLOAT)
-	 * @param pixels Linear array of pixels of the corresponding type.
-	 * @param width Width of the image
-	 * @param height Height of the image
-	 * @param exposure Exposure in ms at which the image was recorded
-	 */
-	// should reconsider using the datatype object, not really useful here. But used in FloatImage to avoid recasting
-/*	public BareImage(DataType type, Object pixels, int width, int height, double exposure) {
-		if(pixels == null || type == null) {
-			throw new NullPointerException();
-		}
-		
-		if(type == DataType.BYTE) {
-			if(!(pixels instanceof byte[])) {
-				throw new IllegalArgumentException("pixels is not a byte array.");
-			}
-			
-			if(width*height != ((byte[]) pixels).length) {
-				throw new IllegalArgumentException("The array has the wrong size.");
-			}
-		} else if(type == DataType.SHORT) {
-			if(!(pixels instanceof short[])) {
-				throw new IllegalArgumentException("pixels is not a short array.");
-			}
-			if(width*height != ((short[]) pixels).length) {
-				throw new IllegalArgumentException("The array has the wrong size.");
-			}
-		} else {
-			if(!(pixels instanceof float[])) {
-				throw new IllegalArgumentException("pixels is not a float array.");
-			}
-			if(width*height != ((float[]) pixels).length) {
-				throw new IllegalArgumentException("The array has the wrong size.");
-			}
-		}
-		
-		this.type = type;
-		this.pixels = pixels;
-		this.width = width;
-		this.height = height;
-		this.exposure = exposure;
-	}
-*/
-	/**
-	 * Constructor.
-	 * @param type Bytes per pixels (1, 2 or >=3)
+	 * @param type Bytes per pixels (1, 2 or higher)
 	 * @param pixels Linear array of pixels of the corresponding type.
 	 * @param width Width of the image
 	 * @param height Height of the image
@@ -94,13 +50,13 @@ public class BareImage implements RawImage {
 				type = DataType.SHORT;
 			}
 		} else {
-			if(!(pixels instanceof float[])) {
-				throw new IllegalArgumentException("pixels is not a float array.");
+			if(!(pixels instanceof int[])) {
+				throw new IllegalArgumentException("pixels is not an int array.");
 			}
-			if(width*height != ((float[]) pixels).length) {
+			if(width*height != ((int[]) pixels).length) {
 				throw new IllegalArgumentException("Pixel array has the wrong size.");
 			} else {
-				type = DataType.FLOAT;
+				type = DataType.INT;
 			}
 		}
 		
@@ -112,7 +68,7 @@ public class BareImage implements RawImage {
 	
 	/**
 	 * Returns the data type.
-	 * @return DataType.BYTE, DataType.SHORT or DataType.FLOAT
+	 * @return DataType.BYTE, DataType.SHORT or DataType.INT
 	 */
 	public DataType getDataType() {
 		return type;
@@ -158,25 +114,10 @@ public class BareImage implements RawImage {
 		} else if(type.equals(DataType.SHORT)){
 			return 2;
 		} else {
-			return 3;
+			return 4;
 		}
 	}
 	
-	/*
-	@Override
-	public float getPixelValue(int x, int y) {
-		if(x>=0 && x<width && y>=0 && y<height) {
-			if(type.equals(DataType.BYTE)){
-				return (float) Byte.toUnsignedInt( ( (byte[]) pixels)[y*width+x] );
-			} else if(type.equals(DataType.SHORT)){
-				return (float) Short.toUnsignedInt( ( (short[]) pixels)[y*width+x] );
-			} else {
-				return ( (float[]) pixels)[y*width+x];
-			}
-		}
-
-		return (float) 0.;
-	}*/
 	
 	/**
 	 * Class used to characterize the pixel array type of a BareImage
@@ -185,6 +126,6 @@ public class BareImage implements RawImage {
 	 *
 	 */
 	public enum DataType{
-		BYTE, SHORT, FLOAT;
+		BYTE, SHORT, INT;
 	}
 }

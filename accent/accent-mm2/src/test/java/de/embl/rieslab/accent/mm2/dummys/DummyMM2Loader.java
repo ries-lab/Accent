@@ -1,90 +1,134 @@
 package de.embl.rieslab.accent.mm2.dummys;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
-import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
 public class DummyMM2Loader implements Loader<BareImage> {
 
-	public int nChannels;
+	// fixed physical numbers to generate the data
+	// very dim
+	public final static double DIMPIX_BASELINE = 78.88;
+	public final static double DIMPIX_DCPERSEC = 96.262; 
+	public final static double DIMPIX_RNSQ = 40.31; 
+	public final static double DIMPIX_TNSQPERSEC = 111.503;
+	
+	// dim pixel
+	public final static double LOWPIX_BASELINE = 128.709;
+	public final static double LOWPIX_DCPERSEC = 261.262; 
+	public final static double LOWPIX_RNSQ = 170.501; 
+	public final static double LOWPIX_TNSQPERSEC = 591.503;
+	
+	// hot pixel
+	public final static double HOTPIX_BASELINE = 1228.587;
+	public final static double HOTPIX_DCPERSEC = 50709.523; 
+	public final static double HOTPIX_RNSQ = 16926.469; 
+	public final static double HOTPIX_TNSQPERSEC = 348342.688;
+	
 	public double[] exposures;
-	public FloatImage[] avgs, vars;
-	
-	public int numImages = 200;
-	
-	public double baseline = 3.5;
-	public double dc_per_sec = 1.8; 
-	public double rn_sq = 2.4; 
-	public double tn_sq_per_sec = 1.8;
-	
+	public int numFrames;
 	public int[] curr_ind;
 	public int curr_channel;
+	public int width, height, bytesPerPixels;
 	
-	public int width = 2;
-	public int height = 3;
-	
-	// HERE: need to implement something similar to fiji to have at least some real number
-	
-	public DummyMM2Loader(int nChannels) {aa
-		this.nChannels = nChannels;
-		curr_ind = new int[nChannels];
-		for(int i=0;i<nChannels;i++)
+	public DummyMM2Loader(int bytesPerPixels, int width, int height, int numFrames, double[] exposures) {
+		this.exposures = exposures;
+		this.numFrames = numFrames;
+		this.width = width;
+		this.height = height;
+		this.bytesPerPixels = bytesPerPixels;
+		
+		curr_ind = new int[exposures.length];
+		for(int i=0;i<exposures.length;i++)
 			curr_ind[i] = 0;
 
-		curr_channel=0;
-	
-		exposures = new double[nChannels];
-		for(int i = 0; i< nChannels; i++)
-			exposures[i] = 10+500.5*i;
-					
-		avgs = new FloatImage[nChannels];
-		vars = new FloatImage[nChannels];
-		for(int i =0; i< nChannels; i++) {
-			float[] f_avg = new float[width*height];
-			float[] f_var = new float[width*height];
-			for(int y = 0; y<height; y++) {
-				for(int x = 0; x<width; x++) {
-					int p = x+width*y;
-					f_avg[p] = (float) (baseline+dc_per_sec*exposures[i]/1000.);
-					f_var[p] = (float) (rn_sq+tn_sq_per_sec*exposures[i]/1000.);
-				}
-			}
-			avgs[i] = new FloatImage(width, height, f_avg, exposures[i]);
-			vars[i] = new FloatImage(width, height, f_var, exposures[i]);
-		}	
+		curr_channel = 0;
 	}
 	
 	@Override
 	public BareImage getNext(int channel) {
-		float[] pix = new float[width*height];
-		for(int y = 0; y<height; y++) {
-			for(int x = 0; x<width; x++) {
-				int p = x+width*y;
-				double avg = (baseline+dc_per_sec*exposures[curr_channel]/1000.);
-				double var = (rn_sq+tn_sq_per_sec*exposures[curr_channel]/1000.);
+		if(curr_ind[curr_channel] < numFrames) {
+			Object pix;
+			
+			if(bytesPerPixels == 1) {
+				double dim_avg = getDimPixAverage(exposures[channel]);
+				double dim_var = getDimPixVariance(exposures[channel]);
+				double low_avg = getLowPixAverage(exposures[channel]);
+				double low_var = getLowPixVariance(exposures[channel]);
 				
-				pix[p] = (float) (avg+Math.sqrt(var)*Math.pow(-1, curr_ind[channel]));
+				pix = new byte[width*height];
+				for (int x = 0; x < width; x++) {
+					for (int y = 0; y < height; y++) {
+						int p = y*width+x;
+						
+						if (x % 10 == 0 && y % 20 == 0) {
+							((byte[]) pix)[p] = (byte) generateGaussianDistributedValues(low_avg, low_var);
+						} else {
+							((byte[]) pix)[p] = (byte) generateGaussianDistributedValues(dim_avg, dim_var);
+						}
+					}
+				}
+			} else if(bytesPerPixels == 2) {
+				double hot_avg = getHotPixAverage(exposures[channel]);
+				double hot_var = getHotPixVariance(exposures[channel]);
+				double low_avg = getLowPixAverage(exposures[channel]);
+				double low_var = getLowPixVariance(exposures[channel]);
+				
+				pix = new short[width*height];
+				for (int x = 0; x < width; x++) {
+					for (int y = 0; y < height; y++) {
+						int p = y*width+x;
+						
+						if (x % 10 == 0 && y % 20 == 0) {
+							((short[]) pix)[p] = (short) generateGaussianDistributedValues(hot_avg, hot_var);
+						} else {
+							((short[]) pix)[p] = (short) generateGaussianDistributedValues(low_avg, low_var);
+						}
+					}
+				}
+			} else {
+				double hot_avg = getHotPixAverage(exposures[channel]);
+				double hot_var = getHotPixVariance(exposures[channel]);
+				double low_avg = getLowPixAverage(exposures[channel]);
+				double low_var = getLowPixVariance(exposures[channel]);
+				
+				pix = new int[width*height];
+				for (int x = 0; x < width; x++) {
+					for (int y = 0; y < height; y++) {
+						int p = y*width+x;
+						
+						if (x % 10 == 0 && y % 20 == 0) {
+							((int[]) pix)[p] = (int) generateGaussianDistributedValues(hot_avg, hot_var);
+						} else {
+							((int[]) pix)[p] = (int) generateGaussianDistributedValues(low_avg, low_var);
+						}
+					}
+				}
 			}
+			
+			curr_ind[curr_channel]++;
+			return new BareImage(bytesPerPixels, pix, width, height, exposures[curr_channel]);
+		} else {
+			return null;
 		}
-		curr_ind[curr_channel]++;
-		
-		return new BareImage(4, pix, width, height, exposures[curr_channel]);
 	}
 
 	@Override
 	public boolean hasNext(int channel) {
-		if(channel < nChannels)
-			return curr_ind[channel] < 2 ? true:false;
+		if(channel < numFrames)
+			return curr_ind[channel] < numFrames ? true:false;
 		return false;
 	}
 
 	@Override
 	public int getNumberOfChannels() {
-		return nChannels;
+		return exposures.length;
 	}
+	
 	@Override
 	public boolean openChannel(int channel) {
-		if(channel < 0 || channel >= nChannels)
+		if(channel < 0 || channel >= numFrames)
 			return false;
 		
 		curr_channel = channel;
@@ -93,6 +137,38 @@ public class DummyMM2Loader implements Loader<BareImage> {
 
 	@Override
 	public int getChannelLength() {
-		return numImages;
+		return numFrames;
+	}
+	
+
+	public static double getDimPixAverage(double exposure) {
+		return (DIMPIX_BASELINE+DIMPIX_DCPERSEC*exposure/1000.);
+	}
+	
+	public static double getDimPixVariance(double exposure) {
+		return (DIMPIX_RNSQ+DIMPIX_TNSQPERSEC*exposure/1000.);
+	}
+
+	public static double getHotPixAverage(double exposure) {
+		return (HOTPIX_BASELINE+HOTPIX_DCPERSEC*exposure/1000.);
+	}
+	
+	public static double getHotPixVariance(double exposure) {
+		return (HOTPIX_RNSQ+HOTPIX_TNSQPERSEC*exposure/1000.);
+	}
+	
+	public static double getLowPixAverage(double exposure) {
+		return (LOWPIX_BASELINE+LOWPIX_DCPERSEC*exposure/1000.);
+	}
+	
+	public static double getLowPixVariance(double exposure) {
+		return (LOWPIX_RNSQ+LOWPIX_TNSQPERSEC*exposure/1000.);
+	}
+	
+	public static double generateGaussianDistributedValues(double mean, double variance) {
+		ThreadLocalRandom generator = ThreadLocalRandom.current();
+		double std = Math.sqrt(variance);
+		
+		return  mean + generator.nextGaussian() * std;
 	}
 }

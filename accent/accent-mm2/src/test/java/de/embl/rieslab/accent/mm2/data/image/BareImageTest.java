@@ -17,11 +17,11 @@ public class BareImageTest {
 
 		Object bytes = new byte[width*height];
 		Object shorts = new short[width*height];
-		Object floats = new float[width*height];
+		Object ints = new int[width*height];
 		for(int i=0;i<width*height;i++) {
 			((byte[]) bytes)[i] = new Integer(i).byteValue();
 			((short[]) shorts)[i] = new Integer(i).shortValue();
-			((float[]) floats)[i] = (float) (i*1.125);
+			((int[]) ints)[i] = i*500;
 		}
 		
 		BareImage b1 = new BareImage(1, bytes, width, height, exposure);
@@ -36,17 +36,17 @@ public class BareImageTest {
 		assertEquals(exposure, s1.getExposure(),0.0001);
 		assertEquals(shorts, s1.getImage());
 		
-		BareImage f1 = new BareImage(3, floats, width, height, exposure);
+		BareImage f1 = new BareImage(4, ints, width, height, exposure);
 		assertEquals(width, f1.getWidth());
 		assertEquals(height, f1.getHeight());
 		assertEquals(exposure, f1.getExposure(),0.0001);
-		assertEquals(floats, f1.getImage());
+		assertEquals(ints, f1.getImage());
 		
-		BareImage f2 = new BareImage(5, floats, width, height, exposure);
+		BareImage f2 = new BareImage(8, ints, width, height, exposure);
 		assertEquals(width, f2.getWidth());
 		assertEquals(height, f2.getHeight());
 		assertEquals(exposure, f2.getExposure(),0.0001);
-		assertEquals(floats, f2.getImage());
+		assertEquals(ints, f2.getImage());
 	}
 	
 	// didn't manage to get the configuration to run JUnit5, so had to go with JUnit4
@@ -58,12 +58,13 @@ public class BareImageTest {
 
 		Object bytes = new byte[width*height];
 		Object shorts = new short[width*height];
-		Object floats = new float[width*height];
+		Object ints = new int[width*height];
 		for(int i=0;i<width*height;i++) {
 			((byte[]) bytes)[i] = new Integer(i).byteValue();
 			((short[]) shorts)[i] = new Integer(i).shortValue();
-			((float[]) floats)[i] = (float) (i*1.125);
+			((int[]) ints)[i] = i*500;
 		}
+		
 
 		try {
 			new BareImage(1, shorts, width, height, exposure);
@@ -80,13 +81,13 @@ public class BareImageTest {
 			assertEquals("pixels is not a byte array.", e.getMessage());
 		}
 		try {
-			new BareImage(1, floats, width, height, exposure);
+			new BareImage(1, ints, width, height, exposure);
 			fail("Expected an IllegalArgumentException to be thrown");
 		} catch (IllegalArgumentException e) {
 			assertEquals("pixels is not a byte array.", e.getMessage());
 		}
 		try {
-			new BareImage(2, floats, width, height, exposure);
+			new BareImage(2, ints, width, height, exposure);
 			fail("Expected an IllegalArgumentException to be thrown");
 		} catch (IllegalArgumentException e) {
 			assertEquals("pixels is not a short array.", e.getMessage());
@@ -101,13 +102,13 @@ public class BareImageTest {
 			new BareImage(3, bytes, width, height, exposure);
 			fail("Expected an IllegalArgumentException to be thrown");
 		} catch (IllegalArgumentException e) {
-			assertEquals("pixels is not a float array.", e.getMessage());
+			assertEquals("pixels is not an int array.", e.getMessage());
 		}
 		try {
 			new BareImage(4, shorts, width, height, exposure);
 			fail("Expected an IllegalArgumentException to be thrown");
 		} catch (IllegalArgumentException e) {
-			assertEquals("pixels is not a float array.", e.getMessage());
+			assertEquals("pixels is not an int array.", e.getMessage());
 		}
 		
 		// wrong sizes
@@ -124,7 +125,7 @@ public class BareImageTest {
 			assertEquals("Pixel array has the wrong size.", e.getMessage());
 		}
 		try {
-			new BareImage(4, floats, width+1, height, exposure);
+			new BareImage(4, ints, width+1, height, exposure);
 			fail("Expected an IllegalArgumentException to be thrown");
 		} catch (IllegalArgumentException e) {
 			assertEquals("Pixel array has the wrong size.", e.getMessage());

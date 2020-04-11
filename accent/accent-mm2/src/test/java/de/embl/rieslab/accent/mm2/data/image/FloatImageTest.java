@@ -290,15 +290,14 @@ public class FloatImageTest {
 	}
 
 	@Test
-	public void testFloatBareImageConstructor() {
+	public void testIntBareImageConstructor() {
 		int width = 3;
 		int height = 4;
 		double exposure = 10.5;
 		
-		float[] pixels = new float[width*height];
+		int[] pixels = new int[width*height];
 		for(int i=0;i<width*height;i++) {
-			pixels[i] = (float) (i*1.125);
-			assertEquals(i*1.125,(float) pixels[i],0.0001);
+			pixels[i] = i*125;
 		}
 
 		BareImage bim = new BareImage(4,pixels,width,height,exposure);
@@ -310,22 +309,21 @@ public class FloatImageTest {
 
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
-				float k = (float) ((y*width+x)*1.125);
+				float k = (float) ((y*width+x)*125);
 				assertEquals(k,im.getPixelValue(x, y), 0.001);
 			}
 		}
 	}
 
 	@Test
-	public void testFloatImageConstructor() {
+	public void testIntImageConstructor() {
 		int width = 3;
 		int height = 4;
 		double exposure = 10.5;
 		
-		float[] pixels = new float[width*height];
+		int[] pixels = new int[width*height];
 		for(int i=0;i<width*height;i++) {
-			pixels[i] = (float) (i*1.125);
-			assertEquals(i*1.125,(float) pixels[i],0.0001);
+			pixels[i] = i*125;
 		}
 
 		BareImage bim = new BareImage(4,pixels,width,height,exposure);
@@ -337,21 +335,20 @@ public class FloatImageTest {
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
 				if(!(x==0 && y==0))
-					assertNotEquals(im2.getPixelValue(x, y),im.getPixelValue(x, y), 0.001);
+					assertNotEquals(im2.getPixelValue(x, y), im.getPixelValue(x, y), 0.0001);
 			}
 		}
 	}
 	
 	@Test
-	public void testAddFloatBareImagePixels() {
+	public void testAddIntBareImagePixels() {
 		int width = 3;
 		int height = 4;
 		double exposure = 10.5;
 		
-		float[] pixels = new float[width*height];
+		int[] pixels = new int[width*height];
 		for(int i=0;i<width*height;i++) {
-			pixels[i] = (float) (i*1.125);
-			assertEquals(i*1.125,(float) pixels[i],0.0001);
+			pixels[i] = i*125;
 		}
 
 		BareImage bim = new BareImage(4,pixels,width,height,exposure);
@@ -360,23 +357,22 @@ public class FloatImageTest {
 
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
-				float k = (float) ((y*width+x)*1.125);
-				assertEquals(2*k,im.getPixelValue(x, y), 0.001);
+				float k = (float) ((y*width+x)*125);
+				assertEquals(2*k,im.getPixelValue(x, y), 0.0001);
 			}
 		}
 	}
 
 	
 	@Test
-	public void testAddSquareFloatBareImagePixels() {
+	public void testAddSquareIntBareImagePixels() {
 		int width = 3;
 		int height = 4;
 		double exposure = 10.5;
 		
-		float[] pixels = new float[width*height];
+		int[] pixels = new int[width*height];
 		for(int i=0;i<width*height;i++) {
-			pixels[i] = (float) (i*1.125);
-			assertEquals(i*1.125,(float) pixels[i],0.0001);
+			pixels[i] = i*125;
 		}
 
 		BareImage bim = new BareImage(4,pixels,width,height,exposure);
@@ -385,12 +381,12 @@ public class FloatImageTest {
 
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
-				float k = (float) ((y*width+x)*1.125);
-				assertEquals(k+k*k,im.getPixelValue(x, y), 0.001);
+				float k = (float) ((y*width+x)*125);
+				assertEquals(k+k*k,im.getPixelValue(x, y), 0.0001);
 			}
 		}
 	}
-		
+
 	@Test
 	public void testDoubleConstructor() {
 		int width = 3;
@@ -404,11 +400,11 @@ public class FloatImageTest {
 		}
 		
 		FloatImage im = new FloatImage(width,height,pixels,exposure);
-
+	
 		assertEquals(width, im.getWidth());
 		assertEquals(height, im.getHeight());
 		assertEquals(exposure, im.getExposure(), 0.0001);
-
+	
 		for(int y=0;y<height;y++) {
 			for(int x=0;x<width;x++) {
 				double k = (y*width+x)*1.125;
@@ -416,7 +412,6 @@ public class FloatImageTest {
 			}
 		}
 	}
-	
 
 	@Test
 	public void testSquareFloatImage() {
