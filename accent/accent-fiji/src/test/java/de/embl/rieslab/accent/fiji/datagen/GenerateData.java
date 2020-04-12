@@ -11,6 +11,7 @@ import net.imglib2.img.ImgFactory;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
+import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.FloatType;
 
@@ -46,7 +47,7 @@ public class GenerateData {
 	public final static double HOTPIX_RNSQ = 16926.469; 
 	public final static double HOTPIX_TNSQPERSEC = 348342.688;
 
-	
+
 	public static Img<UnsignedShortType> generateUnsignedShortType(int width, int height, int numFrames,
 			double exposure) {
 
@@ -89,6 +90,83 @@ public class GenerateData {
 		final ImgFactory<UnsignedShortType> factory = new ArrayImgFactory<UnsignedShortType>(new UnsignedShortType());
 		ArrayList<Img<UnsignedShortType>> img = new ArrayList<Img<UnsignedShortType>>();
 		ArrayList<RandomAccess<UnsignedShortType>> r_arr = new ArrayList<RandomAccess<UnsignedShortType>>();
+
+		double hot_avg = getHotPixAverage(exposure);
+		double hot_var = getHotPixVariance(exposure);
+		double low_avg = getLowPixAverage(exposure);
+		double low_var = getLowPixVariance(exposure);
+
+		for(int f=0;f<numFrames;f++) {
+			img.add(factory.create(dim));
+			r_arr.add(img.get(f).randomAccess());
+		}
+		
+		for (int x = 0; x < width; x++) {
+			for(int f=0;f<numFrames;f++) {
+				r_arr.get(f).setPosition(x, 0);
+			}
+			for (int y = 0; y < height; y++) {
+				for(int f=0;f<numFrames;f++) {
+					r_arr.get(f).setPosition(y, 1);
+				}
+
+				double[] pixs;
+				if (x % 10 == 0 && y % 20 == 0) {
+					pixs = generateGaussianDistributedValues(hot_avg, hot_var, numFrames);
+				} else {
+					pixs = generateGaussianDistributedValues(low_avg, low_var, numFrames);
+				}
+
+				for(int f=0;f<numFrames;f++) {
+					r_arr.get(f).get().set((int) pixs[f]); 
+				}
+			}
+		}
+
+		return img;
+	}
+	public static Img<UnsignedIntType> generateUnsignedIntType(int width, int height, int numFrames,
+			double exposure) {
+
+		final long[] dim = new long[] { width, height, numFrames };
+		final ImgFactory<UnsignedIntType> factory = new ArrayImgFactory<UnsignedIntType>(new UnsignedIntType());
+		Img<UnsignedIntType> img = factory.create(dim);
+
+		double hot_avg = getHotPixAverage(exposure);
+		double hot_var = getHotPixVariance(exposure);
+		double low_avg = getLowPixAverage(exposure);
+		double low_var = getLowPixVariance(exposure);
+
+		RandomAccess<UnsignedIntType> r = img.randomAccess();
+		for (int x = 0; x < width; x++) {
+			r.setPosition(x, 0);
+			for (int y = 0; y < height; y++) {
+				r.setPosition(y, 1);
+
+				double[] pixs;
+				if (x % 10 == 0 && y % 20 == 0) {
+					pixs = generateGaussianDistributedValues(hot_avg, hot_var, numFrames);
+				} else {
+					pixs = generateGaussianDistributedValues(low_avg, low_var, numFrames);
+				}
+
+				for (int z = 0; z < numFrames; z++) {
+					r.setPosition(z, 2);
+					r.get().set((int) pixs[z]);
+				}
+			}
+		}
+
+		return img;
+	}
+	
+	public static ArrayList<Img<UnsignedIntType>> generateUnsignedIntTypeSingles(int width, int height, int numFrames,
+			double exposure) {
+
+		final long[] dim = new long[] { width, height, 1 };
+		final ImgFactory<UnsignedIntType> factory = new ArrayImgFactory<UnsignedIntType>(new UnsignedIntType());
+		ArrayList<Img<UnsignedIntType>> img = new ArrayList<Img<UnsignedIntType>>();
+		ArrayList<RandomAccess<UnsignedIntType>> r_arr = new ArrayList<RandomAccess<UnsignedIntType>>();
 
 		double hot_avg = getHotPixAverage(exposure);
 		double hot_var = getHotPixVariance(exposure);
@@ -321,34 +399,7 @@ public class GenerateData {
 		
 		for (double e : exposure) {
 			
-			if(type.getBitsPerPixel() > 16) {
-				if(stack) {
-					Img<FloatType> img_f = generateFloatType(width, height, numFrames, e);
-					String name_f = path + "\\" + e + "ms_float.tif";
-					saver.saveImg(name_f, img_f);
-				} else {
-					ArrayList<Img<FloatType>> img_f = generateFloatTypeSingles(width, height, numFrames, e);	
-					String name_f = path + "\\" + e + "ms_float";
-					File f = new File(name_f);
-					if(!f.exists()) {
-						f.mkdir();
-					}
-
-					String name_file = name_f + "\\";
-					int numZeros = String.valueOf(numFrames).length();
-					for(int i=0;i<img_f.size();i++) {
-						int num = String.valueOf(i).length();
-						String s = name_file+"single_float_";
-						for(int k=0; k<numZeros-num;k++) {
-							s=s+"0";
-						}
-						s = s+i+".tif";
-						
-						saver.saveImg(s, img_f.get(i));
-					}
-				}
-				
-			} else if(type.getBitsPerPixel() == 16) {
+			if(type.getBitsPerPixel() == 16) {
 				if(stack) {
 					Img<UnsignedShortType> img_s = generateUnsignedShortType(width, height, numFrames, e);
 					String name_s = path + "\\" + e + "ms_unshort.tif";
@@ -400,8 +451,59 @@ public class GenerateData {
 						saver.saveImg(s, img_f.get(i));
 					}
 				}
-			}
-			
+			} else if(type.getBitsPerPixel() == 32 && type instanceof UnsignedIntType) {
+				if(stack) {
+					Img<UnsignedIntType> img_f = generateUnsignedIntType(width, height, numFrames, e);
+					String name_f = path + "\\" + e + "ms_int.tif";
+					saver.saveImg(name_f, img_f);
+				} else {
+					ArrayList<Img<UnsignedIntType>> img_f = generateUnsignedIntTypeSingles(width, height, numFrames, e);	
+					String name_f = path + "\\" + e + "ms_int";
+					File f = new File(name_f);
+					if(!f.exists()) {
+						f.mkdir();
+					}
+
+					String name_file = name_f + "\\";
+					int numZeros = String.valueOf(numFrames).length();
+					for(int i=0;i<img_f.size();i++) {
+						int num = String.valueOf(i).length();
+						String s = name_file+"single_int_";
+						for(int k=0; k<numZeros-num;k++) {
+							s=s+"0";
+						}
+						s = s+i+".tif";
+						
+						saver.saveImg(s, img_f.get(i));
+					}
+				}
+			} else {
+				if (stack) {
+					Img<FloatType> img_f = generateFloatType(width, height, numFrames, e);
+					String name_f = path + "\\" + e + "ms_float.tif";
+					saver.saveImg(name_f, img_f);
+				} else {
+					ArrayList<Img<FloatType>> img_f = generateFloatTypeSingles(width, height, numFrames, e);
+					String name_f = path + "\\" + e + "ms_float";
+					File f = new File(name_f);
+					if (!f.exists()) {
+						f.mkdir();
+					}
+
+					String name_file = name_f + "\\";
+					int numZeros = String.valueOf(numFrames).length();
+					for (int i = 0; i < img_f.size(); i++) {
+						int num = String.valueOf(i).length();
+						String s = name_file + "single_float_";
+						for (int k = 0; k < numZeros - num; k++) {
+							s = s + "0";
+						}
+						s = s + i + ".tif";
+
+						saver.saveImg(s, img_f.get(i));
+					}
+				} 
+			} 
 		}
 	}
 }

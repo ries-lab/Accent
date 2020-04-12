@@ -11,8 +11,8 @@ import de.embl.rieslab.accent.common.interfaces.data.ArrayToImage;
 import de.embl.rieslab.accent.common.interfaces.data.ImageSaver;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
-import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
-import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
+import de.embl.rieslab.accent.common.interfaces.ui.GeneratorPanelInterface;
+import de.embl.rieslab.accent.common.interfaces.ui.ProcessorPanelInterface;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import ij.ImagePlus;
 import ij.io.FileSaver;
@@ -57,25 +57,25 @@ public class DummyController implements PipelineController<DummyImage, DummyImag
 	}
 
 	@Override
-	public void processingHasStopped() {}
+	public void processorHasStopped() {}
 
 	@Override
-	public void processingHasStarted() {}
+	public void processorHasStarted() {}
 
 	@Override
-	public void processingHasEnded() {}
+	public void processorHasEnded() {}
 
 	@Override
-	public boolean isProcessingRunning() {return false;}
+	public boolean isProcessorRunning() {return false;}
 
 	@Override
 	public void setProcessorPanelPath(String path) {}
 
 	@Override
-	public boolean startMapGeneration(String path, double[] exposures) {return false;}
+	public boolean startGenerator(String path, double[] exposures) {return false;}
 
 	@Override
-	public boolean isGenerationRunning() {return false;}
+	public boolean isGeneratorRunning() {return false;}
 
 	@Override
 	public void updateGeneratorProgress(String progress) {
@@ -83,10 +83,10 @@ public class DummyController implements PipelineController<DummyImage, DummyImag
 	}
 
 	@Override
-	public void setProcessingPanel(ProcessingPanelInterface procpane) {}
+	public void setProcessorPanel(ProcessorPanelInterface procpane) {}
 
 	@Override
-	public void setGeneratePanel(GeneratePanelInterface genpane) {}
+	public void setGeneratorPanel(GeneratorPanelInterface genpane) {}
 
 	@Override
 	public boolean isReady() {return false;}

@@ -23,10 +23,10 @@ import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
 import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
 import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
-import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
+import de.embl.rieslab.accent.common.interfaces.ui.GeneratorPanelInterface;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 
-public class GenPanel<U extends RawImage, T extends CalibrationImage> extends JPanel implements GeneratePanelInterface{
+public class GenPanel<U extends RawImage, T extends CalibrationImage> extends JPanel implements GeneratorPanelInterface{
 
 	private static final long serialVersionUID = 1L;
 
@@ -162,7 +162,7 @@ public class GenPanel<U extends RawImage, T extends CalibrationImage> extends JP
 	}
 	
 	private void startMapGeneration() {
-		controller.startMapGeneration(calibField.getText(), getExposures());
+		controller.startGenerator(calibField.getText(), getExposures());
 	}
 
 	protected void showPathSelectionWindow() {

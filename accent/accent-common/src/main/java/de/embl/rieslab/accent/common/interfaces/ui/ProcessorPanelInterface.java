@@ -5,7 +5,7 @@ package de.embl.rieslab.accent.common.interfaces.ui;
  * @author Joran Deschamps
  *
  */
-public interface ProcessingPanelInterface {
+public interface ProcessorPanelInterface {
 
 	/**
 	 * Shows the path to the data.

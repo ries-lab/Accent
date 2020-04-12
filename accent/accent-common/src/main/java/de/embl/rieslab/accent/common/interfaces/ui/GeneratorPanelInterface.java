@@ -5,7 +5,7 @@ package de.embl.rieslab.accent.common.interfaces.ui;
  * @author Joran Deschamps
  *
  */
-public interface GeneratePanelInterface {
+public interface GeneratorPanelInterface {
 	/**
 	 * Shows the path to the calibration file.
 	 * @param path

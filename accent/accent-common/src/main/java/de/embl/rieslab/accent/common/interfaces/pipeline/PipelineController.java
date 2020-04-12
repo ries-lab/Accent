@@ -10,8 +10,8 @@ import de.embl.rieslab.accent.common.interfaces.data.ArrayToImage;
 import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
 import de.embl.rieslab.accent.common.interfaces.data.ImageSaver;
 import de.embl.rieslab.accent.common.interfaces.data.RawImage;
-import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
-import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
+import de.embl.rieslab.accent.common.interfaces.ui.GeneratorPanelInterface;
+import de.embl.rieslab.accent.common.interfaces.ui.ProcessorPanelInterface;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 
 /**
@@ -67,27 +67,27 @@ public interface PipelineController<U extends RawImage, T extends CalibrationIma
 	
 	public void updateProcessorProgress(String progressString, int progress);
 
-	public void processingHasStopped();
+	public void processorHasStopped();
 
-	public void processingHasStarted();
+	public void processorHasStarted();
 	
-	public void processingHasEnded();
+	public void processorHasEnded();
 
-	public boolean isProcessingRunning();
+	public boolean isProcessorRunning();
 	
 	public void setProcessorPanelPath(String path);
 	
 	//////// map generation
-	public boolean startMapGeneration(String path, double[] exposures);
+	public boolean startGenerator(String path, double[] exposures);
 	
-	public boolean isGenerationRunning();
+	public boolean isGeneratorRunning();
 	
 	public void updateGeneratorProgress(String progress);
 	
 	//////////////////////// Other methods
-	public void setProcessingPanel(ProcessingPanelInterface procpane);
+	public void setProcessorPanel(ProcessorPanelInterface procpane);
 	
-	public void setGeneratePanel(GeneratePanelInterface genpane);
+	public void setGeneratorPanel(GeneratorPanelInterface genpane);
 		
 	public boolean isReady();
 

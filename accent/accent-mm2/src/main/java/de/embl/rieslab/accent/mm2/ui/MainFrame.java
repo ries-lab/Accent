@@ -50,7 +50,7 @@ public class MainFrame extends JFrame{
 		content.add(acqpane, gbc_acqpane);
 
 		procpane = new ProcPanel(controller);
-		controller.setProcessingPanel(procpane);
+		controller.setProcessorPanel(procpane);
 		GridBagConstraints gbc_procpane = new GridBagConstraints();
 		gbc_procpane.weighty = 0.2;
 		gbc_procpane.weightx = 0.2;
@@ -60,7 +60,7 @@ public class MainFrame extends JFrame{
 		content.add(procpane, gbc_procpane);
 
 		genpane = new GenPanel<BareImage,FloatImage>(controller);
-		controller.setGeneratePanel(genpane);
+		controller.setGeneratorPanel(genpane);
 		GridBagConstraints gbc_genpane = new GridBagConstraints();
 		gbc_genpane.weighty = 0.2;
 		gbc_genpane.weightx = 0.2;

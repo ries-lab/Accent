@@ -10,7 +10,7 @@ import java.awt.GridBagConstraints;
 import javax.swing.table.DefaultTableModel;
 
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
-import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
+import de.embl.rieslab.accent.common.interfaces.ui.ProcessorPanelInterface;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 import de.embl.rieslab.accent.fiji.data.image.PlaneImg;
 import de.embl.rieslab.accent.fiji.data.image.StackImg;
@@ -38,7 +38,7 @@ import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.awt.Font;
 
-public class TableProcPanel extends JPanel implements ProcessingPanelInterface  {
+public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 	
 	private static final long serialVersionUID = 1L;
 	private JTable table;
@@ -198,7 +198,7 @@ public class TableProcPanel extends JPanel implements ProcessingPanelInterface  
 	}
 
 	protected void startProcessing() {
-		if(!controller.isProcessingRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
+		if(!controller.isProcessorRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
 			String s  = textField.getText();
 			HashMap<String, Double> list = extractDatasets();
 			boolean b = controller.startProcessor(s, list);

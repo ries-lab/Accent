@@ -6,7 +6,7 @@ import java.io.File;
 
 import org.junit.Test;
 
-public class FloatImageSaverTest {ss
+public class FloatImageSaverTest {
 	//TODO read the tif and see if the pixels are the same
 	@Test
 	public void testFlotImageSaver() {

@@ -21,11 +21,11 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
-import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
+import de.embl.rieslab.accent.common.interfaces.ui.ProcessorPanelInterface;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
 import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
-public class ProcPanel extends JPanel implements ProcessingPanelInterface {
+public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 	
 	private static final long serialVersionUID = 1L;
 	private JTextField folderField;
@@ -142,7 +142,7 @@ public class ProcPanel extends JPanel implements ProcessingPanelInterface {
 	}
 	
 	protected void startProcessing() {
-		if(!controller.isProcessingRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
+		if(!controller.isProcessorRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
 			String path = folderField.getText();
 			if(!path.isEmpty()) {
 				boolean b = controller.startProcessor(path);

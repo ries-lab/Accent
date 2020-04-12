@@ -107,7 +107,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 			} else {
 				JOptionPane.showMessageDialog(null, "Not enough data points to proceed (minimum 3).",
 						"Error", JOptionPane.INFORMATION_MESSAGE);
-				processingHasStopped();
+				processorHasStopped();
 				return false;
 			}
 		} 
@@ -126,12 +126,12 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 				JOptionPane.showMessageDialog(null, "No experimental folder found in:\n" + path + 
 						"\n\nExperiment folder names end with <###ms> where ### is the exposure time.",
 						"Error", JOptionPane.INFORMATION_MESSAGE);
-				processingHasStopped();
+				processorHasStopped();
 				return false;
 			} else if(directoriesToLoad.length < 3) {
 				JOptionPane.showMessageDialog(null, "Not enough experimental folder (minimum 3).",
 						"Error", JOptionPane.INFORMATION_MESSAGE);
-				processingHasStopped();
+				processorHasStopped();
 				return false;
 			} else if(directoriesToLoad != null && directoriesToLoad.length > 2) {
 				processor = getProcessor(path, getLoader(DEFAULT_LOADER));
@@ -158,11 +158,11 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 			return false;
 		}
 		
-		if(isProcessingRunning()) {
+		if(isProcessorRunning()) {
 			return false;
 		}
 		
-		if(isGenerationRunning()) {
+		if(isGeneratorRunning()) {
 			return false;
 		}
 		

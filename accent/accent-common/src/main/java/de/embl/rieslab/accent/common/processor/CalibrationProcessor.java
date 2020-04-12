@@ -37,8 +37,8 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 		if(folder == null || controller == null || loader == null)		
 			throw new NullPointerException();
 		
-		if(loader.getNumberOfChannels() < 3)
-			throw new IllegalArgumentException("At least three exposures are required.");
+		if(loader.getNumberOfChannels() < 2)
+			throw new IllegalArgumentException("At least two exposures are required.");
 			
 		this.folder = folder;
 		this.controller = controller;
@@ -166,15 +166,15 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 	
 	private void showProgress(int flag, String message, int step, int totalSteps, int percentage) {
 		if(flag == START) {
-			controller.processingHasStarted();
+			controller.processorHasStarted();
 			controller.updateProcessorProgress("Processing ...",0);
 		} else if(flag == DONE) {
 			running = false;
-			controller.processingHasEnded();
+			controller.processorHasEnded();
 			controller.updateProcessorProgress("Done.",100);
 		} else if(flag == STOP) {
 			running = false;
-			controller.processingHasStopped();
+			controller.processorHasStopped();
 			controller.updateProcessorProgress("Interrupted.",50);
 		} else if(flag == PROGRESS) {
 			controller.updateProcessorProgress(message+step+"/"+totalSteps, percentage);
@@ -183,15 +183,15 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 	
 	private void showProgress(int flag, String message, int percentage) {
 		if(flag == START) {
-			controller.processingHasStarted();
+			controller.processorHasStarted();
 			controller.updateProcessorProgress("Processing ...",0);
 		} else if(flag == DONE) {
 			running = false;
-			controller.processingHasEnded();
+			controller.processorHasEnded();
 			controller.updateProcessorProgress("Done.",100);
 		} else if(flag == STOP) {
 			running = false;
-			controller.processingHasStopped();
+			controller.processorHasStopped();
 			controller.updateProcessorProgress("Interrupted.",50);
 		} else if(flag == PROGRESS) {
 			controller.updateProcessorProgress(message, percentage);

@@ -8,8 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
-import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
-import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
+import de.embl.rieslab.accent.common.interfaces.ui.GeneratorPanelInterface;
+import de.embl.rieslab.accent.common.interfaces.ui.ProcessorPanelInterface;
 import de.embl.rieslab.accent.common.ui.GenPanel;
 import de.embl.rieslab.accent.fiji.data.image.PlaneImg;
 import de.embl.rieslab.accent.fiji.data.image.StackImg;
@@ -36,7 +36,7 @@ public class MainFrame extends JFrame {
 		int counter = 0;
 	
 		procpane = new TableProcPanel(controller, datasets);
-		controller.setProcessingPanel(procpane);
+		controller.setProcessorPanel(procpane);
 		GridBagConstraints gbc_procpane = new GridBagConstraints();
 		gbc_procpane.weighty = 0.2;
 		gbc_procpane.weightx = 0.2;
@@ -46,7 +46,7 @@ public class MainFrame extends JFrame {
 		content.add(procpane, gbc_procpane);
 
 		genpane = new GenPanel<StackImg,PlaneImg>(controller);
-		controller.setGeneratePanel(genpane);
+		controller.setGeneratorPanel(genpane);
 		GridBagConstraints gbc_genpane = new GridBagConstraints();
 		gbc_genpane.weighty = 0.2;
 		gbc_genpane.weightx = 0.2;
@@ -61,11 +61,11 @@ public class MainFrame extends JFrame {
 		this.setLocationRelativeTo(null);
 	}
 
-	public ProcessingPanelInterface getProcessingPanel() {
+	public ProcessorPanelInterface getProcessingPanel() {
 		return procpane;
 	}
 
-	public GeneratePanelInterface getGeneratePanel() {
+	public GeneratorPanelInterface getGeneratePanel() {
 		return genpane;
 	}
 

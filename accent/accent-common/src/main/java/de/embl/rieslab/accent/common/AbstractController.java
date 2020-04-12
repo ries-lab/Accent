@@ -11,8 +11,8 @@ import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
 import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Generator;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
-import de.embl.rieslab.accent.common.interfaces.ui.GeneratePanelInterface;
-import de.embl.rieslab.accent.common.interfaces.ui.ProcessingPanelInterface;
+import de.embl.rieslab.accent.common.interfaces.ui.GeneratorPanelInterface;
+import de.embl.rieslab.accent.common.interfaces.ui.ProcessorPanelInterface;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import de.embl.rieslab.accent.common.utils.Dialogs;
 
@@ -21,9 +21,9 @@ public abstract class AbstractController<U extends RawImage, T extends Calibrati
 
 	public static String DEFAULT_LOADER = "Default";
 	
-	protected ProcessingPanelInterface procPanel;
+	protected ProcessorPanelInterface procPanel;
 	protected CalibrationProcessor<U,T> processor;
-	protected GeneratePanelInterface genPanel;
+	protected GeneratorPanelInterface genPanel;
 	protected Generator generator;
 	
 	// Processor		
@@ -65,15 +65,15 @@ public abstract class AbstractController<U extends RawImage, T extends Calibrati
 		procPanel.setProgress(progressString, progress);
 	}
 
-	public void processingHasStopped() {
+	public void processorHasStopped() {
 		procPanel.processingHasStopped();
 	}
 
-	public void processingHasStarted() {
+	public void processorHasStarted() {
 		procPanel.processingHasStarted();
 	}
 
-	public void processingHasEnded() {
+	public void processorHasEnded() {
 		procPanel.processingHasEnded();
 		System.out.println("Processing running time (s): "+processor.getExecutionTime());
 		
@@ -90,7 +90,7 @@ public abstract class AbstractController<U extends RawImage, T extends Calibrati
 		}
 	}
 	
-	public boolean isProcessingRunning() {
+	public boolean isProcessorRunning() {
 		if(processor != null && processor.isRunning()) {
 			return true;
 		}
@@ -98,7 +98,7 @@ public abstract class AbstractController<U extends RawImage, T extends Calibrati
 	}
 	
 	//////// map generation
-	public boolean startMapGeneration(String path, double[] exposures) {		
+	public boolean startGenerator(String path, double[] exposures) {		
 		if(isReady() && path != null &&
 				(new File(path).exists()) && (exposures != null && exposures.length > 0)) {
 			
@@ -119,7 +119,7 @@ public abstract class AbstractController<U extends RawImage, T extends Calibrati
 		return false;
 	}
 	
-	public boolean isGenerationRunning() {
+	public boolean isGeneratorRunning() {
 		if(generator != null) {
 			return generator.isRunning();
 		}
@@ -139,11 +139,11 @@ public abstract class AbstractController<U extends RawImage, T extends Calibrati
 	}
 	
 	//////////////////////// Other methods
-	public void setProcessingPanel(ProcessingPanelInterface procpane) {
+	public void setProcessorPanel(ProcessorPanelInterface procpane) {
 		this.procPanel = procpane;
 	}
 	
-	public void setGeneratePanel(GeneratePanelInterface genpane) {
+	public void setGeneratorPanel(GeneratorPanelInterface genpane) {
 		this.genPanel = genpane;
 	}
 
@@ -152,11 +152,11 @@ public abstract class AbstractController<U extends RawImage, T extends Calibrati
 			return false;
 		}
 		
-		if(isProcessingRunning()) {
+		if(isProcessorRunning()) {
 			return false;
 		}
 		
-		if(isGenerationRunning()) {
+		if(isGeneratorRunning()) {
 			return false;
 		}
 		
