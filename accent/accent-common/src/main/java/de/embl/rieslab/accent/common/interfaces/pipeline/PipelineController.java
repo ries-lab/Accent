@@ -28,7 +28,7 @@ public interface PipelineController<U extends RawImage, T extends CalibrationIma
 	 */
 	public JFrame getMainFrame();
 
-	public ArrayToImage<T> getImageConverter();
+	public ArrayToImage<T> getArrayToImageConverter();
 	
 	public ImageSaver<T> getImageSaver();
 	
@@ -59,7 +59,7 @@ public interface PipelineController<U extends RawImage, T extends CalibrationIma
 	
 	public boolean startProcessor(String path);
 
-	public boolean startProcessor(String path, HashMap<String, Double> openedDatasets);
+	public boolean startProcessor(String path, HashMap<String, Double> pathsToDatasets);
 	
 	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<U>> queues);
 

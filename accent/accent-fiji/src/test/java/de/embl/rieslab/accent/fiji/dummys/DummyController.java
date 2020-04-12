@@ -22,7 +22,7 @@ public class DummyController implements PipelineController<StackImg, PlaneImg>{
 	public JFrame getMainFrame() {return null;}
 
 	@Override
-	public ArrayToImage<PlaneImg> getImageConverter() {
+	public ArrayToImage<PlaneImg> getArrayToImageConverter() {
 		return null;
 	}
 

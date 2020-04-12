@@ -314,28 +314,28 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 	 * @param results Calibration results
 	 */
 	protected void writeCalibrationToImages(String folder, Calibration results) {
-		T baseline = controller.getImageConverter().getImage(6, results.getBaseline(), results.getWidth(), results.getHeight(), 0);
+		T baseline = controller.getArrayToImageConverter().getImage(results.getBaseline(), results.getWidth(), results.getHeight(), 0);
 		getController().getImageSaver().saveAsTiff(baseline,folder+"\\Baseline.tiff");
 		
-		T dc_per_sec = controller.getImageConverter().getImage(6, results.getDcPerSec(), results.getWidth(), results.getHeight(), 0);
+		T dc_per_sec = controller.getArrayToImageConverter().getImage(results.getDcPerSec(), results.getWidth(), results.getHeight(), 0);
 		getController().getImageSaver().saveAsTiff(dc_per_sec,folder+"\\DC_per_sec.tiff");
 		
-		T gain = controller.getImageConverter().getImage(6, results.getGain(), results.getWidth(), results.getHeight(), 0);
+		T gain = controller.getArrayToImageConverter().getImage(results.getGain(), results.getWidth(), results.getHeight(), 0);
 		getController().getImageSaver().saveAsTiff(gain,folder+"\\Gain.tiff");
 		
-		T rn_sq = controller.getImageConverter().getImage(6, results.getRnSq(), results.getWidth(), results.getHeight(), 0);
+		T rn_sq = controller.getArrayToImageConverter().getImage(results.getRnSq(), results.getWidth(), results.getHeight(), 0);
 		getController().getImageSaver().saveAsTiff(rn_sq,folder+"\\RN_sq.tiff");
 		
-		T tn_sq_per_sec = controller.getImageConverter().getImage(6, results.getTnSqPerSec(), results.getWidth(), results.getHeight(), 0);
+		T tn_sq_per_sec = controller.getArrayToImageConverter().getImage(results.getTnSqPerSec(), results.getWidth(), results.getHeight(), 0);
 		getController().getImageSaver().saveAsTiff(tn_sq_per_sec,folder+"\\TN_sq_per_sec.tiff");
 		
-		T r_sq_avg = controller.getImageConverter().getImage(6,  results.getRSqAvg(), results.getWidth(), results.getHeight(), 0);
+		T r_sq_avg = controller.getArrayToImageConverter().getImage(results.getRSqAvg(), results.getWidth(), results.getHeight(), 0);
 		getController().getImageSaver().saveAsTiff(r_sq_avg,folder+"\\R_sq_avg.tiff");
 		
-		T r_sq_var = controller.getImageConverter().getImage(6, results.getRSqVar(), results.getWidth(), results.getHeight(), 0);
+		T r_sq_var = controller.getArrayToImageConverter().getImage(results.getRSqVar(), results.getWidth(), results.getHeight(), 0);
 		getController().getImageSaver().saveAsTiff(r_sq_var,folder+"\\R_sq_var.tiff");
 		
-		T r_sq_gain = controller.getImageConverter().getImage(6, results.getRSqGain(), results.getWidth(), results.getHeight(), 0);
+		T r_sq_gain = controller.getArrayToImageConverter().getImage(results.getRSqGain(), results.getWidth(), results.getHeight(), 0);
 		getController().getImageSaver().saveAsTiff(r_sq_gain,folder+"\\R_sq_gain.tiff");
 	}
 

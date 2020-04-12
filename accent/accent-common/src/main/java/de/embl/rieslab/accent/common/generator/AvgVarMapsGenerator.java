@@ -39,7 +39,7 @@ public class AvgVarMapsGenerator<U extends RawImage, T extends CalibrationImage>
 			throw new NullPointerException("Controller cannot be null.");
 		
 		this.controller = controller;
-		this.imconverter = controller.getImageConverter();
+		this.imconverter = controller.getArrayToImageConverter();
 		this.imsaver = controller.getImageSaver();
 	}
 
@@ -73,8 +73,8 @@ public class AvgVarMapsGenerator<U extends RawImage, T extends CalibrationImage>
 
 			publish(counter ++);
 
-			T avg_im = imconverter.getImage(3, CalibrationMap.generateAvgMap(calib, exp), calib.getWidth(), calib.getHeight(), exp);
-			T var_im = imconverter.getImage(3, CalibrationMap.generateVarMap(calib, exp), calib.getWidth(), calib.getHeight(), exp);
+			T avg_im = imconverter.getImage(CalibrationMap.generateAvgMap(calib, exp), calib.getWidth(), calib.getHeight(), exp);
+			T var_im = imconverter.getImage(CalibrationMap.generateVarMap(calib, exp), calib.getWidth(), calib.getHeight(), exp);
 
 			if(Double.compare(exp, (int) exp) == 0){
 				imsaver.saveAsTiff(avg_im, path+"\\"+"generated_Avg_"+((int) exp)+"ms.tiff");

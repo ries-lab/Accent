@@ -1,20 +1,18 @@
 package de.embl.rieslab.accent.fiji;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Map.Entry;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 
 import org.scijava.command.Command;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
-import de.embl.rieslab.accent.common.utils.AccentUtils;
+import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.fiji.utils.AccentFijiUtils;
 import io.scif.services.DatasetIOService;
 import net.imagej.ImageJ;
@@ -30,69 +28,54 @@ public class AccentFiji implements Command{
     
 	@Override
 	public void run() {
-	    JFileChooser chooser = new JFileChooser();
-	    chooser.setCurrentDirectory(new java.io.File("."));
-	    chooser.setDialogTitle("choosertitle");
-	    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-	    chooser.setAcceptAllFileFilterUsed(false);
+		JFileChooser chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new java.io.File("."));
+		chooser.setDialogTitle("choosertitle");
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		chooser.setAcceptAllFileFilterUsed(false);
 
-	    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-	    	try {
-	    		String path = chooser.getSelectedFile().getPath();
-	    		
-	    		int nTiffs = AccentFijiUtils.getNumberTifsContainMs(path);
-	    		if(nTiffs > 2) {
-	    			FijiController controller = new FijiController(logService);
-	    		} else {
-	    			int nDir = AccentFijiUtils.getNumberDirectoriesContainMs(path);
-	    			if(nDir > 2) {
-	    				
-	    			}
-	    		}
-	    		
-	    		
-	    		
-	    		
-				Map<Double, String> c = Files
-				.list(Paths.get(path))
-				.filter(Files::isDirectory)
-				.map(Path::getFileName)
-				.collect(Collectors.toMap(AccentUtils::extractExposureMs, Path::toString));
-				
-				c.remove(0); // folders without ###ms in the name
+		if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 
-				/*
-				if(c.size()< 3) {
-					FijiController controller = new FijiController(c, dataService, logService);
-					JFrame frame = controller.getMainFrame();
-					frame.setVisible(true);
+			String path = chooser.getSelectedFile().getPath();
+
+			boolean loadStacks = false;
+			Map<Double, String> paths = null;
+			int nTiffs = AccentFijiUtils.getNumberTifsContainMs(path);
+			if (nTiffs >= 2) {
+				paths = AccentFijiUtils.getExposures(path);
+				paths.remove(new Double(0));
+				loadStacks = true;
+			} else {
+				int nDir = AccentFijiUtils.getNumberDirectoriesContainMs(path);
+				if (nDir >= 2) {
+					paths = AccentFijiUtils.getExposures(path);
+					paths.remove(new Double(0));
+					loadStacks = false;
+
+					// removes folders with no tiff inside
+					ArrayList<Double> noTiffFound = new ArrayList<Double>();
+					for (Entry<Double, String> e : paths.entrySet()) {
+						if (AccentFijiUtils.getNumberTifs(e.getValue()) == 0) {
+							noTiffFound.add(e.getKey());
+						}
+					}
+					for (Double d : noTiffFound) {
+						paths.remove(d);
+					}
 				} else {
-					Dialogs.showErrorMessage("Not enough datasets open (minimum of 3).");
-				}*/
-			} catch (IOException e) {
-				e.printStackTrace();
+					logService.log(LogService.WARN, "Not enough datasets found. Make sure the folder either "
+							+ "contains >1 folders or tiff files with the exposure time (and the mention \"ms\") in the name.");
+				}
 			}
-	    } else {
-	    	return;
-	    }
-		
-/*
-		// check if IJ1 can grab the frames
-		String[] ids = WindowManager.getImageTitles();
-		if(ids.length > 2) {
-			System.out.println("WindowManager found "+ids.length+" images");
-			FijiController controller = new FijiController(ids, dataService, logService);
-			JFrame frame = controller.getMainFrame();
-			frame.setVisible(true);
-		} else if(dataService.getDatasets().size() > 2) {
-			System.out.println("DatasetService found "+dataService.getDatasets().size()+" images");
-			FijiController controller = new FijiController(new String[0], dataService, logService);
-			JFrame frame = controller.getMainFrame();
-			frame.setVisible(true);
-		} else {
-			Dialogs.showErrorMessage("Not enough datasets open (minimum of 3).");
-		}	
-		*/
+
+			if (path != null && paths.size() >= 2) {
+				FijiController controller = new FijiController(ioservice, logService, paths, loadStacks);
+				JFrame frame = controller.getMainFrame();
+				frame.setVisible(true);
+			} else {
+				Dialogs.showErrorMessage("Not enough datasets open (minimum of 2).");
+			}
+		}
 	}
 
 	public static void main(final String... args) throws Exception {

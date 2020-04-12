@@ -233,7 +233,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 	}
 
 	@Override
-	public ArrayToImage<FloatImage> getImageConverter() {
+	public ArrayToImage<FloatImage> getArrayToImageConverter() {
 		return new ArrayToFloatImage();
 	}
 

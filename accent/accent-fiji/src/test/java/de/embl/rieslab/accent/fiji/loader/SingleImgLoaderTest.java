@@ -28,6 +28,8 @@ public class SingleImgLoaderTest {
 	int numFrames = 100;
 	double[] exps = {0.1, 2.0};
 
+	tests if stacks contained in folder
+	
 	@Test
 	public void testUnsignedShortLoader() {
 		final ImageJ ij = new ImageJ();

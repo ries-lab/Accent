@@ -91,7 +91,7 @@ public class DummyMM2Controller implements PipelineController<BareImage, FloatIm
 	public boolean isReady() {return false;}
 
 	@Override
-	public ArrayToImage<FloatImage> getImageConverter() {return null;}
+	public ArrayToImage<FloatImage> getArrayToImageConverter() {return null;}
 
 	@Override
 	public ImageSaver<FloatImage> getImageSaver() {return null;}
