@@ -44,7 +44,8 @@ public class FijiController extends AbstractController<StackImg, PlaneImg> {
 
 	@Override
 	public boolean startProcessor(String path, HashMap<String, Double> pathToDatasets) {
-
+		
+		
 		
 		return false;
 	}

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -28,7 +29,45 @@ public class SingleImgLoaderTest {
 	int numFrames = 100;
 	double[] exps = {0.1, 2.0};
 
-	tests if stacks contained in folder
+	@Test
+	public void testMultiSTackUnsignedShortLoader() {
+		final ImageJ ij = new ImageJ();
+		String dir = "AccentTemp-mstacks-s";		
+		File f_dir = new File(dir);
+		if(!f_dir.exists()) {
+			f_dir.mkdir();
+		}
+		
+		// generates images
+		GenerateData.generateAndWriteToDisk(dir, width, height, numFrames, exps, true, new UnsignedShortType());
+		assertEquals(exps.length, AccentFijiUtils.getNumberTifs(dir));
+		
+		// extracts exposures
+		Map<Double, String> m = new HashMap<Double, String>();
+		m.put(2., f_dir.getPath());
+		
+		// creates loader
+		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), m);
+		assertEquals(1, loader.getNumberOfChannels());
+		
+		assertTrue(loader.openChannel(0));
+		assertEquals(2, loader.getChannelLength());
+
+		StackImg img = loader.getNext(0);
+		assertEquals(numFrames, img.getImage().dimension(2));
+		
+		img = loader.getNext(0);
+		assertEquals(numFrames, img.getImage().dimension(2));
+		
+		// deletes all
+		try {
+			Files.list(Paths.get(dir)).forEach(e -> (new File(e.toString())).delete());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+			
+		f_dir.delete();
+	}
 	
 	@Test
 	public void testUnsignedShortLoader() {
