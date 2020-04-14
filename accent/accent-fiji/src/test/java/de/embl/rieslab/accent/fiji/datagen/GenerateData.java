@@ -423,6 +423,10 @@ public class GenerateData {
 						s = s+i+".tif";
 
 						saver.saveImg(s, img_f.get(i));
+						
+						if(i%100 == 0) {
+							System.out.println(e+"ms: writing image "+i);
+						}
 					}
 				}
 			} else if(type.getBitsPerPixel() == 8) {
@@ -449,6 +453,10 @@ public class GenerateData {
 						s = s+i+".tif";
 						
 						saver.saveImg(s, img_f.get(i));
+						
+						if(i%100 == 0) {
+							System.out.println(e+"ms: writing image "+i);
+						}
 					}
 				}
 			} else if(type.getBitsPerPixel() == 32 && type instanceof UnsignedIntType) {
@@ -475,6 +483,10 @@ public class GenerateData {
 						s = s+i+".tif";
 						
 						saver.saveImg(s, img_f.get(i));
+						
+						if(i%100 == 0) {
+							System.out.println(e+"ms: writing image "+i);
+						}
 					}
 				}
 			} else {
@@ -501,6 +513,10 @@ public class GenerateData {
 						s = s + i + ".tif";
 
 						saver.saveImg(s, img_f.get(i));
+						
+						if(i%100 == 0) {
+							System.out.println(e+"ms: writing image "+i);
+						}
 					}
 				} 
 			} 

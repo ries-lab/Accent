@@ -34,6 +34,9 @@ public class FijiController extends AbstractController<StackImg, PlaneImg> {
 	private boolean loadStacks;
 	
 	public FijiController(DatasetIOService ioservice, LogService logService, Map<Double, String> datasets, boolean loadStacks) {
+		if(datasets.size() < 2)
+			throw new IllegalArgumentException("At least 2 datasets are required.");
+		
 		this.logService_ = logService;
 		this.ioservice_ = ioservice;
 		this.datasets_ = datasets;
