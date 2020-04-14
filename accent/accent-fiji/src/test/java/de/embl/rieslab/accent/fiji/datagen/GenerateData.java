@@ -394,13 +394,13 @@ public class GenerateData {
 	
 	// TODO refactor
 	// there must be a way to save the individual planes of the img without generating them with another method...
-	public static void generateAndWriteToDisk(String path, int width, int height, int numFrames, double[] exposure, boolean stack, RealType<?> type) {
+	public static void generateAndWriteToDisk(String path, int width, int height, int numFrames, double[] exposure, boolean writeStacks, RealType<?> type) {
 		ImgSaver saver = new ImgSaver();
 		
 		for (double e : exposure) {
 			
 			if(type.getBitsPerPixel() == 16) {
-				if(stack) {
+				if(writeStacks) {
 					Img<UnsignedShortType> img_s = generateUnsignedShortType(width, height, numFrames, e);
 					String name_s = path + "\\" + e + "ms_unshort.tif";
 					saver.saveImg(name_s, img_s);
@@ -426,7 +426,7 @@ public class GenerateData {
 					}
 				}
 			} else if(type.getBitsPerPixel() == 8) {
-				if(stack) {
+				if(writeStacks) {
 					Img<UnsignedByteType> img_b = generateUnsignedByteType(width, height, numFrames, e);
 					String name_b = path + "\\" + e + "ms_unbyte.tif";
 					saver.saveImg(name_b, img_b);
@@ -452,13 +452,13 @@ public class GenerateData {
 					}
 				}
 			} else if(type.getBitsPerPixel() == 32 && type instanceof UnsignedIntType) {
-				if(stack) {
+				if(writeStacks) {
 					Img<UnsignedIntType> img_f = generateUnsignedIntType(width, height, numFrames, e);
-					String name_f = path + "\\" + e + "ms_int.tif";
+					String name_f = path + "\\" + e + "ms_unint.tif";
 					saver.saveImg(name_f, img_f);
 				} else {
 					ArrayList<Img<UnsignedIntType>> img_f = generateUnsignedIntTypeSingles(width, height, numFrames, e);	
-					String name_f = path + "\\" + e + "ms_int";
+					String name_f = path + "\\" + e + "ms_unint";
 					File f = new File(name_f);
 					if(!f.exists()) {
 						f.mkdir();
@@ -468,7 +468,7 @@ public class GenerateData {
 					int numZeros = String.valueOf(numFrames).length();
 					for(int i=0;i<img_f.size();i++) {
 						int num = String.valueOf(i).length();
-						String s = name_file+"single_int_";
+						String s = name_file+"single_unint_";
 						for(int k=0; k<numZeros-num;k++) {
 							s=s+"0";
 						}
@@ -478,7 +478,7 @@ public class GenerateData {
 					}
 				}
 			} else {
-				if (stack) {
+				if (writeStacks) {
 					Img<FloatType> img_f = generateFloatType(width, height, numFrames, e);
 					String name_f = path + "\\" + e + "ms_float.tif";
 					saver.saveImg(name_f, img_f);

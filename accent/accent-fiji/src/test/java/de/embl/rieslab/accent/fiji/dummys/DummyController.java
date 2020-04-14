@@ -1,7 +1,6 @@
 package de.embl.rieslab.accent.fiji.dummys;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JFrame;
@@ -44,9 +43,6 @@ public class DummyController implements PipelineController<StackImg, PlaneImg>{
 
 	@Override
 	public boolean startProcessor(String path) {return false;}
-
-	@Override
-	public boolean startProcessor(String path, HashMap<String, Double> openedDatasets) {return false;}
 
 	@Override
 	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<StackImg>> queues) {return false;}

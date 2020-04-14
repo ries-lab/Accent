@@ -3,14 +3,12 @@ package de.embl.rieslab.accent.mm2;
 import java.awt.Rectangle;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.micromanager.Studio;
-import org.micromanager.data.Image;
 
 import de.embl.rieslab.accent.common.AbstractController;
 import de.embl.rieslab.accent.common.interfaces.data.ArrayToImage;
@@ -90,7 +88,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 		if(isReady() && path != null &&
 				(isAcqPathKnown(path) || new File(path).exists())) {
 
-			directoriesToLoad = getExposureFolders(path); // use utils instead
+			directoriesToLoad = getExposureFolders(path); // should use AccentUtils method instead instead
 			
 			if(directoriesToLoad == null) {
 				JOptionPane.showMessageDialog(null, "No experimental folder found in:\n" + path + 
@@ -98,12 +96,12 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 						"Error", JOptionPane.INFORMATION_MESSAGE);
 				processorHasStopped();
 				return false;
-			} else if(directoriesToLoad.length < 3) {
-				JOptionPane.showMessageDialog(null, "Not enough experimental folder (minimum 3).",
+			} else if(directoriesToLoad.length < 2) {
+				JOptionPane.showMessageDialog(null, "Not enough experimental folder (minimum 2).",
 						"Error", JOptionPane.INFORMATION_MESSAGE);
 				processorHasStopped();
 				return false;
-			} else if(directoriesToLoad != null && directoriesToLoad.length > 2) {
+			} else if(directoriesToLoad != null && directoriesToLoad.length > 1) {
 				processor = getProcessor(path, getLoader(DEFAULT_LOADER));
 				processor.startProcess();
 				return true;
@@ -112,7 +110,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 		return false;
 	}
 	
-	public boolean startProcessor(String path, HashMap<String, Double> list) {
+	public boolean startProcessor() {
 		// Do nothing
 		return false;
 	}

@@ -1,7 +1,6 @@
 package de.embl.rieslab.accent.fiji;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -43,11 +42,10 @@ public class FijiController extends AbstractController<StackImg, PlaneImg> {
 	}
 
 	@Override
-	public boolean startProcessor(String path, HashMap<String, Double> pathToDatasets) {
-		
-		
-		
-		return false;
+	public boolean startProcessor(String folder) {
+		processor = getProcessor(folder, getLoader(loadStacks ? LOADER_STACK:LOADER_SINGLES));
+		processor.startProcess();
+		return true;
 	}
 
 	@Override

@@ -14,8 +14,7 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class PipelineTest {
 
-	ss
-	//@Test
+	@Test
 	public void testPipeline() throws IOException {
 		final ImageJ ij = new ImageJ();
 		String path = "D:\\Accent\\test2";

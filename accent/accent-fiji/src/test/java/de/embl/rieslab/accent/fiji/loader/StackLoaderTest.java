@@ -39,7 +39,7 @@ public class StackLoaderTest {
 		assertEquals(exps.length, AccentFijiUtils.getNumberTifsContainMs(dir));
 		
 		// extracts exposures
-		Map<Double, String> m = AccentFijiUtils.getExposures(dir);
+		Map<Double, String> m = AccentFijiUtils.getExposures(dir, true);
 		m.remove(0.); // removes unknown exposures
 		
 		// creates loader
@@ -92,7 +92,7 @@ public class StackLoaderTest {
 		assertEquals(exps.length, AccentFijiUtils.getNumberTifsContainMs(dir));
 		
 		// extracts exposures
-		Map<Double, String> m = AccentFijiUtils.getExposures(dir);
+		Map<Double, String> m = AccentFijiUtils.getExposures(dir,true);
 		m.remove(0.); // removes unknown exposures
 		
 		// creates loader
@@ -146,7 +146,7 @@ public class StackLoaderTest {
 		assertEquals(exps.length, AccentFijiUtils.getNumberTifsContainMs(dir));
 		
 		// extracts exposures
-		Map<Double, String> m = AccentFijiUtils.getExposures(dir);
+		Map<Double, String> m = AccentFijiUtils.getExposures(dir,true);
 		m.remove(0.); // removes unknown exposures
 		
 		// creates loader
@@ -199,7 +199,7 @@ public class StackLoaderTest {
 		assertEquals(exps.length, AccentFijiUtils.getNumberTifsContainMs(dir));
 		
 		// extracts exposures
-		Map<Double, String> m = AccentFijiUtils.getExposures(dir);
+		Map<Double, String> m = AccentFijiUtils.getExposures(dir,true);
 		m.remove(0.); // removes unknown exposures
 		
 		// creates loader

@@ -1,7 +1,6 @@
 package de.embl.rieslab.accent.mm2.dummys;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -40,9 +39,6 @@ public class DummyMM2Controller implements PipelineController<BareImage, FloatIm
 
 	@Override
 	public boolean startProcessor(String path) {return false;}
-
-	@Override
-	public boolean startProcessor(String path, HashMap<String, Double> openedDatasets) {return false;}
 
 	@Override
 	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<BareImage>> queues) {return false;}

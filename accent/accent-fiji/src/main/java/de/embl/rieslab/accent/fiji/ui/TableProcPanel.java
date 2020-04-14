@@ -23,7 +23,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +104,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		table.setModel(new DefaultTableModel(buildList(), new String[] { "Dataset", "Exposure (ms)" }) { // expects an array, not a map
 
 			private static final long serialVersionUID = 1L;
-			boolean[] columnEditables = new boolean[] { false, true };
+			boolean[] columnEditables = new boolean[] { false, false };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -200,8 +199,8 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 	protected void startProcessing() {
 		if(!controller.isProcessorRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
 			String s  = textField.getText();
-			HashMap<String, Double> list = extractDatasets();
-			boolean b = controller.startProcessor(s, list);
+			// HashMap<String, Double> list = extractDatasets();
+			boolean b = controller.startProcessor(s);
 			if(!b) {
 				btnProcess.setText(START);
 				btnProcess.setSelected(false);
@@ -211,7 +210,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 			btnProcess.setSelected(false);
 		}
 	}
-	
+/*	
 	protected HashMap<String, Double> extractDatasets(){ 
 		HashMap<String, Double> map = new HashMap<String, Double>();
 		int n = table.getRowCount();
@@ -227,7 +226,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		
 		return map;
 	}
-
+*/
 	@Override
 	public void setDataPath(String path) {
 		// Do nothing

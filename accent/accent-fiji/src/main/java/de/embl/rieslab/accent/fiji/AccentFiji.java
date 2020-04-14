@@ -35,45 +35,36 @@ public class AccentFiji implements Command{
 		chooser.setAcceptAllFileFilterUsed(false);
 
 		if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-
 			String path = chooser.getSelectedFile().getPath();
-
-			boolean loadStacks = false;
-			Map<Double, String> paths = null;
+			
 			int nTiffs = AccentFijiUtils.getNumberTifsContainMs(path);
-			if (nTiffs >= 2) {
-				paths = AccentFijiUtils.getExposures(path);
-				paths.remove(new Double(0));
-				loadStacks = true;
-			} else {
-				int nDir = AccentFijiUtils.getNumberDirectoriesContainMs(path);
-				if (nDir >= 2) {
-					paths = AccentFijiUtils.getExposures(path);
-					paths.remove(new Double(0));
-					loadStacks = false;
-
-					// removes folders with no tiff inside
-					ArrayList<Double> noTiffFound = new ArrayList<Double>();
-					for (Entry<Double, String> e : paths.entrySet()) {
-						if (AccentFijiUtils.getNumberTifs(e.getValue()) == 0) {
-							noTiffFound.add(e.getKey());
-						}
+			int nDir = AccentFijiUtils.getNumberDirectoriesContainMs(path);
+			
+			// we try to load either folders content or images in the same folder
+			// as independent exposure experiments (ie files with ###ms in the name)
+			boolean loadStacks = nTiffs > nDir;
+			Map<Double, String> paths = AccentFijiUtils.getExposures(path, !loadStacks);
+			
+			// if we load folders, then remove those without tiff files inside
+			if(!loadStacks) {
+				ArrayList<Double> noTiffFound = new ArrayList<Double>();
+				for (Entry<Double, String> e : paths.entrySet()) {
+					if (AccentFijiUtils.getNumberTifs(e.getValue()) == 0) {
+						noTiffFound.add(e.getKey());
 					}
-					for (Double d : noTiffFound) {
-						paths.remove(d);
-					}
-				} else {
-					logService.log(LogService.WARN, "Not enough datasets found. Make sure the folder either "
-							+ "contains >1 folders or tiff files with the exposure time (and the mention \"ms\") in the name.");
 				}
-			}
+				for (Double d : noTiffFound) {
+					paths.remove(d);
+				}
+			}			
 
-			if (path != null && paths.size() >= 2) {
+			// instantiates UI
+			if(paths.size() > 2) {
 				FijiController controller = new FijiController(ioservice, logService, paths, loadStacks);
 				JFrame frame = controller.getMainFrame();
 				frame.setVisible(true);
 			} else {
-				Dialogs.showErrorMessage("Not enough datasets open (minimum of 2).");
+				Dialogs.showErrorMessage("Not enough datasets found (minimum of 2).");
 			}
 		}
 	}

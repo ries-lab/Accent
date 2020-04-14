@@ -76,6 +76,38 @@ public class AccentUtilsTest {
 		// double dot
 		assertEquals(4,AccentUtils.extractExposureMs("1556..4ms618"), 0.0001);
 		assertEquals(0,AccentUtils.extractExposureMs("sdsfsdf_4.1..0msfds265fd"), 0.0001);
+	}	
+	
+	@Test
+	public void testHasExposure() {
+		assertTrue(AccentUtils.hasExposureMs("sdsfsdf_10ms"));
+		assertTrue(AccentUtils.hasExposureMs("9ms"));
+		assertTrue(AccentUtils.hasExposureMs("158_45-99ms"));
+		assertTrue(AccentUtils.hasExposureMs("158ms_4ms5-9.9ms"));
+		assertTrue(AccentUtils.hasExposureMs("158ms_4ms5-9,6ms"));
+		assertTrue(AccentUtils.hasExposureMs("158_45-99ms.tiff"));
+		assertTrue(AccentUtils.hasExposureMs("15ms_dfjhms_51ms56ms.tiff"));
+		
+		// variations
+		assertTrue(AccentUtils.hasExposureMs("sdsfsdf_10MS"));
+		assertTrue(AccentUtils.hasExposureMs("9mS"));
+		assertTrue(AccentUtils.hasExposureMs("158_45-99Ms"));
+		assertTrue(AccentUtils.hasExposureMs("158ms_4Ms5-9.9MS"));
+		assertTrue(AccentUtils.hasExposureMs("158ms_4MS5-9,6Ms"));
+		assertTrue(AccentUtils.hasExposureMs("158_45-99MS.tiff"));
+		assertTrue(AccentUtils.hasExposureMs("15ms_dfjhms_51ms56Ms.tiff"));
+		
+		// tests if last ms has not number
+		assertTrue(AccentUtils.hasExposureMs("s5.8msdsfmssdf_kfhMS"));
+		assertTrue(AccentUtils.hasExposureMs("s5.8msdsf3.1mssdf_kfhMS"));
+
+		// edge cases
+		String n = null;
+		assertFalse(AccentUtils.hasExposureMs(n));
+		assertFalse(AccentUtils.hasExposureMs(""));
+		assertFalse(AccentUtils.hasExposureMs("ms"));
+		assertFalse(AccentUtils.hasExposureMs("fjkdsdhb65dfjbfe54"));
+		assertFalse(AccentUtils.hasExposureMs("15564618"));
 	}
 	
 }

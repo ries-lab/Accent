@@ -1,5 +1,6 @@
 package de.embl.rieslab.accent.common.utils;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
@@ -73,7 +74,7 @@ public class AccentUtils {
 				if(curr_ind < fileName.length()-ind-offset-3) {
 					return Double.parseDouble(sb.reverse().toString());
 				} else {
-					offset += ind+2;
+					offset += ind+2; // removes ms and try again
 					inv = inv.substring(ind+2);
 				}
 			} else {
@@ -82,6 +83,34 @@ public class AccentUtils {
 		}
 		return 0.;
 	}      
+
+	public static boolean hasExposureMs(String fileName) {
+		if (fileName == null || fileName.length() < 3)
+			return false;
+		
+		// inverts string, gets the first occurrence of "sm" to get the last "ms" in fileName
+		String inv = (new StringBuilder(fileName)).reverse().toString().toLowerCase(); 
+
+		boolean done = false;
+		int offset = 0;
+		while (!done) {
+			int ind = inv.indexOf("sm");
+
+			if (ind != -1) {
+				int curr_ind = fileName.length() - ind - offset - 3;
+
+				if (Character.isDigit(fileName.charAt(curr_ind))) {
+					return true;
+				} else {
+					offset += ind + 2; // removes ms and try again
+					inv = inv.substring(ind + 2);
+				}
+			} else {
+				done = true;
+			}
+		}
+		return false;
+	}
 	
 	/*
 	 * From https://www.baeldung.com/java-check-string-number
@@ -92,5 +121,17 @@ public class AccentUtils {
 	        return false; 
 	    }
 	    return pattern.matcher(strNum).matches();
+	}
+	
+	// not recursive
+	public static boolean createFolder(String path) {
+		File f_dir = new File(path);
+		if(!f_dir.exists()) {
+			f_dir.mkdir();
+			
+			if(f_dir.exists())
+				return true;
+		}
+		return false;
 	}
 }

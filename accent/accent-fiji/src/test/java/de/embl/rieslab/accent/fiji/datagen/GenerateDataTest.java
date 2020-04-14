@@ -6,14 +6,19 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import de.embl.rieslab.accent.common.utils.AccentUtils;
 import de.embl.rieslab.accent.fiji.utils.AccentFijiUtils;
-
+import io.scif.services.DatasetIOService;
+import net.imagej.Dataset;
 import net.imagej.ImageJ;
 import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
@@ -388,7 +393,7 @@ public class GenerateDataTest {
 		
 		// stacks
 		GenerateData.generateAndWriteToDisk(dir, width, height, numFrames, exps, true, new UnsignedShortType());
-		Map<Double, String> m = AccentFijiUtils.getExposures(dir);
+		Map<Double, String> m = AccentFijiUtils.getExposures(dir, true);
 
 		assertEquals(exps.length, m.size());
 		assertEquals(exps.length, AccentFijiUtils.getNumberTifsContainMs(dir));
@@ -403,7 +408,7 @@ public class GenerateDataTest {
 		// single images
 		GenerateData.generateAndWriteToDisk(dir, width, height, numFrames, exps, false, new UnsignedShortType());
 		
-		m = AccentFijiUtils.getExposures(dir);
+		m = AccentFijiUtils.getExposures(dir, false);
 		assertEquals(exps.length, m.size());
 		assertEquals(exps.length, AccentFijiUtils.getNumberDirectoriesContainMs(dir));
 		
@@ -425,5 +430,67 @@ public class GenerateDataTest {
 		
 		// attempts to delete folder
 		f_dir.delete();
+	}
+	
+	// for reference
+	public void testSingleDataOpening() {
+		int width = 3;
+		int height = 4;
+		int numFrames = 15;
+		double[] exps = {0.1};
+		
+		final ImageJ ij = new ImageJ();
+		DatasetIOService serv = ij.scifio().datasetIO();
+		
+		// main folder
+		String dir = "AccentTemp-do";		
+		AccentUtils.createFolder(dir);
+		
+		// unsigned byte
+		String dir_b = dir+"\\b_singles"; 
+		AccentUtils.createFolder(dir_b);
+		GenerateData.generateAndWriteToDisk(dir_b, width, height, numFrames, exps, false, new UnsignedByteType());
+		List<String> list_b = listFiles(dir_b+"\\0.1ms_unbyte");
+		try {
+			Dataset img = serv.open(list_b.get(0));
+			System.out.println(img.dimension(2)); // prints numFrames
+			//assertEquals(1, img.dimension(2));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// unsigned short
+		String dir_s = dir+"\\s_singles"; 
+		AccentUtils.createFolder(dir_s);
+		GenerateData.generateAndWriteToDisk(dir_s, width, height, numFrames, exps, false, new UnsignedShortType());
+		List<String> list_s = listFiles(dir_s+"\\0.1ms_unshort");
+		try {
+			Dataset img = serv.open(list_s.get(0));
+			System.out.println(img.dimension(2)); // prints 1
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// unsigned int
+		String dir_i = dir+"\\i_singles"; 
+		AccentUtils.createFolder(dir_i);
+		GenerateData.generateAndWriteToDisk(dir_i, width, height, numFrames, exps, false, new UnsignedIntType());
+		List<String> list_i = listFiles(dir_i+"\\0.1ms_unint");
+		try {
+			Dataset img = serv.open(list_i.get(0));
+			System.out.println(img.dimension(2)); // prints 1
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private List<String> listFiles(String path){
+		List<String> list = null;
+		try {
+			list = Files.list(Paths.get(path)).map(Path::toString).collect(Collectors.toList());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 }

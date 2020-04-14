@@ -1,5 +1,6 @@
 package de.embl.rieslab.accent.fiji.loader;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,22 +21,30 @@ public class SingleImgLoader implements Loader<StackImg>{
 	private Map<Double, String> folders_;
 	private List<String> currImgs_;
 	private int currIndex_;
+	private boolean openedAll_;
 	private double[] mapping_;
 	private DatasetIOService ioservice_;
 	
+	
 	public SingleImgLoader(DatasetIOService ioservice, Map<Double, String> folders) {
-		folders_ = folders;
+		
+		// sanity check
+		folders_ = folders.entrySet()
+					.stream()
+					.filter(e -> (new File(e.getValue()).isDirectory()))
+					.collect(Collectors.toMap(Entry::getKey,Entry::getValue));
+		
 		ioservice_ = ioservice;
 		
 		mapping_ = new double[folders_.size()];
-		
 		int i = 0;
 		for(Entry<Double, String> e: folders_.entrySet()) {
 			mapping_[i] = e.getKey();
 			i++;
 		}
-		
+
 		currIndex_ = 0;
+		openedAll_ = false;
 		currImgs_ = new ArrayList<String>();
 	}
 	
@@ -52,6 +61,11 @@ public class SingleImgLoader implements Loader<StackImg>{
 		if(channel >= folders_.size() || channel < 0) {
 			return false;
 		}
+		
+		if(openedAll_) { // first image opened all as a series
+			return false;
+		}
+		
 		return currIndex_ < getChannelLength();
 	}
 
@@ -63,13 +77,23 @@ public class SingleImgLoader implements Loader<StackImg>{
 	private Dataset loadNext(int channel) {
 		Dataset img = null;
 	
-		try {
-			img = ioservice_.open(currImgs_.get(currIndex_));
-			currIndex_++;
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(hasNext(channel)) {
+			try {
+				img = ioservice_.open(currImgs_.get(currIndex_));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		
+			if(img != null) { // something was read
+				int temp = (int) img.dimension(2);
+				if (currIndex_ == 0 && temp == currImgs_.size()) { // first time we load an image from this folder
+					// if the dimension equals the number of images to load,
+					// we assume that it has loaded all the images.
+					openedAll_ = true;
+				}
+				currIndex_ ++;
+			}
 		}
-
 		return img;
 	}
 	
@@ -94,6 +118,7 @@ public class SingleImgLoader implements Loader<StackImg>{
 			currImgs_.clear();
 			currImgs_.addAll(c);
 			currIndex_ = 0;
+			openedAll_ = false; // back to default
 			return true;
 		}
 		

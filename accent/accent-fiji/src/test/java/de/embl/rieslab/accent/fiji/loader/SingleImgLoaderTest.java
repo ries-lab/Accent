@@ -24,13 +24,13 @@ import net.imglib2.type.numeric.real.FloatType;
 
 public class SingleImgLoaderTest {
 
-	int width = 10;
-	int height = 20;
-	int numFrames = 100;
-	double[] exps = {0.1, 2.0};
+	int width = 4;
+	int height = 5;
+	int numFrames = 10;
+	double[] exps = {0.1, 2.0, 10.5};
 
 	@Test
-	public void testMultiSTackUnsignedShortLoader() {
+	public void testMultiStackUnsignedShortLoader() {
 		final ImageJ ij = new ImageJ();
 		String dir = "AccentTemp-mstacks-s";		
 		File f_dir = new File(dir);
@@ -51,14 +51,13 @@ public class SingleImgLoaderTest {
 		assertEquals(1, loader.getNumberOfChannels());
 		
 		assertTrue(loader.openChannel(0));
-		assertEquals(2, loader.getChannelLength());
+		assertEquals(exps.length, loader.getChannelLength());
 
-		StackImg img = loader.getNext(0);
-		assertEquals(numFrames, img.getImage().dimension(2));
-		
-		img = loader.getNext(0);
-		assertEquals(numFrames, img.getImage().dimension(2));
-		
+		while(loader.hasNext(0)) {
+			StackImg img = loader.getNext(0);
+			assertEquals(numFrames, img.getImage().dimension(2));
+		}
+
 		// deletes all
 		try {
 			Files.list(Paths.get(dir)).forEach(e -> (new File(e.toString())).delete());
@@ -68,7 +67,7 @@ public class SingleImgLoaderTest {
 			
 		f_dir.delete();
 	}
-	
+
 	@Test
 	public void testUnsignedShortLoader() {
 		final ImageJ ij = new ImageJ();
@@ -83,8 +82,7 @@ public class SingleImgLoaderTest {
 		assertEquals(exps.length, AccentFijiUtils.getNumberDirectoriesContainMs(dir));
 		
 		// extracts exposures
-		Map<Double, String> m = AccentFijiUtils.getExposures(dir);
-		m.remove(0.); // removes unknown exposures
+		Map<Double, String> m = AccentFijiUtils.getExposures(dir, false);
 		
 		// creates loader
 		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), m);
@@ -105,12 +103,10 @@ public class SingleImgLoaderTest {
 				}
 				assertTrue(foundExposure);
 	
-				assertEquals(2, img.getImage().numDimensions());
 				assertEquals(width, img.getImage().dimension(0));
 				assertEquals(height, img.getImage().dimension(1));
-				assertEquals(1, img.getImage().dimension(2));
 				
-				nFrames++;
+				nFrames += img.getImage().dimension(2);
 			}
 			assertEquals(numFrames, nFrames);
 		}
@@ -133,51 +129,58 @@ public class SingleImgLoaderTest {
 	}
 
 	@Test
-	public void testUnsignedByteLoader() {
+	public void testUnsignedIntLoader() {
 		final ImageJ ij = new ImageJ();
-		String dir = "AccentTemp-single-b";		
+		String dir = "AccentTemp-single-i";		
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();
 		}
 		
 		// generates images
-		GenerateData.generateAndWriteToDisk(dir, width, height, numFrames, exps, true, new UnsignedByteType());
-		assertEquals(exps.length, AccentFijiUtils.getNumberTifsContainMs(dir));
+		GenerateData.generateAndWriteToDisk(dir, width, height, numFrames, exps, false, new UnsignedIntType());
+		assertEquals(exps.length, AccentFijiUtils.getNumberDirectoriesContainMs(dir));
 		
 		// extracts exposures
-		Map<Double, String> m = AccentFijiUtils.getExposures(dir);
-		m.remove(0.); // removes unknown exposures
+		Map<Double, String> m = AccentFijiUtils.getExposures(dir, false);
 		
 		// creates loader
-		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), m);
+		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 
 		for(int i=0; i<loader.getNumberOfChannels(); i++) {
 			assertTrue(loader.openChannel(i));
-			assertTrue(loader.hasNext(i));
-			
-			StackImg img = loader.getNext(i);
-			boolean foundExposure = false;
-			for(Double e: exps) {
-				if(Double.compare(e, img.getExposure()) == 0) {
-					foundExposure = true;
-				}
-			}
-			assertTrue(foundExposure);
 
-			assertEquals(3, img.getImage().numDimensions());
-			assertEquals(width, img.getImage().dimension(0));
-			assertEquals(height, img.getImage().dimension(1));
-			assertEquals(numFrames, img.getImage().dimension(2));
+			int nFrames = 0;
+			while(loader.hasNext(i)) {
+				StackImg img = loader.getNext(i);
+				boolean foundExposure = false;
+				for(Double e: exps) {
+					if(Double.compare(e, img.getExposure()) == 0) {
+						foundExposure = true;
+					}
+				}
+				assertTrue(foundExposure);
+	
+				assertEquals(width, img.getImage().dimension(0));
+				assertEquals(height, img.getImage().dimension(1));
+				
+				nFrames += img.getImage().dimension(2);
+			}
+			assertEquals(numFrames, nFrames);
 		}
 		
 		// deletes all
-		for(Entry<Double, String> e: m.entrySet()) {
-			String path = e.getValue();
-
-			File f = new File(path);
+		for(Entry<Double, String> el: m.entrySet()) {
+			try {
+				Files.list(Paths.get(el.getValue()))
+					.forEach(e -> (new File(e.toString())).delete());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+			File f = new File(el.getValue());
 			if(f.exists())
 				assertTrue(f.delete());
 		}
@@ -195,95 +198,117 @@ public class SingleImgLoaderTest {
 		}
 		
 		// generates images
-		GenerateData.generateAndWriteToDisk(dir, width, height, numFrames, exps, true, new FloatType());
-		assertEquals(exps.length, AccentFijiUtils.getNumberTifsContainMs(dir));
+		GenerateData.generateAndWriteToDisk(dir, width, height, numFrames, exps, false, new FloatType());
+		assertEquals(exps.length, AccentFijiUtils.getNumberDirectoriesContainMs(dir));
 		
 		// extracts exposures
-		Map<Double, String> m = AccentFijiUtils.getExposures(dir);
-		m.remove(0.); // removes unknown exposures
+		Map<Double, String> m = AccentFijiUtils.getExposures(dir, false);
 		
 		// creates loader
-		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), m);
+		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 
 		for(int i=0; i<loader.getNumberOfChannels(); i++) {
 			assertTrue(loader.openChannel(i));
-			assertTrue(loader.hasNext(i));
-			
-			StackImg img = loader.getNext(i);
-			boolean foundExposure = false;
-			for(Double e: exps) {
-				if(Double.compare(e, img.getExposure()) == 0) {
-					foundExposure = true;
-				}
-			}
-			assertTrue(foundExposure);
 
-			assertEquals(3, img.getImage().numDimensions());
-			assertEquals(width, img.getImage().dimension(0));
-			assertEquals(height, img.getImage().dimension(1));
-			assertEquals(numFrames, img.getImage().dimension(2));
+			int nFrames = 0;
+			while(loader.hasNext(i)) {
+				StackImg img = loader.getNext(i);
+				boolean foundExposure = false;
+				for(Double e: exps) {
+					if(Double.compare(e, img.getExposure()) == 0) {
+						foundExposure = true;
+					}
+				}
+				assertTrue(foundExposure);
+	
+				assertEquals(width, img.getImage().dimension(0));
+				assertEquals(height, img.getImage().dimension(1));
+				
+				nFrames += img.getImage().dimension(2);
+			}
+			assertEquals(numFrames, nFrames);
 		}
 		
 		// deletes all
-		for(Entry<Double, String> e: m.entrySet()) {
-			String path = e.getValue();
-
-			File f = new File(path);
+		for(Entry<Double, String> el: m.entrySet()) {
+			try {
+				Files.list(Paths.get(el.getValue()))
+					.forEach(e -> (new File(e.toString())).delete());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+			File f = new File(el.getValue());
 			if(f.exists())
 				assertTrue(f.delete());
 		}
 		
 		f_dir.delete();
 	}
-
+	
 	@Test
-	public void testUnsignedIntLoader() {
+	public void testUnsignedByteLoader() {
 		final ImageJ ij = new ImageJ();
-		String dir = "AccentTemp-single-i";		
+		String dir = "AccentTemp-single-b";		
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();
 		}
 		
 		// generates images
-		GenerateData.generateAndWriteToDisk(dir, width, height, numFrames, exps, true, new UnsignedIntType());
-		assertEquals(exps.length, AccentFijiUtils.getNumberTifsContainMs(dir));
+		GenerateData.generateAndWriteToDisk(dir, width, height, numFrames, exps, false, new UnsignedByteType());
+		assertEquals(exps.length, AccentFijiUtils.getNumberDirectoriesContainMs(dir));
 		
 		// extracts exposures
-		Map<Double, String> m = AccentFijiUtils.getExposures(dir);
-		m.remove(0.); // removes unknown exposures
+		Map<Double, String> m = AccentFijiUtils.getExposures(dir, false);
 		
 		// creates loader
-		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), m);
+		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 
 		for(int i=0; i<loader.getNumberOfChannels(); i++) {
 			assertTrue(loader.openChannel(i));
-			assertTrue(loader.hasNext(i));
-			
-			StackImg img = loader.getNext(i);
-			boolean foundExposure = false;
-			for(Double e: exps) {
-				if(Double.compare(e, img.getExposure()) == 0) {
-					foundExposure = true;
-				}
-			}
-			assertTrue(foundExposure);
 
-			assertEquals(3, img.getImage().numDimensions());
-			assertEquals(width, img.getImage().dimension(0));
-			assertEquals(height, img.getImage().dimension(1));
-			assertEquals(numFrames, img.getImage().dimension(2));
+			int nFrames = 0;
+			int counter = 0;
+			while(loader.hasNext(i)) {
+				StackImg img = loader.getNext(i);
+				boolean foundExposure = false;
+				for(Double e: exps) {
+					if(Double.compare(e, img.getExposure()) == 0) {
+						foundExposure = true;
+					}
+				}
+				assertTrue(foundExposure);
+	
+				// right x-y dimensions
+				assertEquals(width, img.getImage().dimension(0));
+				assertEquals(height, img.getImage().dimension(1));
+
+				nFrames += img.getImage().dimension(2);
+				counter++;
+			}
+			
+			// it loaded the right number of frames
+			assertEquals(numFrames, nFrames);
+			
+			// it loaded everything in the first iteration
+			assertEquals(1, counter);
 		}
 		
 		// deletes all
-		for(Entry<Double, String> e: m.entrySet()) {
-			String path = e.getValue();
-
-			File f = new File(path);
+		for(Entry<Double, String> el: m.entrySet()) {
+			try {
+				Files.list(Paths.get(el.getValue()))
+					.forEach(e -> (new File(e.toString())).delete());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+			File f = new File(el.getValue());
 			if(f.exists())
 				assertTrue(f.delete());
 		}

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -82,7 +83,7 @@ public class AccentFijiUtils {
 			count = (int) Files.list(Paths.get(path))
 				.map(Path::toFile)
 				.filter(File::isDirectory)
-				.filter(e -> AccentUtils.extractExposureMs(e.toString()) > 0)
+				.filter(e -> AccentUtils.hasExposureMs(e.toString()))
 				.count();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -91,16 +92,20 @@ public class AccentFijiUtils {
 	}
 
 	/**
-	 * Extract the exposure value (number found before the last occurrence of "ms")
+	 * Extract the exposure value (number found before the last occurrence of "ms") of each tiffs found in path. If filterOutDirectories is false, then 
+	 * only folders with the exposure value in the name will be retained.
 	 * 
-	 * @param path
-	 * @return
+	 * @param path Path in which the files are.
+	 * @param filterOutDirectories True to filter only tiff, false to filter only directories.
+	 * @return Map of exposures and file paths
 	 */
-	public static Map<Double, String> getExposures(String path) {
-		Map<Double, String> c = null;
+	public static Map<Double, String> getExposures(String path, boolean filterOutDirectories) {
+		Map<Double, String> c = new HashMap<Double, String>();
 		try {
 			c = Files.list(Paths.get(path))
 					.map(Path::toString)
+					.filter(e -> (new File(e)).isDirectory() != filterOutDirectories)
+					.filter(e -> AccentUtils.hasExposureMs(e.toString()))
 					.collect(Collectors.toMap(AccentUtils::extractExposureMs, e -> e));
 		} catch (IOException e) {
 			e.printStackTrace();

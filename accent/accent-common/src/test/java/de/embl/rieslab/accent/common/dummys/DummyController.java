@@ -1,7 +1,6 @@
 package de.embl.rieslab.accent.common.dummys;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -41,9 +40,6 @@ public class DummyController implements PipelineController<DummyImage, DummyImag
 
 	@Override
 	public boolean startProcessor(String path) {return true;}
-
-	@Override
-	public boolean startProcessor(String path, HashMap<String, Double> openedDatasets) {return true;}
 
 	@Override
 	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<DummyImage>> queues) {return true;}

@@ -1,7 +1,6 @@
 package de.embl.rieslab.accent.common.interfaces.pipeline;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JFrame;
@@ -58,8 +57,6 @@ public interface PipelineController<U extends RawImage, T extends CalibrationIma
 	public boolean isProcessorReady();
 	
 	public boolean startProcessor(String path);
-
-	public boolean startProcessor(String path, HashMap<String, Double> pathsToDatasets);
 	
 	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<U>> queues);
 
