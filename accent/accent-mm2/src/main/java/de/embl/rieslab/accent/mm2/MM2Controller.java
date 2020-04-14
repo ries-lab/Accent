@@ -42,37 +42,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 	
 	public MM2Controller(Studio studio) {
 		this.studio = studio;
-		
-		try {
-			studio.core().setProperty("Camera", "BitDepth", "8");
-			Image image = studio.live().snap(false).get(0);
-			System.out.println(image.getBytesPerPixel());
-			
-			studio.core().setProperty("Camera", "BitDepth", "10");
-			image = studio.live().snap(false).get(0);
-			System.out.println(image.getBytesPerPixel());
-			
-			studio.core().setProperty("Camera", "BitDepth", "12");
-			image = studio.live().snap(false).get(0);
-			System.out.println(image.getBytesPerPixel());
-			
-			studio.core().setProperty("Camera", "BitDepth", "14");
-			image = studio.live().snap(false).get(0);
-			System.out.println(image.getBytesPerPixel());
-			
-			studio.core().setProperty("Camera", "BitDepth", "16");
-			image = studio.live().snap(false).get(0);
-			System.out.println(image.getBytesPerPixel());
-			
-			studio.core().setProperty("Camera", "BitDepth", "32");
-			image = studio.live().snap(false).get(0);
-			System.out.println(image.getBytesPerPixel());
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		
-		
-		
+
 		// hack to get image size
 		try {
 			studio.getCMMCore().clearROI();
