@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.scif.img.ImgSaver;
+import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
@@ -13,6 +14,7 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
 
 /**
@@ -48,6 +50,123 @@ public class GenerateData {
 	public final static double HOTPIX_TNSQPERSEC = 348342.688;
 
 
+	public static void generateGroundTruth(String path, int width, int height, boolean hotpix) {
+
+		final long[] dim = new long[] { width, height};
+		final ImgFactory<DoubleType> factory = new ArrayImgFactory<DoubleType>(new DoubleType());
+
+		Img<DoubleType> baseline = factory.create(dim);
+		Img<DoubleType> dcpersec = factory.create(dim);
+		Img<DoubleType> rnsq = factory.create(dim);
+		Img<DoubleType> tnsqpersec = factory.create(dim);
+		Img<DoubleType> gain = factory.create(dim);
+
+		Cursor<DoubleType> c_baseline = baseline.localizingCursor();
+		RandomAccess<DoubleType> r_dcpersec = dcpersec.randomAccess();
+		RandomAccess<DoubleType> r_rnsq = rnsq.randomAccess();
+		RandomAccess<DoubleType> r_tnsqpersec = tnsqpersec.randomAccess();
+		RandomAccess<DoubleType> r_gain = gain.randomAccess();
+
+		while(c_baseline.hasNext()) {
+			DoubleType t = c_baseline.next();
+			r_dcpersec.setPosition(c_baseline);
+			r_rnsq.setPosition(c_baseline);
+			r_tnsqpersec.setPosition(c_baseline);
+			r_gain.setPosition(c_baseline);
+			
+			long x = c_baseline.getIntPosition(0), y = c_baseline.getIntPosition(1);
+			if(hotpix) {
+				if (x % 10 == 0 && y % 20 == 0) {
+					t.set(HOTPIX_BASELINE);
+					r_dcpersec.get().set(HOTPIX_DCPERSEC);
+					r_rnsq.get().set(HOTPIX_RNSQ);
+					r_tnsqpersec.get().set(HOTPIX_TNSQPERSEC);
+					r_gain.get().set(HOTPIX_TNSQPERSEC/HOTPIX_DCPERSEC);
+				} else {
+					t.set(LOWPIX_BASELINE);
+					r_dcpersec.get().set(LOWPIX_DCPERSEC);
+					r_rnsq.get().set(LOWPIX_RNSQ);
+					r_tnsqpersec.get().set(LOWPIX_TNSQPERSEC);
+					r_gain.get().set(LOWPIX_TNSQPERSEC/LOWPIX_DCPERSEC);
+				}
+			} else {
+				if (x % 10 == 0 && y % 20 == 0) {
+					t.set(LOWPIX_BASELINE);
+					r_dcpersec.get().set(LOWPIX_DCPERSEC);
+					r_rnsq.get().set(LOWPIX_RNSQ);
+					r_tnsqpersec.get().set(LOWPIX_TNSQPERSEC);
+					r_gain.get().set(LOWPIX_TNSQPERSEC/LOWPIX_DCPERSEC);
+				} else {
+					t.set(DIMPIX_BASELINE);
+					r_dcpersec.get().set(DIMPIX_DCPERSEC);
+					r_rnsq.get().set(DIMPIX_RNSQ);
+					r_tnsqpersec.get().set(DIMPIX_TNSQPERSEC);
+					r_gain.get().set(DIMPIX_TNSQPERSEC/DIMPIX_DCPERSEC);
+				}
+			}
+		}
+		
+		ImgSaver saver = new ImgSaver();
+		if(hotpix) {
+			saver.saveImg(path+"\\hot_baseline.tiff", baseline);
+			saver.saveImg(path+"\\hot_dcpersec.tiff", dcpersec);
+			saver.saveImg(path+"\\hot_rnsq.tiff", rnsq);
+			saver.saveImg(path+"\\hot_tnsqpersec.tiff", tnsqpersec);
+			saver.saveImg(path+"\\hot_gain.tiff", gain);
+		} else {
+			saver.saveImg(path+"\\baseline.tiff", baseline);
+			saver.saveImg(path+"\\dcpersec.tiff", dcpersec);
+			saver.saveImg(path+"\\rnsq.tiff", rnsq);
+			saver.saveImg(path+"\\tnsqpersec.tiff", tnsqpersec);
+			saver.saveImg(path+"\\gain.tiff", gain);
+		}
+	}
+	
+	public static void generateAvgVar(String path, int width, int height, double exposure, boolean hotpix) {
+
+		final long[] dim = new long[] { width, height};
+		final ImgFactory<DoubleType> factory = new ArrayImgFactory<DoubleType>(new DoubleType());
+
+		Img<DoubleType> avg = factory.create(dim);
+		Img<DoubleType> var = factory.create(dim);
+
+		Cursor<DoubleType> c_avg = avg.localizingCursor();
+		RandomAccess<DoubleType> r_var = var.randomAccess();
+
+		while(c_avg.hasNext()) {
+			DoubleType t = c_avg.next();
+			r_var.setPosition(c_avg);
+			
+			long x = c_avg.getIntPosition(0), y = c_avg.getIntPosition(1);
+			if(hotpix) {
+				if (x % 10 == 0 && y % 20 == 0) {
+					t.set(getHotPixAverage(exposure));
+					r_var.get().set(getHotPixVariance(exposure));
+				} else {
+					t.set(getLowPixAverage(exposure));
+					r_var.get().set(getLowPixVariance(exposure));
+				}
+			} else {
+				if (x % 10 == 0 && y % 20 == 0) {
+					t.set(getLowPixAverage(exposure));
+					r_var.get().set(getLowPixVariance(exposure));
+				} else {
+					t.set(getDimPixAverage(exposure));
+					r_var.get().set(getDimPixVariance(exposure));
+				}
+			}
+		}
+		
+		ImgSaver saver = new ImgSaver();
+		if(hotpix) {
+			saver.saveImg(path+"\\hot_avg_"+exposure+"ms.tiff", avg);
+			saver.saveImg(path+"\\hot_var_"+exposure+"ms.tiff", var);
+		} else {
+			saver.saveImg(path+"\\avg_"+exposure+"ms.tiff", avg);
+			saver.saveImg(path+"\\var_"+exposure+"ms.tiff", var);
+		}
+	}
+	
 	public static Img<UnsignedShortType> generateUnsignedShortType(int width, int height, int numFrames,
 			double exposure) {
 
@@ -403,7 +522,9 @@ public class GenerateData {
 				if(writeStacks) {
 					Img<UnsignedShortType> img_s = generateUnsignedShortType(width, height, numFrames, e);
 					String name_s = path + "\\" + e + "ms_unshort.tif";
-					saver.saveImg(name_s, img_s);
+					saver.saveImg(name_s, img_s);							
+					System.out.println(e+"ms: writing stack");
+
 				} else {
 					ArrayList<Img<UnsignedShortType>> img_f = generateUnsignedShortTypeSingles(width, height, numFrames, e);	
 					String name_f = path + "\\" + e + "ms_unshort";
@@ -433,7 +554,8 @@ public class GenerateData {
 				if(writeStacks) {
 					Img<UnsignedByteType> img_b = generateUnsignedByteType(width, height, numFrames, e);
 					String name_b = path + "\\" + e + "ms_unbyte.tif";
-					saver.saveImg(name_b, img_b);
+					saver.saveImg(name_b, img_b);			
+					System.out.println(e+"ms: writing stack");
 				} else {
 					ArrayList<Img<UnsignedByteType>> img_f = generateUnsignedByteTypeSingles(width, height, numFrames, e);	
 					String name_f = path + "\\" + e + "ms_unbyte";
@@ -463,7 +585,8 @@ public class GenerateData {
 				if(writeStacks) {
 					Img<UnsignedIntType> img_f = generateUnsignedIntType(width, height, numFrames, e);
 					String name_f = path + "\\" + e + "ms_unint.tif";
-					saver.saveImg(name_f, img_f);
+					saver.saveImg(name_f, img_f);			
+					System.out.println(e+"ms: writing stack");
 				} else {
 					ArrayList<Img<UnsignedIntType>> img_f = generateUnsignedIntTypeSingles(width, height, numFrames, e);	
 					String name_f = path + "\\" + e + "ms_unint";
@@ -493,7 +616,8 @@ public class GenerateData {
 				if (writeStacks) {
 					Img<FloatType> img_f = generateFloatType(width, height, numFrames, e);
 					String name_f = path + "\\" + e + "ms_float.tif";
-					saver.saveImg(name_f, img_f);
+					saver.saveImg(name_f, img_f);			
+					System.out.println(e+"ms: writing stack");
 				} else {
 					ArrayList<Img<FloatType>> img_f = generateFloatTypeSingles(width, height, numFrames, e);
 					String name_f = path + "\\" + e + "ms_float";
