@@ -48,7 +48,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 	private final static String START = "Process";
 	private final static String STOP = "Stop";
 	private JLabel lblPath;
-	private JTextField textField;
+	private JTextField textFieldPath;
 	private JButton button;
 	private JLabel lblNewLabel;
 	
@@ -76,7 +76,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
-		
+		/*
 		JLabel lblLeaveTheExposure = new JLabel("Leave the exposure field blank to ignore it");
 		GridBagConstraints gbc_lblLeaveTheExposure = new GridBagConstraints();
 		gbc_lblLeaveTheExposure.gridwidth = 2;
@@ -84,7 +84,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		gbc_lblLeaveTheExposure.insets = new Insets(0, 0, 5, 5);
 		gbc_lblLeaveTheExposure.gridx = 0;
 		gbc_lblLeaveTheExposure.gridy = 0;
-		add(lblLeaveTheExposure, gbc_lblLeaveTheExposure);
+		add(lblLeaveTheExposure, gbc_lblLeaveTheExposure);*/
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setMaximumSize(new Dimension(32767, 50));
@@ -94,7 +94,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 1;
+		gbc_scrollPane.gridy = 0;
 		add(scrollPane, gbc_scrollPane);
 
 		
@@ -121,14 +121,14 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		gbc_lblPath.gridy = 3;
 		add(lblPath, gbc_lblPath);
 		
-		textField = new JTextField();
+		textFieldPath = new JTextField((new File(datasets.get(0)).getParent()));
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField.gridx = 1;
 		gbc_textField.gridy = 3;
-		add(textField, gbc_textField);
-		textField.setColumns(10);
+		add(textFieldPath, gbc_textField);
+		textFieldPath.setColumns(10);
 		
 		button = new JButton("...");
 		GridBagConstraints gbc_button = new GridBagConstraints();
@@ -188,7 +188,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File folder = fc.getSelectedFile();
-			textField.setText(folder.getAbsolutePath());
+			textFieldPath.setText(folder.getAbsolutePath());
 		}
 	}
 	
@@ -198,7 +198,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 
 	protected void startProcessing() {
 		if(!controller.isProcessorRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
-			String s  = textField.getText();
+			String s  = textFieldPath.getText();
 			// HashMap<String, Double> list = extractDatasets();
 			boolean b = controller.startProcessor(s);
 			if(!b) {

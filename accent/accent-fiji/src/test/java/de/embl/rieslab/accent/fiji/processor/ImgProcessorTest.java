@@ -20,6 +20,8 @@ import net.imglib2.type.numeric.real.FloatType;
 
 public class ImgProcessorTest {
 	
+	// TODO tests cases resembling multiple stacks or stacks 
+	
 	int width = 11;
 	int height = 21;
 	int numFrames = 15000;

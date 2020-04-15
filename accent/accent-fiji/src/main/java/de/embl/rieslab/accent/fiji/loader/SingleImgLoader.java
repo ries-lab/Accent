@@ -108,7 +108,6 @@ public class SingleImgLoader implements Loader<StackImg>{
 			c = Files.list( Paths.get( folders_.get(mapping_[channel]) ) )
 					.map(Path::toString)
 					.filter(e -> e.endsWith(".tif") || e.endsWith(".tiff") || e.endsWith(".TIF") || e.endsWith(".TIFF"))
-					.filter(e -> ioservice_.canOpen(e))
 					.collect(Collectors.toList());
 		} catch (IOException e1) {
 			e1.printStackTrace();

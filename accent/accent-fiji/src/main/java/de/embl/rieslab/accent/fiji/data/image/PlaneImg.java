@@ -15,7 +15,8 @@ public class PlaneImg  implements CalibrationImage{
 		if(img == null)
 			throw new NullPointerException("Image cannot be null.");
 				
-		// TODO should check that the axis are correct
+		if(img.numDimensions() != 2)
+			throw new IllegalArgumentException("Image must be of dimension 2.");
 		
 		img_ = img;
 		exposure_ = exposure;
@@ -37,7 +38,7 @@ public class PlaneImg  implements CalibrationImage{
 			throw new IllegalArgumentException("Coordinates outside bounds.");
 		
 		RandomAccess<? extends RealType<?>> r = img_.randomAccess();
-		r.setPosition(new int[] {x,y});
+		r.setPosition(new int[] {x,y,1});
 		
 		return r.get().getRealFloat();
 	}

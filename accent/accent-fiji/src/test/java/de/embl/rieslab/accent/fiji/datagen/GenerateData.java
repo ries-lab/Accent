@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.scif.img.ImgSaver;
-import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
@@ -14,7 +13,6 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
 
 /**
@@ -24,6 +22,7 @@ import net.imglib2.type.numeric.real.FloatType;
  * - make use of the generics to reduce code load, all methods can probably be combined with generics and lambdas
  * - there must be a way to save Img stacks as individual planes without copying the data
  * - generateAndWrite method should be refactored as the same code is copied multiple times in the method
+ * - writing is really slow for tests
  * 
  * @author Joran Deschamps
  *
@@ -49,7 +48,7 @@ public class GenerateData {
 	public final static double HOTPIX_RNSQ = 16926.469; 
 	public final static double HOTPIX_TNSQPERSEC = 348342.688;
 
-
+/*
 	public static void generateGroundTruth(String path, int width, int height, boolean hotpix) {
 
 		final long[] dim = new long[] { width, height};
@@ -165,7 +164,7 @@ public class GenerateData {
 			saver.saveImg(path+"\\avg_"+exposure+"ms.tiff", avg);
 			saver.saveImg(path+"\\var_"+exposure+"ms.tiff", var);
 		}
-	}
+	}*/
 	
 	public static Img<UnsignedShortType> generateUnsignedShortType(int width, int height, int numFrames,
 			double exposure) {

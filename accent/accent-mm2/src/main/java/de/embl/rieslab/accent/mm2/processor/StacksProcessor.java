@@ -49,7 +49,7 @@ public class StacksProcessor extends CalibrationProcessor<BareImage, FloatImage>
 
 				if(stackSizes[q] % 100 == 0) {
 					int progress = (int) (percentile * q + percentile * stackSizes[q] / loader.getChannelLength());
-					showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getNumberOfChannels()+", frame ", stackSizes[q], loader.getChannelLength(), progress);
+					showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getNumberOfChannels()+", frame "+String.valueOf(stackSizes[q])+"/"+String.valueOf(loader.getChannelLength()), progress);
 				}
 			}
 			if(avgs[q] != null && vars[q] != null) {

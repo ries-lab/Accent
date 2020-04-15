@@ -12,7 +12,7 @@ public class ArrayToPlaneImg implements ArrayToImage<PlaneImg>{
 	@Override
 	public PlaneImg getImage(double[] pixels, int width, int height, double exposure) {
 		ArrayImgFactory<FloatType> factory = new ArrayImgFactory<FloatType>(new FloatType());
-		Img<FloatType> img = factory.create(new int[] {width, height, 1});
+		Img<FloatType> img = factory.create(new int[] {width, height});
 		
 		Cursor<FloatType> cursor = img.localizingCursor();
 		while(cursor.hasNext()) {
@@ -27,7 +27,7 @@ public class ArrayToPlaneImg implements ArrayToImage<PlaneImg>{
 	@Override
 	public PlaneImg getImage(float[] pixels, int width, int height, double exposure) {
 		ArrayImgFactory<FloatType> factory = new ArrayImgFactory<FloatType>(new FloatType());
-		Img<FloatType> img = factory.create(new int[] {width, height, 1});
+		Img<FloatType> img = factory.create(new int[] {width, height});
 		
 		Cursor<FloatType> cursor = img.localizingCursor();
 		while(cursor.hasNext()) {

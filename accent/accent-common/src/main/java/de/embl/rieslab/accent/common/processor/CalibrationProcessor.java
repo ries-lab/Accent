@@ -33,6 +33,15 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 	public final static int STOP = -2;
 	public final static int PROGRESS = -3;
 	
+	public final static String BASELINE = "Baseline.tiff";
+	public final static String DCPERSEC = "DC_per_sec.tiff";
+	public final static String GAIN = "Gain.tiff";
+	public final static String RNSQ = "RN_sq.tiff";
+	public final static String TNSQPERSEC = "TN_sq_per_sec.tiff";
+	public final static String RSQAVG = "R_sq_avg.tiff";
+	public final static String RSQVAR = "R_sq_var.tiff";
+	public final static String RSQGAIN = "R_sq_gain.tiff";
+	
 	public CalibrationProcessor(String folder, PipelineController<U,T> controller, Loader<U> loader) {
 		if(folder == null || controller == null || loader == null)		
 			throw new NullPointerException();
@@ -86,7 +95,7 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 	
 	protected Integer runProcess() {
 		startTime = System.currentTimeMillis();
-		showProgressOnEDT(START, null, 0, 0, 0);
+		showProgressOnEDT(START, "Stopping", 0);
 		
 		// compute avg and var images
 		AvgVarStacks<T> avgvar = computeAvgAndVar();
@@ -94,7 +103,7 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 		T[] vars = avgvar.getVars();
 		
 		if(stop) {
-			showProgressOnEDT(STOP, null, 0, 0, 0);
+			showProgressOnEDT(STOP, "Stopping", 0);
 			return 0;
 		} else {
 			showProgressOnEDT(PROGRESS, "", 80);
@@ -114,7 +123,7 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 		}
 		
 		if(stop) {
-			showProgressOnEDT(STOP, null, 0, 0, 0);
+			showProgressOnEDT(STOP, "Stopping", 0);
 			return 0;
 		} else {
 			showProgressOnEDT(PROGRESS, "Regression", 85);
@@ -124,7 +133,7 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 		results = performLinearRegressions(avgs, vars);
 				
 		if(stop) {
-			showProgressOnEDT(STOP, null, 0, 0, 0);
+			showProgressOnEDT(STOP, "Stopping", 0);
 			return 0;
 		} else {
 			showProgressOnEDT(PROGRESS, "Regression", 90);
@@ -137,24 +146,15 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 		}
 		
 		if(stop) {
-			showProgressOnEDT(STOP, null, 0, 0, 0);
+			showProgressOnEDT(STOP, "Stopping", 0);
 			return 0;
 		}
 		
 		stopTime = System.currentTimeMillis();
-		showProgressOnEDT(DONE, null, 0, 0, 0);
+		showProgressOnEDT(DONE, "Done", 0);
 		
 		return 0;
 	}
-
-	protected void showProgressOnEDT(int flag, String message, int step, int totalSteps, int percentage) {
-		SwingUtilities.invokeLater(new Runnable() {
-	        public void run() {
-	        	showProgress(flag, message, step, totalSteps, percentage);
-	        }
-	    });
-	}	
-	
 	
 	protected void showProgressOnEDT(int flag, String message, int percentage) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -163,24 +163,7 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 	        }
 	    });
 	}
-	
-	private void showProgress(int flag, String message, int step, int totalSteps, int percentage) {
-		if(flag == START) {
-			controller.processorHasStarted();
-			controller.updateProcessorProgress("Processing ...",0);
-		} else if(flag == DONE) {
-			running = false;
-			controller.processorHasEnded();
-			controller.updateProcessorProgress("Done.",100);
-		} else if(flag == STOP) {
-			running = false;
-			controller.processorHasStopped();
-			controller.updateProcessorProgress("Interrupted.",50);
-		} else if(flag == PROGRESS) {
-			controller.updateProcessorProgress(message+step+"/"+totalSteps, percentage);
-		}	
-	}
-	
+		
 	private void showProgress(int flag, String message, int percentage) {
 		if(flag == START) {
 			controller.processorHasStarted();
@@ -315,28 +298,28 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 	 */
 	protected void writeCalibrationToImages(String folder, Calibration results) {
 		T baseline = controller.getArrayToImageConverter().getImage(results.getBaseline(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(baseline,folder+"\\Baseline.tiff");
+		getController().getImageSaver().saveAsTiff(baseline,folder+"\\"+BASELINE);
 		
 		T dc_per_sec = controller.getArrayToImageConverter().getImage(results.getDcPerSec(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(dc_per_sec,folder+"\\DC_per_sec.tiff");
+		getController().getImageSaver().saveAsTiff(dc_per_sec,folder+"\\"+DCPERSEC);
 		
 		T gain = controller.getArrayToImageConverter().getImage(results.getGain(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(gain,folder+"\\Gain.tiff");
+		getController().getImageSaver().saveAsTiff(gain,folder+"\\"+GAIN);
 		
 		T rn_sq = controller.getArrayToImageConverter().getImage(results.getRnSq(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(rn_sq,folder+"\\RN_sq.tiff");
+		getController().getImageSaver().saveAsTiff(rn_sq,folder+"\\"+RNSQ);
 		
 		T tn_sq_per_sec = controller.getArrayToImageConverter().getImage(results.getTnSqPerSec(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(tn_sq_per_sec,folder+"\\TN_sq_per_sec.tiff");
+		getController().getImageSaver().saveAsTiff(tn_sq_per_sec,folder+"\\"+TNSQPERSEC);
 		
 		T r_sq_avg = controller.getArrayToImageConverter().getImage(results.getRSqAvg(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(r_sq_avg,folder+"\\R_sq_avg.tiff");
+		getController().getImageSaver().saveAsTiff(r_sq_avg,folder+"\\"+RSQAVG);
 		
 		T r_sq_var = controller.getArrayToImageConverter().getImage(results.getRSqVar(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(r_sq_var,folder+"\\R_sq_var.tiff");
+		getController().getImageSaver().saveAsTiff(r_sq_var,folder+"\\"+RSQVAR);
 		
 		T r_sq_gain = controller.getArrayToImageConverter().getImage(results.getRSqGain(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(r_sq_gain,folder+"\\R_sq_gain.tiff");
+		getController().getImageSaver().saveAsTiff(r_sq_gain,folder+"\\"+RSQGAIN);
 	}
 
 	/**
