@@ -11,7 +11,7 @@ import org.scijava.plugin.Plugin;
 import io.scif.services.DatasetIOService;
 import net.imagej.ImageJ;
 
-@Plugin(type = Command.class, menuPath = "Plugins>Accent")
+@Plugin(type = Command.class, menuPath = "Plugins>ACCéNT")
 public class AccentFiji implements Command{
 	
 	@Parameter

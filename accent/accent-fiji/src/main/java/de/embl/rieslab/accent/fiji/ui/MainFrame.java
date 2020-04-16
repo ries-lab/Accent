@@ -3,7 +3,11 @@ package de.embl.rieslab.accent.fiji.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -25,7 +29,7 @@ public class MainFrame extends JFrame {
 		this.controller = controller;
 		
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.setTitle("Accent");
+		this.setTitle("ACCéNT");
 
 		JPanel content = new JPanel();
 		GridBagLayout gbl_content = new GridBagLayout();
@@ -57,6 +61,23 @@ public class MainFrame extends JFrame {
 		gbc_genpane.gridy = counter++;
 		content.add(genpane, gbc_genpane);
 
+		// sets icon
+		ArrayList<BufferedImage> lst = new ArrayList<BufferedImage>();
+		BufferedImage im;
+		try {
+			im = ImageIO.read(getClass().getResource("/images/accent-logo-blue-16.png"));
+			lst.add(im);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			im = ImageIO.read(getClass().getResource("/images/accent-logo-blue-32.png"));
+			lst.add(im);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		this.setIconImages(lst);
+		
 		this.setContentPane(content);
 
 		this.pack();
