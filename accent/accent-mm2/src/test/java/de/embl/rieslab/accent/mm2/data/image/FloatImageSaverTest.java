@@ -26,7 +26,7 @@ public class FloatImageSaverTest {
 		}
 				
 		// creates FloatImage
-		FloatImage f = new FloatImage(width, height, pixs, exposure);
+		FloatImage f = new FloatImage(pixs, width, height, exposure);
 
 		// attempts saving
 		FloatImageSaver ims = new FloatImageSaver();

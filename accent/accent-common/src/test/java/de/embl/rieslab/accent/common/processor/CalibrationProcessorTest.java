@@ -21,7 +21,7 @@ public class CalibrationProcessorTest {
 	@Test
 	public void testConstructor() {
 		assertThrows(IllegalArgumentException.class, () -> {
-			new DummyProcessor("", new DummyController(), new DummyLoader(2));
+			new DummyProcessor("", new DummyController(), new DummyLoader(1));
 		});
 		assertThrows(NullPointerException.class, () -> {
 			new DummyProcessor(null, new DummyController(), new DummyLoader(2));

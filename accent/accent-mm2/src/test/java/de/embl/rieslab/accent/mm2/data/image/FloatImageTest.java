@@ -29,7 +29,7 @@ public class FloatImageTest {
 			assertEquals(val,(int) pixels[i]);
 		}
 		
-		FloatImage im = new FloatImage(width,height,pixels,exposure);
+		FloatImage im = new FloatImage(pixels,width,height,exposure);
 
 		assertEquals(width, im.getWidth());
 		assertEquals(height, im.getHeight());
@@ -154,7 +154,7 @@ public class FloatImageTest {
 			assertEquals(val,(int) pixels[i]);
 		}
 		
-		FloatImage im = new FloatImage(width,height,pixels,exposure);
+		FloatImage im = new FloatImage(pixels,width,height,exposure);
 
 		assertEquals(width, im.getWidth());
 		assertEquals(height, im.getHeight());
@@ -275,7 +275,7 @@ public class FloatImageTest {
 			assertEquals(i*1.125,(float) pixels[i],0.0001);
 		}
 		
-		FloatImage im = new FloatImage(width,height,pixels,exposure);
+		FloatImage im = new FloatImage(pixels,width,height,exposure);
 
 		assertEquals(width, im.getWidth());
 		assertEquals(height, im.getHeight());
@@ -399,7 +399,7 @@ public class FloatImageTest {
 			assertEquals(i*1.125, pixels[i],0.0001);
 		}
 		
-		FloatImage im = new FloatImage(width,height,pixels,exposure);
+		FloatImage im = new FloatImage(pixels,width,height,exposure);
 	
 		assertEquals(width, im.getWidth());
 		assertEquals(height, im.getHeight());
@@ -427,7 +427,7 @@ public class FloatImageTest {
 			assertEquals(i+offset,(int) pixels[i]);
 		}
 		
-		FloatImage im = new FloatImage(width,height,pixels,exposure);
+		FloatImage im = new FloatImage(pixels,width,height,exposure);
 		im.square();
 
 		for(int y=0;y<height;y++) {
@@ -452,7 +452,7 @@ public class FloatImageTest {
 			assertEquals(i+offset,(int) pixels[i]);
 		}
 		
-		FloatImage im = new FloatImage(width,height,pixels,exposure);
+		FloatImage im = new FloatImage(pixels,width,height,exposure);
 		float d = (float) 10.568;
 		im.dividePixels(d);
 

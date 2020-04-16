@@ -41,7 +41,7 @@ public class FloatImage implements CalibrationImage {
 	 * @param pixels Pixel array of length width*height
 	 * @param exposure Exposure in ms
 	 */
-	public FloatImage(int width, int height, byte[] pixels, double exposure) {
+	public FloatImage(byte[] pixels, int width, int height, double exposure) {
 		if(width*height != pixels.length) {
 			throw new IllegalArgumentException("The pixel array has the wrong size.");
 		}
@@ -61,7 +61,7 @@ public class FloatImage implements CalibrationImage {
 	 * @param pixels Pixel array of length width*height
 	 * @param exposure Exposure in ms
 	 */
-	public FloatImage(int width, int height, short[] pixels, double exposure) {
+	public FloatImage(short[] pixels, int width, int height, double exposure) {
 		if(width*height != pixels.length) {
 			throw new IllegalArgumentException("The pixel array has the wrong size.");
 		}
@@ -81,7 +81,7 @@ public class FloatImage implements CalibrationImage {
 	 * @param pixels Pixel array of length width*height
 	 * @param exposure Exposure in ms
 	 */
-	public FloatImage(int width, int height, double[] pixels, double exposure) {
+	public FloatImage(double[] pixels, int width, int height, double exposure) {
 		if(width*height != pixels.length) {
 			throw new IllegalArgumentException("The pixel array has the wrong size.");
 		}
@@ -101,7 +101,7 @@ public class FloatImage implements CalibrationImage {
 	 * @param pixels Pixel array of length width*height
 	 * @param exposure Exposure in ms
 	 */
-	public FloatImage(int width, int height, float[] pixels, double exposure) {			
+	public FloatImage(float[] pixels, int width, int height, double exposure) {			
 		if (width * height != pixels.length) {
 			throw new IllegalArgumentException("The pixel array has the wrong size.");
 		}
