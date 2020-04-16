@@ -92,4 +92,11 @@ public class DummyMM2Controller implements PipelineController<BareImage, FloatIm
 	@Override
 	public ImageSaver<FloatImage> getImageSaver() {return null;}
 
+	@Override
+	public void stopAll() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }

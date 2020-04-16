@@ -9,4 +9,9 @@ public class Dialogs {
 		JOptionPane.showMessageDialog(new JFrame(), message, "Dialog",
 		        JOptionPane.ERROR_MESSAGE);
 	}
+	
+	public static void showWarningMessage(String message) {
+		JOptionPane.showMessageDialog(new JFrame(), message, "Dialog",
+		        JOptionPane.WARNING_MESSAGE);
+	}
 }

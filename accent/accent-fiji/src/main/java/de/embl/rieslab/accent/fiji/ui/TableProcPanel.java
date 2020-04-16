@@ -11,9 +11,10 @@ import javax.swing.table.DefaultTableModel;
 
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessorPanelInterface;
-import de.embl.rieslab.accent.common.utils.AccentUtils;
+import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.fiji.data.image.PlaneImg;
 import de.embl.rieslab.accent.fiji.data.image.StackImg;
+import de.embl.rieslab.accent.fiji.utils.AccentFijiUtils;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
@@ -22,19 +23,15 @@ import javax.swing.JFileChooser;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.border.LineBorder;
 import java.awt.Color;
-import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-import java.awt.Dimension;
 import java.awt.Font;
 
 public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
@@ -52,22 +49,14 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 	private JButton button;
 	private JLabel lblNewLabel;
 	
-	private List<String> datasets;
 
 	/**
 	 * Create the panel.
 	 * @param dataservice 
 	 * @param controller 
 	 */
-	public TableProcPanel(PipelineController<StackImg,PlaneImg> controller, List<String> datasets) {
-		
-		if(datasets == null) {
-			throw new NullPointerException();
-		}
-		
-		
+	public TableProcPanel(PipelineController<StackImg,PlaneImg> controller) {
 		this.controller = controller;
-		this.datasets = datasets;
 		
 		setBorder(new TitledBorder(null, "Process", TitledBorder.LEFT, TitledBorder.TOP, null, null));
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -86,22 +75,29 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		gbc_lblLeaveTheExposure.gridy = 0;
 		add(lblLeaveTheExposure, gbc_lblLeaveTheExposure);*/
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setMaximumSize(new Dimension(32767, 50));
+		//JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridheight = 2;
 		gbc_scrollPane.gridwidth = 3;
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.fill = GridBagConstraints.HORIZONTAL;
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 0;
-		add(scrollPane, gbc_scrollPane);
+		//add(scrollPane, gbc_scrollPane);
 
-		
+
 		table = new JTable();
-		scrollPane.setViewportView(table);
+		//scrollPane.setViewportView(table);
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
-		table.setModel(new DefaultTableModel(buildList(), new String[] { "Dataset", "Exposure (ms)" }) { 
+		
+		// empty array to avoid weird overlays when changing the table
+		String[][] arr = {
+	            {"", ""},
+	            {"", ""},
+	            {"", ""},
+	            {"", ""}
+		};
+		table.setModel(new DefaultTableModel(arr, new String[] { "Dataset", "Exposure (ms)" }) { 
 
 			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[] { false, false };
@@ -112,6 +108,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		});
 		table.getColumnModel().getColumn(0).setPreferredWidth(200);
 		table.getColumnModel().getColumn(1).setPreferredWidth(80);
+		add(table, gbc_scrollPane);		
 		
 		lblPath = new JLabel("Path:");
 		GridBagConstraints gbc_lblPath = new GridBagConstraints();
@@ -121,7 +118,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		gbc_lblPath.gridy = 3;
 		add(lblPath, gbc_lblPath);
 		
-		textFieldPath = new JTextField((new File(datasets.get(0)).getParent()));
+		textFieldPath = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
@@ -138,7 +135,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		add(button, gbc_button);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {    	
-				showPathSelectionWindow();
+				selectFolder();
 			}
 		});
 		
@@ -179,16 +176,66 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 			}
 		});
 	}
-	
 
-	protected void showPathSelectionWindow() {
+	protected void selectFolder() {
+		String curr = textFieldPath.getText();
+		if(curr.equals("")) {
+			curr = ".";
+		}
+		
 		JFileChooser fc = new JFileChooser();
-		fc.setCurrentDirectory(new java.io.File("."));
+		fc.setCurrentDirectory(new java.io.File(curr));
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = fc.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File folder = fc.getSelectedFile();
-			textFieldPath.setText(folder.getAbsolutePath());
+			String path = fc.getSelectedFile().getAbsolutePath();
+			
+			int nTiffs = AccentFijiUtils.getNumberTifsContainMs(path);
+			int nDir = AccentFijiUtils.getNumberDirectoriesContainMs(path);
+			
+			// we try to load either folders content or images in the same folder
+			// as independent exposure experiments (ie files with ###ms in the name)
+			boolean loadStacks = nTiffs > nDir;
+			
+			try {
+				Map<Double, String> datasets = AccentFijiUtils.getExposures(path, loadStacks);
+				
+				// if we load folders, then remove those without tiff files inside
+				if(!loadStacks) {
+					ArrayList<Double> noTiffFound = new ArrayList<Double>();
+					for (Entry<Double, String> e : datasets.entrySet()) {
+						if (AccentFijiUtils.getNumberTifs(e.getValue()) == 0) {
+							noTiffFound.add(e.getKey());
+						}
+					}
+					for (Double d : noTiffFound) {
+						datasets.remove(d);
+					}
+				}	
+				
+				if(datasets.size() > 0) {
+					textFieldPath.setText(path);
+											
+					// would be better to interact with the DefaultTableModel removing and adding rows, instead of creating it new... 
+					table.setModel(new DefaultTableModel(buildList(datasets), new String[] { "Dataset", "Exposure (ms)" }) { 
+	
+						private static final long serialVersionUID = 1L;
+						boolean[] columnEditables = new boolean[] { false, false };
+	
+						public boolean isCellEditable(int row, int column) {
+							return columnEditables[column];
+						}
+					});
+					table.getColumnModel().getColumn(0).setPreferredWidth(200);
+					table.getColumnModel().getColumn(1).setPreferredWidth(40);
+					table.repaint();
+				} else {
+					Dialogs.showErrorMessage("No dataset found.");
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+				Dialogs.showErrorMessage("Error, make sure only the calibration images are present in the folder.");
+			}		
 		}
 	}
 	
@@ -238,7 +285,6 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		progressBar.setValue(percentage);
 	}
 
-
 	@Override
 	public void processingHasStarted() {
 		progressBar.setValue(0);
@@ -248,7 +294,6 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		}
 	}
 
-
 	@Override
 	public void processingHasStopped() {
 		lblNewLabel.setText("Stopped.");
@@ -257,7 +302,6 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		progressBar.setValue(100);
 	}
 
-
 	@Override
 	public void processingHasEnded() {
 		progressBar.setValue(100);
@@ -265,22 +309,12 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		btnProcess.setSelected(false);
 	}
 
-
-	private String[][] buildList(){
-		Map<String,Double> map = new LinkedHashMap<String,Double>();
-		
-		for(int i=0;i<datasets.size();i++) {
-			// check if name contains "ms"
-			double expo = AccentUtils.extractExposureMs(datasets.get(i));
-			if(Double.compare(expo, 0) != 0)
-				map.put(datasets.get(i), expo);
-		}
-		
-		String[][] vals = new String[map.size()][2];
+	private String[][] buildList(Map<Double, String> datasets){
+		String[][] vals = new String[datasets.size()][2];
 		int i=0;
-		for(Entry<String, Double> e: map.entrySet()) {
-			vals[i][0] = e.getKey();
-			vals[i][1] = String.valueOf(e.getValue());
+		for(Entry<Double, String> e: datasets.entrySet()) {
+			vals[i][0] = e.getValue();
+			vals[i][1] = String.valueOf(e.getKey());
 			i++;
 		}
 		

@@ -31,6 +31,7 @@ public interface PipelineController<U extends RawImage, T extends CalibrationIma
 	
 	public ImageSaver<T> getImageSaver();
 	
+	public void stopAll();
 		
 	//////// Processing
 	/**

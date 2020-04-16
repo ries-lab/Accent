@@ -123,4 +123,10 @@ public class DummyController implements PipelineController<DummyImage, DummyImag
 			}
 		};
 	}
+
+	@Override
+	public void stopAll() {
+		// TODO Auto-generated method stub
+		
+	}
 }

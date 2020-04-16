@@ -213,4 +213,15 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 	public MM2AcquisitionController getAcqController() {
 		return acqController;
 	}
+
+	@Override
+	public void stopAll() {
+		if(acqController.acqExists() && acqController.acqRunning()) {
+			acqController.stopAcquisition();
+		}
+		
+		if(isProcessorRunning()) {
+			stopProcessor();
+		}
+	}
 }

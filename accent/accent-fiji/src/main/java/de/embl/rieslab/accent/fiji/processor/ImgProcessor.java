@@ -29,10 +29,19 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 		
 		for(int q=0; q<loader.getNumberOfChannels(); q++) {
 			loader.openChannel(q);
-
+		
+			if(stop) {
+				return null;
+			}
+			
 			int imgcount = 0;
 			int filecount = 0;
 			while(loader.hasNext(q)) {
+				
+				if(stop) {
+					return null;
+				}
+				
 				StackImg newImg = loader.getNext(q);
 				if(imgcount == 0) {
 					avgs[q] = new PlaneImg(factory.create(new int[] {newImg.getWidth(), newImg.getHeight()}), newImg.getExposure());
@@ -52,6 +61,11 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 				Cursor<FloatType> cursor = avgs[q].getImage().localizingCursor();
 				RandomAccess<FloatType> r_var = vars[q].getImage().randomAccess();
 				while(cursor.hasNext()) {
+					
+					if(stop) {
+						return null;
+					}
+					
 					FloatType t_avg = cursor.next();
 					
 					r.setPosition(cursor.getIntPosition(0),0);

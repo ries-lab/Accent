@@ -158,7 +158,6 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 		}
 	}
 
-
 	protected void showPathSelectionWindow() {
 		JFileChooser fc = new JFileChooser();
 		fc.setCurrentDirectory(new java.io.File("."));

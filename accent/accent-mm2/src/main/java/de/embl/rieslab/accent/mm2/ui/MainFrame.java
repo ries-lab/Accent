@@ -3,6 +3,7 @@ package de.embl.rieslab.accent.mm2.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,13 +21,15 @@ public class MainFrame extends JFrame{
 	private AcqPanel acqpane;
 	private ProcPanel procpane;
 	private GenPanel<BareImage,FloatImage> genpane;
+	MM2Controller controller;
 	
 	/**
 	 * Create the frame.
 	 */
 	public MainFrame(Studio studio, MM2Controller controller) {
+		this.controller = controller;
 		
-		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		//this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setTitle("Accent");
 
 		JPanel content = new JPanel();
@@ -74,5 +77,12 @@ public class MainFrame extends JFrame{
 		this.pack();
 		this.setLocationRelativeTo(null);
 	}
-
+	
+	@Override
+    protected void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+           controller.stopAll();
+           this.dispose();
+        }
+     }
 }

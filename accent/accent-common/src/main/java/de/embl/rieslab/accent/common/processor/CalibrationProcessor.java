@@ -99,9 +99,7 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 		
 		// compute avg and var images
 		AvgVarStacks<T> avgvar = computeAvgAndVar();
-		T[] avgs = avgvar.getAvgs();
-		T[] vars = avgvar.getVars();
-		
+	
 		if(stop) {
 			showProgressOnEDT(STOP, "Stopping", 0);
 			return 0;
@@ -110,6 +108,8 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 		}
 
 		// saves images
+		T[] avgs = avgvar.getAvgs();
+		T[] vars = avgvar.getVars();
 		for(int q=0;q<loader.getNumberOfChannels();q++) {
 			if(avgs[q] != null && vars[q]!=null) {
 				if(Double.compare(avgs[q].getExposure(), (int)avgs[q].getExposure()) == 0) {

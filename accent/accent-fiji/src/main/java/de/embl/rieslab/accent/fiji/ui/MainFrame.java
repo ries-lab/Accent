@@ -2,7 +2,7 @@ package de.embl.rieslab.accent.fiji.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.List;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,9 +19,11 @@ public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private TableProcPanel procpane;
 	private GenPanel<StackImg,PlaneImg> genpane;
+	private PipelineController<StackImg,PlaneImg> controller;
 	
-	public MainFrame(PipelineController<StackImg,PlaneImg> controller, List<String> datasets) {
-
+	public MainFrame(PipelineController<StackImg,PlaneImg> controller) {
+		this.controller = controller;
+		
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setTitle("Accent");
 
@@ -35,7 +37,7 @@ public class MainFrame extends JFrame {
 
 		int counter = 0;
 	
-		procpane = new TableProcPanel(controller, datasets);
+		procpane = new TableProcPanel(controller);
 		controller.setProcessorPanel(procpane);
 		GridBagConstraints gbc_procpane = new GridBagConstraints();
 		gbc_procpane.weighty = 0.2;
@@ -69,4 +71,11 @@ public class MainFrame extends JFrame {
 		return genpane;
 	}
 
+	@Override
+    protected void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+           controller.stopAll();
+           this.dispose();
+        }
+     }
 }

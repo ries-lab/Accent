@@ -1,10 +1,6 @@
 package de.embl.rieslab.accent.fiji;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 import org.scijava.command.Command;
@@ -12,8 +8,6 @@ import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
-import de.embl.rieslab.accent.common.utils.Dialogs;
-import de.embl.rieslab.accent.fiji.utils.AccentFijiUtils;
 import io.scif.services.DatasetIOService;
 import net.imagej.ImageJ;
 
@@ -28,7 +22,7 @@ public class AccentFiji implements Command{
     
 	@Override
 	public void run() {
-		JFileChooser chooser = new JFileChooser();
+		/*JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new java.io.File("."));
 		chooser.setDialogTitle("choosertitle");
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -72,7 +66,11 @@ public class AccentFiji implements Command{
 				e.printStackTrace();
 				Dialogs.showErrorMessage("Error, make sure only the calibration images are present in the folder.");
 			}
-		}
+		}*/
+		
+		FijiController controller = new FijiController(ioservice, logService);
+		JFrame frame = controller.getMainFrame();
+		frame.setVisible(true);
 	}
 
 	public static void main(final String... args) throws Exception {
