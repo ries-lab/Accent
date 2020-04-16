@@ -73,26 +73,38 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 					t_var.set(g);
 					
 					// shows progress for single stack
-					if(newImg.getImage().dimension(2) > 1 && loader.getChannelLength() == imgcount && (pixcount+1)%100 == 0) { // single stack
+					if(newImg.getImage().dimension(2) > 1 && loader.getChannelLength() == imgcount 
+							&& ((pixcount+1)%100 == 0  || (pixcount+1)==newImg.getHeight()*newImg.getWidth())) { // single stack
+						
 						double large_step = 80.*((double) q)/((double) loader.getNumberOfChannels()); // % of files
 						double small_step = 80.*((double) pixcount)/((double) newImg.getHeight()*newImg.getWidth())/((double) loader.getNumberOfChannels()); // % pixels 
+						
 						int progress = (int) (large_step + small_step);
+						
 						showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getNumberOfChannels()+", "+
 								"pixels "+(pixcount+1)+"/"+(newImg.getHeight()*newImg.getWidth()), progress);
-					} else if(newImg.getImage().dimension(2) > 1 && (pixcount+1)%100 == 0) { // multistacks
+						
+					} else if(newImg.getImage().dimension(2) > 1 
+							&& ((pixcount+1)%100 == 0 || (pixcount+1)==newImg.getHeight()*newImg.getWidth())) { // multistacks
+						
 						double large_step = 80.*((double) q)/((double) loader.getNumberOfChannels()); // % of files
 						double intermediate_step = 80.*((double) filecount)/((double) loader.getChannelLength())/((double) loader.getNumberOfChannels()); // % of images
-						double small_step = 80.*((double) pixcount)/((double) newImg.getHeight()*newImg.getWidth())/((double) loader.getChannelLength())/((double) loader.getNumberOfChannels()); // % pixels 
+						double small_step = 80.*((double) pixcount)/((double) newImg.getHeight()*newImg.getWidth())/((double) loader.getChannelLength())/((double) loader.getNumberOfChannels()); // % pixels
+						
 						int progress = (int) (large_step+intermediate_step+small_step);
+						
 						showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getNumberOfChannels()+", "+
-								"image "+(filecount+1)+"/"+loader.getChannelLength(), progress);
+								"image "+(filecount+1)+"/"+loader.getChannelLength()
+								+", pixels "+(pixcount+1)+"/"+(newImg.getHeight()*newImg.getWidth()), progress);
+						
 					}	
 
 					pixcount++;
 				}
 				
 				// shows progress for single images
-				if(newImg.getImage().dimension(2) == 1 && (imgcount+1)%100 == 0) { // single images
+				if(newImg.getImage().dimension(2) == 1 
+						&& ((imgcount+1)%100 == 0 || (imgcount+1)==loader.getChannelLength())) { // single images
 					double large_step = 80.*((double) q)/((double) loader.getNumberOfChannels()); // % of files
 					double small_step = 80.*((double) imgcount)/((double) loader.getChannelLength())/((double) loader.getNumberOfChannels());  // % frames 
 					int progress = (int) (large_step + small_step);

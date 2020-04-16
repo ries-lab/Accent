@@ -101,7 +101,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		table = new JTable();
 		scrollPane.setViewportView(table);
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
-		table.setModel(new DefaultTableModel(buildList(), new String[] { "Dataset", "Exposure (ms)" }) { // expects an array, not a map
+		table.setModel(new DefaultTableModel(buildList(), new String[] { "Dataset", "Exposure (ms)" }) { 
 
 			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[] { false, false };
@@ -251,8 +251,10 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 
 	@Override
 	public void processingHasStopped() {
+		lblNewLabel.setText("Stopped.");
 		btnProcess.setText(START);
 		btnProcess.setSelected(false);
+		progressBar.setValue(100);
 	}
 
 

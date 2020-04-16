@@ -59,6 +59,7 @@ public abstract class AbstractController<U extends RawImage, T extends Calibrati
 		if(processor != null) {
 			processor.stopProcess();
 		}
+		processorHasStopped();
 	}
 	
 	public void updateProcessorProgress(String progressString, int progress) {

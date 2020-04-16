@@ -645,4 +645,139 @@ public class GenerateData {
 			} 
 		}
 	}
+	
+	// TODO refactor
+	// there must be a way to save the individual planes of the img without
+	// generating them with another method...
+	public static void generateAndWriteToDisk(String path, int width, int height, int numFrames, double e,
+			boolean writeStacks, RealType<?> type) {
+		ImgSaver saver = new ImgSaver();
+
+		if (type.getBitsPerPixel() == 16) {
+			if (writeStacks) {
+				System.out.println(e + "ms: writing stack");
+				Img<UnsignedShortType> img_s = generateUnsignedShortType(width, height, numFrames, e);
+				String name_s = path + "\\" + e + "ms_unshort.tif";
+				saver.saveImg(name_s, img_s);
+
+			} else {
+				ArrayList<Img<UnsignedShortType>> img_f = generateUnsignedShortTypeSingles(width, height, numFrames, e);
+				String name_f = path + "\\" + e + "ms_unshort";
+				File f = new File(name_f);
+				if (!f.exists()) {
+					f.mkdir();
+				}
+
+				String name_file = name_f + "\\";
+				int numZeros = String.valueOf(numFrames).length();
+				for (int i = 0; i < img_f.size(); i++) {
+					int num = String.valueOf(i).length();
+					String s = name_file + "single_short_";
+					for (int k = 0; k < numZeros - num; k++) {
+						s = s + "0";
+					}
+					s = s + i + ".tif";
+
+					saver.saveImg(s, img_f.get(i));
+
+					if (i % 1000 == 0) {
+						System.out.println(e + "ms: writing image " + i);
+					}
+				}
+			}
+		} else if (type.getBitsPerPixel() == 8) {
+			if (writeStacks) {
+				System.out.println(e + "ms: writing stack");
+				Img<UnsignedByteType> img_b = generateUnsignedByteType(width, height, numFrames, e);
+				String name_b = path + "\\" + e + "ms_unbyte.tif";
+				saver.saveImg(name_b, img_b);
+			} else {
+				ArrayList<Img<UnsignedByteType>> img_f = generateUnsignedByteTypeSingles(width, height, numFrames, e);
+				String name_f = path + "\\" + e + "ms_unbyte";
+				File f = new File(name_f);
+				if (!f.exists()) {
+					f.mkdir();
+				}
+
+				String name_file = name_f + "\\";
+				int numZeros = String.valueOf(numFrames).length();
+				for (int i = 0; i < img_f.size(); i++) {
+					int num = String.valueOf(i).length();
+					String s = name_file + "single_byte_";
+					for (int k = 0; k < numZeros - num; k++) {
+						s = s + "0";
+					}
+					s = s + i + ".tif";
+
+					saver.saveImg(s, img_f.get(i));
+
+					if (i % 1000 == 0) {
+						System.out.println(e + "ms: writing image " + i);
+					}
+				}
+			}
+		} else if (type.getBitsPerPixel() == 32 && type instanceof UnsignedIntType) {
+			if (writeStacks) {
+				System.out.println(e + "ms: writing stack");
+				Img<UnsignedIntType> img_f = generateUnsignedIntType(width, height, numFrames, e);
+				String name_f = path + "\\" + e + "ms_unint.tif";
+				saver.saveImg(name_f, img_f);
+			} else {
+				ArrayList<Img<UnsignedIntType>> img_f = generateUnsignedIntTypeSingles(width, height, numFrames, e);
+				String name_f = path + "\\" + e + "ms_unint";
+				File f = new File(name_f);
+				if (!f.exists()) {
+					f.mkdir();
+				}
+
+				String name_file = name_f + "\\";
+				int numZeros = String.valueOf(numFrames).length();
+				for (int i = 0; i < img_f.size(); i++) {
+					int num = String.valueOf(i).length();
+					String s = name_file + "single_unint_";
+					for (int k = 0; k < numZeros - num; k++) {
+						s = s + "0";
+					}
+					s = s + i + ".tif";
+
+					saver.saveImg(s, img_f.get(i));
+
+					if (i % 1000 == 0) {
+						System.out.println(e + "ms: writing image " + i);
+					}
+				}
+			}
+		} else {
+			if (writeStacks) {
+				Img<FloatType> img_f = generateFloatType(width, height, numFrames, e);
+				String name_f = path + "\\" + e + "ms_float.tif";
+				saver.saveImg(name_f, img_f);
+				System.out.println(e + "ms: writing stack");
+			} else {
+				ArrayList<Img<FloatType>> img_f = generateFloatTypeSingles(width, height, numFrames, e);
+				String name_f = path + "\\" + e + "ms_float";
+				File f = new File(name_f);
+				if (!f.exists()) {
+					f.mkdir();
+				}
+
+				String name_file = name_f + "\\";
+				int numZeros = String.valueOf(numFrames).length();
+				for (int i = 0; i < img_f.size(); i++) {
+					int num = String.valueOf(i).length();
+					String s = name_file + "single_float_";
+					for (int k = 0; k < numZeros - num; k++) {
+						s = s + "0";
+					}
+					s = s + i + ".tif";
+
+					saver.saveImg(s, img_f.get(i));
+
+					if (i % 1000 == 0) {
+						System.out.println(e + "ms: writing image " + i);
+					}
+				}
+			}
+		}
+	}
 }

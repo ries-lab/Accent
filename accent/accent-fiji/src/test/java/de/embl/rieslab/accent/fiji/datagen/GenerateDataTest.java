@@ -17,14 +17,22 @@ import org.junit.Test;
 
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 import de.embl.rieslab.accent.fiji.utils.AccentFijiUtils;
+import ij.IJ;
+import ij.ImagePlus;
+import io.scif.img.ImgSaver;
 import io.scif.services.DatasetIOService;
 import net.imagej.Dataset;
+import net.imagej.DatasetService;
 import net.imagej.ImageJ;
+import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imagej.axis.AxisType;
 import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
@@ -430,6 +438,36 @@ public class GenerateDataTest {
 		
 		// attempts to delete folder
 		f_dir.delete();
+	}
+	
+	// for reference
+	public void saveTiming() {
+		int width = 30;
+		int height = 40;
+		int numFrames = 1000;
+		double exp = 0.1;
+		
+		Img<UnsignedShortType> img = GenerateData.generateUnsignedShortType(width, height, numFrames, exp);
+		String dir = "AccentTemp-save";		
+		AccentUtils.createFolder(dir);
+		
+		ImgSaver saver = new ImgSaver();
+		long start = System.currentTimeMillis();
+		saver.saveImg(dir+"\\first.tif", img);
+		long end = System.currentTimeMillis();
+		System.out.println((end-start)/1000.);
+		
+		final ImageJ ij = new ImageJ();
+		DatasetService datasetService = ij.dataset();
+		Dataset dataset = datasetService.create(img);
+		start = System.currentTimeMillis();
+		try {
+			ij.scifio().datasetIO().save(dataset, dir+"\\second.tif");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		end = System.currentTimeMillis();
+		System.out.println((end-start)/1000.);
 	}
 	
 	// for reference
