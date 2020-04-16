@@ -17,7 +17,6 @@ import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSpinner;
@@ -28,6 +27,7 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import de.embl.rieslab.accent.common.utils.AccentUtils;
+import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.mm2.MM2Controller;
 import de.embl.rieslab.accent.mm2.acquisition.AcquisitionSettings;
 import de.embl.rieslab.accent.mm2.acquisition.MM2AcquisitionController;
@@ -295,8 +295,7 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		}
 		
 		if(badInput) {
-			JOptionPane.showMessageDialog(null, sb.toString(),
-					"Error", JOptionPane.INFORMATION_MESSAGE);
+			Dialogs.showWarningMessage(sb.toString());
 		}
 		
 		return list.toArray(new Double[0]);
@@ -309,21 +308,18 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 	}
 	
 	private void runAcquisition() {
-		
 		AcquisitionSettings settings  = new AcquisitionSettings();
 		
 		settings.name_ = getAcqName();
 		if(settings.name_ == null || settings.name_.equals("")) {
-			JOptionPane.showMessageDialog(null, "Invalid acquisition name.",
-					"Error", JOptionPane.INFORMATION_MESSAGE);
+			Dialogs.showErrorMessage("Invalid acquisition name.");
 			deselectAcquireToggle();
 			return;
 		}
 		
 		settings.folder_ = getAcqPath();
 		if(settings.folder_ == null || settings.folder_.equals("")) {
-			JOptionPane.showMessageDialog(null, "Invalid folder.",
-					"Error", JOptionPane.INFORMATION_MESSAGE);
+			Dialogs.showErrorMessage("Invalid folder.");
 			deselectAcquireToggle();
 			return;
 		}
@@ -333,18 +329,23 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		if(!folderFile.exists()) {
 			boolean success = folderFile.mkdir();
 			if(!success) {
-				JOptionPane.showMessageDialog(null, "Error creating the folder, please create it manually and try again.",
-						"Error", JOptionPane.INFORMATION_MESSAGE);
+				Dialogs.showErrorMessage("Error creating the folder, please create it manually and try again.");
 				deselectAcquireToggle();
 				return;
 			}
 		} 
 
 		settings.numFrames_ = getFrames();
-		settings.exposures_ = getExposures();
 		
+		Double[] exps = getExposures();
+		if(exps.length <2) {
+			Dialogs.showErrorMessage("Not enough acquisitions (minimum of 2).");
+			deselectAcquireToggle();
+			return;
+		}
+		
+		settings.exposures_ = exps;
 		settings.saveAsStacks_ = saveAsStacks;
-		
 		settings.parallelProcessing = parallelProcessing;
 		
 		if(roi != null) {

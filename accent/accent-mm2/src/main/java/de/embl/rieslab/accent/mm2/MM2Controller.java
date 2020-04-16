@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import org.micromanager.Studio;
 
@@ -15,6 +14,7 @@ import de.embl.rieslab.accent.common.interfaces.data.ArrayToImage;
 import de.embl.rieslab.accent.common.interfaces.data.ImageSaver;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
+import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.mm2.acquisition.MM2AcquisitionController;
 import de.embl.rieslab.accent.mm2.data.image.ArrayToFloatImage;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
@@ -64,7 +64,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 			
 			this.queues = queues;
 			
-			if(queues.size() > 2) {
+			if(queues.size() >= 2) {
 				processor = getProcessor(path, getLoader(QUEUES_LOADER));
 				
 				if(processor != null) {
@@ -73,8 +73,6 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 				}
 				return false;
 			} else {
-				JOptionPane.showMessageDialog(null, "Not enough data points to proceed (minimum 3).",
-						"Error", JOptionPane.INFORMATION_MESSAGE);
 				processorHasStopped();
 				return false;
 			}
@@ -91,14 +89,12 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 			directoriesToLoad = getExposureFolders(path); // should use AccentUtils method instead instead
 			
 			if(directoriesToLoad == null) {
-				JOptionPane.showMessageDialog(null, "No experimental folder found in:\n" + path + 
-						"\n\nExperiment folder names end with <###ms> where ### is the exposure time.",
-						"Error", JOptionPane.INFORMATION_MESSAGE);
+				Dialogs.showErrorMessage("No experimental folder found in:\n" + path + 
+						"\n\nExperiment folder names end with <###ms> where ### is the exposure time.");
 				processorHasStopped();
 				return false;
 			} else if(directoriesToLoad.length < 2) {
-				JOptionPane.showMessageDialog(null, "Not enough experimental folder (minimum 2).",
-						"Error", JOptionPane.INFORMATION_MESSAGE);
+				Dialogs.showErrorMessage("Not enough experimental folder (minimum 2).");
 				processorHasStopped();
 				return false;
 			} else if(directoriesToLoad != null && directoriesToLoad.length > 1) {
