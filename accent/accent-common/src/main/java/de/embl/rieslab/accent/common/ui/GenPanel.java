@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
@@ -25,6 +24,7 @@ import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratorPanelInterface;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
+import de.embl.rieslab.accent.common.utils.Dialogs;
 
 public class GenPanel<U extends RawImage, T extends CalibrationImage> extends JPanel implements GeneratorPanelInterface{
 
@@ -135,7 +135,7 @@ public class GenPanel<U extends RawImage, T extends CalibrationImage> extends JP
 		String[] exp = genExposuresField.getText().split(",");
 		
 		boolean badInput = false;
-		StringBuilder sb = new StringBuilder("The following exposures are invalid:\n");
+		StringBuilder sb = new StringBuilder("The following exposures are invalid and will not be generated:\n");
 		ArrayList<Double> list = new ArrayList<Double>();
 		for(int i=0;i<exp.length;i++) {
 			if(AccentUtils.isNumeric(exp[i])) {
@@ -149,8 +149,7 @@ public class GenPanel<U extends RawImage, T extends CalibrationImage> extends JP
 		}
 		
 		if(badInput) { // maybe better to give a choice to continue or not...
-			JOptionPane.showMessageDialog(null, sb.toString(),
-					"Error", JOptionPane.INFORMATION_MESSAGE);
+			Dialogs.showErrorMessage(sb.toString());
 		}
 		
 		double[] vals = new double[list.size()];
@@ -162,7 +161,11 @@ public class GenPanel<U extends RawImage, T extends CalibrationImage> extends JP
 	}
 	
 	private void startMapGeneration() {
-		controller.startGenerator(calibField.getText(), getExposures());
+		if(!calibField.getText().isEmpty()) {
+			controller.startGenerator(calibField.getText(), getExposures());
+		} else {
+			Dialogs.showWarningMessage("Path not set.");
+		}
 	}
 
 	protected void showPathSelectionWindow() {

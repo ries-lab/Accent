@@ -46,41 +46,48 @@ public class FijiController extends AbstractController<StackImg, PlaneImg> {
 
 	@Override
 	public boolean startProcessor(String path) {
-		// it is a bit silly to do the same thing that was done in the tablproc panel		
-		int nTiffs = AccentFijiUtils.getNumberTifsContainMs(path);
-		int nDir = AccentFijiUtils.getNumberDirectoriesContainMs(path);
+		if(path == null)
+			throw new NullPointerException("Path can't be null.");
 		
-		// we try to load either folders content or images in the same folder
-		// as independent exposure experiments (ie files with ###ms in the name)
-		loadStacks_ = nTiffs > nDir;
-		
-		try {
-			datasets_ = AccentFijiUtils.getExposures(path, loadStacks_);
+		if(!path.isEmpty()) {
+			// it is a bit silly to do the same thing that was done in the tablproc panel		
+			int nTiffs = AccentFijiUtils.getNumberTifsContainMs(path);
+			int nDir = AccentFijiUtils.getNumberDirectoriesContainMs(path);
 			
-			// if we load folders, then remove those without tiff files inside
-			if(!loadStacks_) {
-				ArrayList<Double> noTiffFound = new ArrayList<Double>();
-				for (Entry<Double, String> e : datasets_.entrySet()) {
-					if (AccentFijiUtils.getNumberTifs(e.getValue()) == 0) {
-						noTiffFound.add(e.getKey());
+			// we try to load either folders content or images in the same folder
+			// as independent exposure experiments (ie files with ###ms in the name)
+			loadStacks_ = nTiffs > nDir;
+			
+			try {
+				datasets_ = AccentFijiUtils.getExposures(path, loadStacks_);
+				
+				// if we load folders, then remove those without tiff files inside
+				if(!loadStacks_) {
+					ArrayList<Double> noTiffFound = new ArrayList<Double>();
+					for (Entry<Double, String> e : datasets_.entrySet()) {
+						if (AccentFijiUtils.getNumberTifs(e.getValue()) == 0) {
+							noTiffFound.add(e.getKey());
+						}
 					}
+					for (Double d : noTiffFound) {
+						datasets_.remove(d);
+					}
+				}			
+	
+				// start proc
+				if(datasets_.size() >= 2) {
+					processor = getProcessor(path, getLoader(loadStacks_ ? LOADER_STACK:LOADER_SINGLES));
+					processor.startProcess();
+					return true;
+				} else {
+					Dialogs.showErrorMessage("Not enough datasets found (minimum of 2).");
 				}
-				for (Double d : noTiffFound) {
-					datasets_.remove(d);
-				}
-			}			
-
-			// start proc
-			if(datasets_.size() >= 2) {
-				processor = getProcessor(path, getLoader(loadStacks_ ? LOADER_STACK:LOADER_SINGLES));
-				processor.startProcess();
-				return true;
-			} else {
-				Dialogs.showErrorMessage("Not enough datasets found (minimum of 2).");
+			} catch(Exception e) {
+				e.printStackTrace();
+				Dialogs.showErrorMessage("Error, make sure only the calibration images are present in the folder.");
 			}
-		} catch(Exception e) {
-			e.printStackTrace();
-			Dialogs.showErrorMessage("Error, make sure only the calibration images are present in the folder.");
+		} else {
+			Dialogs.showWarningMessage("Path not set.");
 		}
 		return false;
 	}
