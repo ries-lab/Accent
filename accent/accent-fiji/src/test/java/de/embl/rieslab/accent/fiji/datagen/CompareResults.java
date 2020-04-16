@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.junit.Test;
 
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
-import de.embl.rieslab.accent.fiji.AccentFiji;
 import io.scif.services.DatasetIOService;
 import net.imagej.ImageJ;
 import net.imglib2.Cursor;
@@ -20,22 +20,22 @@ import net.imglib2.type.numeric.real.FloatType;
 
 public class CompareResults {
 	
-	static int width = 11;
-	static int height = 21;
-	static int numFrames = 20000;
-	double[] exps = {/*0.1, 10,*/ 300, 1000, 2000};
-	double[] generated = {15,20,30,50,100};
+	static int width = 2;
+	static int height = 2;
+	static int numFrames = 10000;
+	static double[] exps = {0.1, 300, 2000};
+	static double[] generated = {15,20,30,50,100};
 	
 	double tolerance_avg = 0.01;
-	double tolerance_var = 0.05;
-	double tolerance_gen_avg = 0.05;
-	double tolerance_gen_var = 0.1;
-	double tolerance_rsq = 0.03;
-	double tolerance_phys = 0.05;
+	double tolerance_var = 0.15;
+	double tolerance_gen_avg = 0.01;
+	double tolerance_gen_var = 0.15;
+	double tolerance_rsq = 0.02;
+	double tolerance_phys = 0.12;
 		
-	//@Test
+	@Test
 	@SuppressWarnings("unchecked")
-	public void compareResults() {
+	public void assessResults() {
 		final ImageJ ij = new ImageJ();
 		DatasetIOService data_service = ij.scifio().datasetIO();
 		
@@ -67,11 +67,11 @@ public class CompareResults {
 					FloatType u = r_var2.get();
 					
 					if(curs.getIntPosition(0) % 10 == 0 && curs.getIntPosition(1) % 20 == 0) {
-						assertEquals(hotpix_avg, t.get(), tolerance_avg*hotpix_avg);
-						assertEquals(hotpix_var, u.get(), tolerance_var*hotpix_var); 
+						assertEquals("Hot pix Avg: "+e+" ms",hotpix_avg, t.get(), tolerance_avg*hotpix_avg);
+						assertEquals("Hot pix Var: "+e+" ms",hotpix_var, u.get(), tolerance_var*hotpix_var); 
 					} else {
-						assertEquals(lowpix_avg, t.get(), tolerance_avg*lowpix_avg);
-						assertEquals(lowpix_var, u.get(), tolerance_var*lowpix_var);
+						assertEquals("Low pix Avg: "+e+" ms",lowpix_avg, t.get(), tolerance_avg*lowpix_avg);
+						assertEquals("Low pix Var: "+e+" ms",lowpix_var, u.get(), tolerance_var*lowpix_var);
 					}
 				}				
 			} catch (IOException e1) {
@@ -188,8 +188,8 @@ public class CompareResults {
 	}
 	
 	// super slow
-	@Test
-	public void writeToDisk() {
+	//@Before
+	public static void writeToDisk() {
 		String dir = "D:\\Accent\\fiji";
 
 		String dir_short = dir+"\\short";
@@ -199,7 +199,7 @@ public class CompareResults {
 		
 		String dir_short_singles = dir_short+"\\singles";
 		(new File(dir_short_singles)).mkdir();
-
+		/*
 		String dir_byte = dir+"\\byte";
 		(new File(dir_byte)).mkdir();
 		String dir_byte_stacks = dir_byte+"\\stacks";
@@ -212,15 +212,15 @@ public class CompareResults {
 		String dir_int_stacks = dir_int+"\\stacks";
 		(new File(dir_int_stacks)).mkdir();
 		String dir_int_singles = dir_int+"\\singles";
-		(new File(dir_int_singles)).mkdir();
+		(new File(dir_int_singles)).mkdir();*/
 	
 		// writes data
 		for (double e : exps) {
 			GenerateData.generateAndWriteToDisk(dir_short_stacks, width, height, numFrames, e, true,
 					new UnsignedShortType());
-			/*GenerateData.generateAndWriteToDisk(dir_short_singles, width, height, numFrames, e, false,
+			GenerateData.generateAndWriteToDisk(dir_short_singles, width, height, numFrames, e, false,
 					new UnsignedShortType());
-			GenerateData.generateAndWriteToDisk(dir_byte_stacks, width, height, numFrames, e, true,
+		/*	GenerateData.generateAndWriteToDisk(dir_byte_stacks, width, height, numFrames, e, true,
 					new UnsignedByteType());
 			GenerateData.generateAndWriteToDisk(dir_byte_singles, width, height, numFrames, e, false,
 					new UnsignedByteType());
@@ -233,12 +233,7 @@ public class CompareResults {
 		//return dir_short_stacks;
 	}
 	
-	public void testPipeline() {
-		//String dir = writeToDisk();
-        
-		final ImageJ ijlaunch = new net.imagej.ImageJ();
-        ijlaunch.ui().showUI();
-        
-		ijlaunch.command().run(AccentFiji.class, true);
+	public static void main(String[] args) {
+		//writeToDisk();
 	}
 }

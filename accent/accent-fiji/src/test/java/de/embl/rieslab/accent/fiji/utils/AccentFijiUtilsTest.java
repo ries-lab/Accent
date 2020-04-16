@@ -14,8 +14,9 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 public class AccentFijiUtilsTest {
 
 	// TODO test the "Avg" and "Var" filtering
+	
 	@Test
-	public void test() {
+	public void testFijiUtils() {
 		String dir = "AccentTemp-u";		
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {

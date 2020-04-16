@@ -27,7 +27,6 @@ public class SingleImgLoader implements Loader<StackImg>{
 	
 	
 	public SingleImgLoader(DatasetIOService ioservice, Map<Double, String> folders) {
-		
 		// sanity check
 		folders_ = folders.entrySet()
 					.stream()
