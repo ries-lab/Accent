@@ -34,7 +34,7 @@ public class MainFrame extends JFrame{
 		this.controller = controller;
 		
 		//this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.setTitle("Accent");
+		this.setTitle("ACCéNT");
 
 		JPanel content = new JPanel();
 		GridBagLayout gbl_content = new GridBagLayout();

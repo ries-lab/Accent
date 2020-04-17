@@ -9,6 +9,8 @@ import javax.swing.JToggleButton;
 import java.awt.GridBagConstraints;
 import javax.swing.table.DefaultTableModel;
 
+import org.joml.Math;
+
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessorPanelInterface;
 import de.embl.rieslab.accent.common.utils.Dialogs;
@@ -19,6 +21,7 @@ import de.embl.rieslab.accent.fiji.utils.AccentFijiUtils;
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -29,6 +32,8 @@ import java.util.Map.Entry;
 
 import javax.swing.border.LineBorder;
 import java.awt.Color;
+import java.awt.Container;
+
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
@@ -77,6 +82,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		
 		//JScrollPane scrollPane = new JScrollPane();
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		//scrollPane.setMaximumSize(new Dimension(280, 100));
 		gbc_scrollPane.gridheight = 2;
 		gbc_scrollPane.gridwidth = 3;
 		gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
@@ -217,7 +223,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 					textFieldPath.setText(path);
 											
 					// would be better to interact with the DefaultTableModel removing and adding rows, instead of creating it new... 
-					table.setModel(new DefaultTableModel(buildList(datasets), new String[] { "Dataset", "Exposure (ms)" }) { 
+		/*			table.setModel(new DefaultTableModel(buildList(datasets), new String[] { "Dataset", "Exposure (ms)" }) { 
 	
 						private static final long serialVersionUID = 1L;
 						boolean[] columnEditables = new boolean[] { false, false };
@@ -228,7 +234,33 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 					});
 					table.getColumnModel().getColumn(0).setPreferredWidth(200);
 					table.getColumnModel().getColumn(1).setPreferredWidth(40);
-					table.repaint();
+					*/
+					String[][] list = buildList(datasets);
+					DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+					int nrow = dtm.getRowCount();
+					for(int i=0;i<Math.min(nrow,list.length);i++) {
+						dtm.setValueAt(list[i][0], i, 0);
+						dtm.setValueAt(list[i][1], i, 1);
+					}
+					
+					if(list.length>nrow) {
+						for(int i=0;i<list.length-nrow;i++) {
+							int pos = nrow+i;
+							dtm.addRow(new String[] {list[pos][0],list[pos][1]});
+						} 
+					} else if(nrow>list.length) {
+						for(int i=0;i<nrow-list.length;i++) {
+							dtm.removeRow(list.length);
+						}
+					}
+					
+					// hack to resize the window to accommodate a large number of table rows
+					Container cont = this.getParent();
+					while(!(cont instanceof JFrame)) {
+						cont = cont.getParent();
+					}
+					//((JFrame) cont).repaint();
+					((JFrame) cont).pack();
 				} else {
 					Dialogs.showErrorMessage("No dataset found.");
 				}

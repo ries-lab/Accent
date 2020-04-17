@@ -46,7 +46,7 @@ public class MainFrame extends JFrame {
 		GridBagConstraints gbc_procpane = new GridBagConstraints();
 		gbc_procpane.weighty = 0.2;
 		gbc_procpane.weightx = 0.2;
-		gbc_procpane.fill = GridBagConstraints.HORIZONTAL;
+		gbc_procpane.fill = GridBagConstraints.BOTH;
 		gbc_procpane.gridx = 0;
 		gbc_procpane.gridy = counter++;
 		content.add(procpane, gbc_procpane);
