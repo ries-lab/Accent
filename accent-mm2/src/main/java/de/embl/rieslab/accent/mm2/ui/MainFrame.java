@@ -91,6 +91,7 @@ public class MainFrame extends JFrame{
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		this.setIconImages(lst);
 		
 		this.setContentPane(content);
 		
