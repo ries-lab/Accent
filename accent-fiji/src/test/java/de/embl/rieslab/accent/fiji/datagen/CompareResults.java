@@ -1,11 +1,12 @@
 package de.embl.rieslab.accent.fiji.datagen;
 
-import static org.junit.Assert.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import io.scif.services.DatasetIOService;
@@ -67,11 +68,11 @@ public class CompareResults {
 					FloatType u = r_var2.get();
 					
 					if(curs.getIntPosition(0) % 10 == 0 && curs.getIntPosition(1) % 20 == 0) {
-						assertEquals("Hot pix Avg: "+e+" ms",hotpix_avg, t.get(), tolerance_avg*hotpix_avg);
-						assertEquals("Hot pix Var: "+e+" ms",hotpix_var, u.get(), tolerance_var*hotpix_var); 
+						assertEquals(hotpix_avg, t.get(), tolerance_avg*hotpix_avg,"Hot pix Avg: "+e+" ms");
+						assertEquals(hotpix_var, u.get(), tolerance_var*hotpix_var, "Hot pix Var: "+e+" ms"); 
 					} else {
-						assertEquals("Low pix Avg: "+e+" ms",lowpix_avg, t.get(), tolerance_avg*lowpix_avg);
-						assertEquals("Low pix Var: "+e+" ms",lowpix_var, u.get(), tolerance_var*lowpix_var);
+						assertEquals(lowpix_avg, t.get(), tolerance_avg*lowpix_avg, "Low pix Avg: "+e+" ms");
+						assertEquals(lowpix_var, u.get(), tolerance_var*lowpix_var, "Low pix Var: "+e+" ms");
 					}
 				}				
 			} catch (IOException e1) {
@@ -105,11 +106,11 @@ public class CompareResults {
 					FloatType u = r_var2.get();
 					
 					if(curs.getIntPosition(0) % 10 == 0 && curs.getIntPosition(1) % 20 == 0) {
-						assertEquals("Hot pix gen Avg: "+e+" ms", hotpix_avg, t.get(), tolerance_gen_avg*hotpix_avg);
-						assertEquals("Hot pix gen Var: "+e+" ms", hotpix_var, u.get(), tolerance_gen_var*hotpix_var); 
+						assertEquals(hotpix_avg, t.get(), tolerance_gen_avg*hotpix_avg, "Hot pix gen Avg: "+e+" ms");
+						assertEquals(hotpix_var, u.get(), tolerance_gen_var*hotpix_var, "Hot pix gen Var: "+e+" ms"); 
 					} else {
-						assertEquals("Low pix gen Avg: "+e+" ms", lowpix_avg, t.get(), tolerance_gen_avg*lowpix_avg);
-						assertEquals("Low pix gen Var: "+e+" ms", lowpix_var, u.get(), tolerance_gen_var*lowpix_var);
+						assertEquals(lowpix_avg, t.get(), tolerance_gen_avg*lowpix_avg, "Low pix gen Avg: "+e+" ms");
+						assertEquals(lowpix_var, u.get(), tolerance_gen_var*lowpix_var, "Low pix gen Var: "+e+" ms");
 					}
 				}				
 			} catch (IOException e1) {
@@ -152,35 +153,35 @@ public class CompareResults {
 					//		GenerateData.HOTPIX_TNSQPERSEC / GenerateData.LOWPIX_DCPERSEC, curs.get().get(),
 						//	tolerance_phys * GenerateData.HOTPIX_TNSQPERSEC / GenerateData.LOWPIX_DCPERSEC);
 
-					assertEquals(CalibrationProcessor.BASELINE, GenerateData.HOTPIX_BASELINE, r_baseline.get().get(),
-							tolerance_phys * GenerateData.HOTPIX_BASELINE);
+					assertEquals(GenerateData.HOTPIX_BASELINE, r_baseline.get().get(),
+							tolerance_phys * GenerateData.HOTPIX_BASELINE, CalibrationProcessor.BASELINE);
 					
-					assertEquals(CalibrationProcessor.DCPERSEC, GenerateData.HOTPIX_DCPERSEC, r_dcpersec.get().get(),
-							tolerance_phys * GenerateData.HOTPIX_DCPERSEC);
+					assertEquals(GenerateData.HOTPIX_DCPERSEC, r_dcpersec.get().get(),
+							tolerance_phys * GenerateData.HOTPIX_DCPERSEC, CalibrationProcessor.DCPERSEC);
 					
-					assertEquals(CalibrationProcessor.RNSQ, GenerateData.HOTPIX_RNSQ, r_rnsq.get().get(),
-							tolerance_phys * GenerateData.HOTPIX_RNSQ);
+					assertEquals(GenerateData.HOTPIX_RNSQ, r_rnsq.get().get(),
+							tolerance_phys * GenerateData.HOTPIX_RNSQ, CalibrationProcessor.RNSQ);
 					
-					assertEquals(CalibrationProcessor.TNSQPERSEC, GenerateData.HOTPIX_TNSQPERSEC,
-							r_tnsqpersec.get().get(), tolerance_phys * GenerateData.HOTPIX_TNSQPERSEC);
+					assertEquals(GenerateData.HOTPIX_TNSQPERSEC,
+							r_tnsqpersec.get().get(), tolerance_phys * GenerateData.HOTPIX_TNSQPERSEC, CalibrationProcessor.TNSQPERSEC);
 				} else {
 				//	assertEquals(CalibrationProcessor.GAIN,
 					//		GenerateData.LOWPIX_TNSQPERSEC / GenerateData.LOWPIX_DCPERSEC, curs.get().get(),
 						//	tolerance_phys * GenerateData.LOWPIX_TNSQPERSEC / GenerateData.LOWPIX_DCPERSEC);
 
-					assertEquals(CalibrationProcessor.BASELINE, GenerateData.LOWPIX_BASELINE, r_baseline.get().get(),
-							tolerance_phys * GenerateData.LOWPIX_BASELINE);
+					assertEquals(GenerateData.LOWPIX_BASELINE, r_baseline.get().get(),
+							tolerance_phys * GenerateData.LOWPIX_BASELINE, CalibrationProcessor.BASELINE);
 					
-					assertEquals(CalibrationProcessor.DCPERSEC, GenerateData.LOWPIX_DCPERSEC, r_dcpersec.get().get(),
-							tolerance_phys * GenerateData.LOWPIX_DCPERSEC);
+					assertEquals(GenerateData.LOWPIX_DCPERSEC, r_dcpersec.get().get(),
+							tolerance_phys * GenerateData.LOWPIX_DCPERSEC, CalibrationProcessor.DCPERSEC);
 					
-					assertEquals(CalibrationProcessor.RNSQ, GenerateData.LOWPIX_RNSQ, r_rnsq.get().get(),
-							tolerance_phys * GenerateData.LOWPIX_RNSQ);
+					assertEquals(GenerateData.LOWPIX_RNSQ, r_rnsq.get().get(),
+							tolerance_phys * GenerateData.LOWPIX_RNSQ, CalibrationProcessor.RNSQ);
 				}
 				
-				assertEquals(CalibrationProcessor.RSQAVG, 1, r_rsqavg.get().get(), tolerance_rsq);
-				assertEquals(CalibrationProcessor.RSQGAIN, 1, r_rsqgain.get().get(), tolerance_rsq);
-				assertEquals(CalibrationProcessor.RSQVAR, 1, r_rsqvar.get().get(), tolerance_rsq);
+				assertEquals(1, r_rsqavg.get().get(), tolerance_rsq, CalibrationProcessor.RSQAVG);
+				assertEquals(1, r_rsqgain.get().get(), tolerance_rsq, CalibrationProcessor.RSQGAIN);
+				assertEquals(1, r_rsqvar.get().get(), tolerance_rsq, CalibrationProcessor.RSQVAR);
 			}				
 		} catch (IOException e1) {
 			e1.printStackTrace();

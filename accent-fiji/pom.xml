@@ -14,8 +14,7 @@
 
 	<groupId>de.embl.rieslab</groupId>
 	<artifactId>accent-fiji</artifactId>
-	<version>1.0-beta</version>
-
+	
 	<name>Accent-Fiji</name>
 	<description>Photon-free Camera Calibration tool for sCMOS, compatible with Micro-Manager2 and Fiji.</description>
 	<url>none</url>
@@ -126,6 +125,12 @@
 			<groupId>de.embl.accent</groupId>
 			<artifactId>accent-common</artifactId>
 			<version>1.0-beta</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter-api</artifactId>
+		    <version>5.5.2</version>
+		    <scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

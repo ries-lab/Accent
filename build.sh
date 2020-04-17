@@ -12,12 +12,12 @@ if [ $# -eq 1 ]
 		mvn install:install-file -Dfile="$MM2_HOME\plugins\Micro-Manager\MMAcqEngine.jar" -DgroupId=org.micromanager  -DartifactId=MMAcqEngine -Dversion=2.0.0-SNAPSHOT -Dpackaging=jar
 		mvn install:install-file -Dfile="$MM2_HOME\plugins\Micro-Manager\MMCoreJ.jar" -DgroupId=org.micromanager  -DartifactId=MMCoreJ -Dversion=2.0.0-SNAPSHOT -Dpackaging=jar
 		
-		mvn -f clean install -Dmaven.test.skip=true
+		mvn clean install -Dmaven.test.skip=true
 		
 		# finally copy the jar to MM
 		cp "accent-mm2\target\accent-mm2-1.0-beta.jar" "$MM2_PLUGINS_HOME\accent-mm2-1.0-beta.jar"
 		
 	else
-		mvn -f accent/accent-common/ clean install -Dmaven.test.skip=true
-		mvn -f accent/accent-fiji/ clean install -Dmaven.test.skip=true
+		mvn -f accent-common/ clean install -Dmaven.test.skip=true
+		mvn -f accent-fiji/ clean install -Dmaven.test.skip=true
 fi

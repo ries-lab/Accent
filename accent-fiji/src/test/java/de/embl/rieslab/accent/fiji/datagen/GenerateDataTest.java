@@ -1,46 +1,26 @@
 package de.embl.rieslab.accent.fiji.datagen;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import de.embl.rieslab.accent.common.utils.AccentUtils;
 import de.embl.rieslab.accent.fiji.utils.AccentFijiUtils;
-import ij.IJ;
-import ij.ImagePlus;
-import io.scif.img.ImgSaver;
-import io.scif.services.DatasetIOService;
-import net.imagej.Dataset;
-import net.imagej.DatasetService;
-import net.imagej.ImageJ;
-import net.imagej.ImgPlus;
-import net.imagej.axis.Axes;
-import net.imagej.axis.AxisType;
 import net.imglib2.Cursor;
-import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgFactory;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
-import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
-import net.imglib2.util.Intervals;
-import net.imglib2.view.IntervalView;
-import net.imglib2.view.Views;
 
 public class GenerateDataTest {
 	
@@ -108,69 +88,7 @@ public class GenerateDataTest {
 		}
 	}	
 	
-	/**
-	 * Tests if the generated Float images have the expected average and variance per pixel (within 1% and 6% tolerance respectively).
-	 */
-	@Test
-	public void testFloatAverageVariance() {
-		int width = 10;
-		int height = 20;
-		int numFrames = 15000;
-		double[] exps = {20, 50, 300};
-		
-		for(double exposure: exps) {
-			Img<FloatType> img = GenerateData.generateFloatType(width, height, numFrames, exposure);
-			Img<FloatType> avg = (new ArrayImgFactory<FloatType>(new FloatType())).create(new int[] {width, height, 1});
-			Img<FloatType> var = (new ArrayImgFactory<FloatType>(new FloatType())).create(new int[] {width, height, 1});
-			
-			// compute average and variance
-			Cursor<FloatType> avg_curs = avg.localizingCursor();
-			RandomAccess<FloatType> r_img = img.randomAccess();
-			RandomAccess<FloatType> r_var = var.randomAccess();
-			while(avg_curs.hasNext()) {
-				FloatType t = avg_curs.next();
-				
-				r_var.setPosition(avg_curs);
-				r_img.setPosition(avg_curs);
-				FloatType u = r_var.get();
 
-				
-				float f = 0, g = 0;
-				for(int z=0;z<numFrames;z++) {
-					r_img.setPosition(z,2);
-					f += r_img.get().get()/((double) numFrames);
-					g += (r_img.get().get() * r_img.get().get()) / ((double) numFrames);
-				}		
-				g -= f*f;
-				
-				t.set(f);
-				u.set(g);
-				
-			}
-			
-			// arbitrary tests to see if the average and variance are somewhat close to expected 
-			float lowpix_avg = (float) GenerateData.getLowPixAverage(exposure);
-			float hotpix_avg = (float) GenerateData.getHotPixAverage(exposure);
-			float lowpix_var = (float) GenerateData.getLowPixVariance(exposure);
-			float hotpix_var = (float) GenerateData.getHotPixVariance(exposure);
-			
-			Cursor<FloatType> curs = avg.localizingCursor();
-			RandomAccess<FloatType> r_var2 = var.randomAccess();
-			while(curs.hasNext()) {
-				FloatType t = curs.next();
-				r_var2.setPosition(curs);
-				FloatType u = r_var2.get();
-				
-				if(curs.getIntPosition(0) % 10 == 0 && curs.getIntPosition(1) % 20 == 0) {
-					assertEquals(hotpix_avg, t.get(), 0.01*hotpix_avg);
-					assertEquals(hotpix_var, u.get(), 0.06*hotpix_var); // larger tolerance on the variance
-				} else {
-					assertEquals(lowpix_avg, t.get(), 0.01*lowpix_avg);
-					assertEquals(lowpix_var, u.get(), 0.06*lowpix_var); // larger tolerance on the variance
-				}
-			}
-		}
-	}
 	
 	/**
 	 * Tests if the generated UnsignedShort images have the expected average and variance per pixel (within 1% and 6% tolerance respectively).
@@ -300,7 +218,7 @@ public class GenerateDataTest {
 	
 	// takes too long, kept for reference
 	//@Test
-	public void testShortAverageVarianceImageJOp() {
+/*	public void testShortAverageVarianceImageJOp() {
 		final ImageJ ij = new ImageJ();
 		int width = 100;
 		int height = 50;
@@ -349,26 +267,7 @@ public class GenerateDataTest {
 				}
 			}
 		}
-	}
-	
-	public void testTiming() {
-		int n = 10;
-		long start = System.currentTimeMillis();
-		for(int i=0;i<n;i++) {
-			testShortAverageVariance();
-		}
-		long end = System.currentTimeMillis();
-		double res = (end-start)/n/1000.;
-		System.out.println(res);
-		
-		start = System.currentTimeMillis();
-		for(int i=0;i<n;i++) {
-			testShortAverageVarianceImageJOp();
-		}
-		end = System.currentTimeMillis();
-		res = (end-start)/n/1000.;
-		System.out.println(res);
-	}
+	}*/
 		
 	@Test
 	public void testGaussian() {
@@ -441,7 +340,7 @@ public class GenerateDataTest {
 	}
 	
 	// for reference
-	public void saveTiming() {
+/*	public void saveTiming() {
 		int width = 30;
 		int height = 40;
 		int numFrames = 1000;
@@ -530,5 +429,5 @@ public class GenerateDataTest {
 			e.printStackTrace();
 		}
 		return list;
-	}
+	}*/
 }
