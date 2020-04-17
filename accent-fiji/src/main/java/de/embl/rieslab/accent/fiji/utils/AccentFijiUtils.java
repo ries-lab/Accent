@@ -45,6 +45,10 @@ public class AccentFijiUtils {
 	 */
 	public static int getNumberTifsContainMs(String path) {
 		int count = 0;
+		
+		if(!(new File(path)).isDirectory())
+			return count;
+		
 		try {
 			count = (int) Files.list(Paths.get(path))
 				.map(Path::toString)
@@ -65,6 +69,10 @@ public class AccentFijiUtils {
 	 */
 	public static int getNumberDirectories(String path) {
 		int count = 0;
+		
+		if(!(new File(path)).isDirectory())
+			return count;
+		
 		try {
 			count = (int) Files.list(Paths.get(path))
 				.map(Path::toFile)
@@ -83,6 +91,10 @@ public class AccentFijiUtils {
 	 */
 	public static int getNumberDirectoriesContainMs(String path) {
 		int count = 0;
+		
+		if(!(new File(path)).isDirectory())
+			return count;
+		
 		try {
 			count = (int) Files.list(Paths.get(path))
 				.map(Path::toFile)
@@ -106,6 +118,10 @@ public class AccentFijiUtils {
 	 */
 	public static Map<Double, String> getExposures(String path, boolean filterOutDirectories) {
 		Map<Double, String> c = new HashMap<Double, String>();
+	
+		if(!(new File(path)).isDirectory())
+			return c;
+				
 		try {
 			c = Files.list(Paths.get(path))
 					.map(Path::toString)
