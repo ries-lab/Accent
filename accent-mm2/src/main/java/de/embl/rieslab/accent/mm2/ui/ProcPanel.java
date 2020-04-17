@@ -22,6 +22,7 @@ import javax.swing.border.TitledBorder;
 
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessorPanelInterface;
+import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
 import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
@@ -152,9 +153,11 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 				}	
 			} else {
 				selectProcessToggle(false);
+				Dialogs.showWarningMessage("Select a path.");
 			}
 		} else {
 			selectProcessToggle(false);
+			Dialogs.showWarningMessage("Processor already running..");
 		}
 	}
 

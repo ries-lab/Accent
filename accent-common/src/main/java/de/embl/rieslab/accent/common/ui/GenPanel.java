@@ -164,7 +164,7 @@ public class GenPanel<U extends RawImage, T extends CalibrationImage> extends JP
 		if(!calibField.getText().isEmpty()) {
 			controller.startGenerator(calibField.getText(), getExposures());
 		} else {
-			Dialogs.showWarningMessage("Path not set.");
+			Dialogs.showWarningMessage("Select a path.");
 		}
 	}
 
