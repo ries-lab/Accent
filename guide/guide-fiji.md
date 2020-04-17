@@ -36,6 +36,8 @@ Processing does not require any parameters but the folder where the images have 
 
 - **Processing progress**: when loading individual images, the processing panel will show the number of processed frames over the total number of frames. When loading a single stack, the processing panel will show the number of pixels processed over the total number of pixels. When loading multiple stacks, the processing panel will display the number of pixels processed in the current stack over the image total number of pixels. 
 
+- **Processing speed**: opening images can be very slow, in particular with single images.
+
   
 
 ## Generation
