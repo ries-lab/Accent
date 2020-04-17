@@ -1,6 +1,8 @@
 
 package de.embl.rieslab.accent.mm2.data.roi;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * A simple roi representation with a sanity check during instantiation.
  * 
@@ -13,6 +15,8 @@ public class SimpleRoi {
 	public int y0;
 	public int width;
 	public int height;
+	
+	@JsonIgnore
 	private boolean sane;
 	
 	/**
