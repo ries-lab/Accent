@@ -98,25 +98,30 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 							&& ((pixcount+1)%100 == 0  || (pixcount+1)==newImg.getHeight()*newImg.getWidth())) { // single stack
 						
 						double large_step = 80.*((double) q)/((double) loader.getNumberOfChannels()); // % of files
-						double small_step = 80.*((double) pixcount)/((double) newImg.getHeight()*newImg.getWidth())/((double) loader.getNumberOfChannels()); // % pixels 
+						
+						double pixPerc = ((double) pixcount)/((double) newImg.getHeight()*newImg.getWidth());
+						double small_step = 80.*pixPerc/((double) loader.getNumberOfChannels()); // % pixels 
 						
 						int progress = (int) (large_step + small_step);
 						
+						
 						showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getNumberOfChannels()+", "+
-								"pixels "+(pixcount+1)+"/"+(newImg.getHeight()*newImg.getWidth()), progress);
+								"pixels "+(int)pixPerc+"%", progress);
 						
 					} else if(newImg.getImage().dimension(newImg.getThirdDimensionIndex()) > 1 
 							&& ((pixcount+1)%100 == 0 || (pixcount+1)==newImg.getHeight()*newImg.getWidth())) { // multistacks
 						
 						double large_step = 80.*((double) q)/((double) loader.getNumberOfChannels()); // % of files
 						double intermediate_step = 80.*((double) filecount)/((double) loader.getChannelLength())/((double) loader.getNumberOfChannels()); // % of images
-						double small_step = 80.*((double) pixcount)/((double) newImg.getHeight()*newImg.getWidth())/((double) loader.getChannelLength())/((double) loader.getNumberOfChannels()); // % pixels
+						
+						double pixPerc = ((double) pixcount)/((double) newImg.getHeight()*newImg.getWidth());
+						double small_step = 80.*pixPerc/((double) loader.getChannelLength())/((double) loader.getNumberOfChannels()); // % pixels
 						
 						int progress = (int) (large_step+intermediate_step+small_step);
 						
 						showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getNumberOfChannels()+", "+
 								"image "+(filecount+1)+"/"+loader.getChannelLength()
-								+", pixels "+(pixcount+1)+"/"+(newImg.getHeight()*newImg.getWidth()), progress);
+								+", pixels "+(int)pixPerc+"%", progress);
 						
 					}	
 
