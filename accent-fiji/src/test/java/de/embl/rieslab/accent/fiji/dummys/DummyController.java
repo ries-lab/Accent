@@ -87,10 +87,10 @@ public class DummyController implements PipelineController<StackImg, PlaneImg>{
 	public boolean isReady() {return false;}
 
 	@Override
-	public void stopAll() {
-		// TODO Auto-generated method stub
-		
+	public void stopAll() {}
+
+	@Override
+	public void logMessage(String message) {
+		System.out.println(message);
 	}
-
-
 }

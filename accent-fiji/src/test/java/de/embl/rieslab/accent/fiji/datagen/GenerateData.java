@@ -4,11 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import io.scif.img.ImgSaver;
+import ij.IJ;
+import ij.ImagePlus;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
@@ -516,12 +518,7 @@ public class GenerateData {
 		return (LOWPIX_RNSQ+LOWPIX_TNSQPERSEC*exposure/1000.);
 	}
 	
-	// TODO refactor
-	// there must be a way to save the individual planes of the img without generating them with another method...
-	// also need to check if there is a faster way
 	public static void generateAndWriteToDisk(String path, int width, int height, int numFrames, double[] exposure, boolean writeStacks, RealType<?> type) {
-		ImgSaver saver = new ImgSaver();
-		
 		for (double e : exposure) {
 			
 			if(type.getBitsPerPixel() == 16) {
@@ -529,7 +526,9 @@ public class GenerateData {
 					System.out.println(e+"ms: writing stack");
 					Img<UnsignedShortType> img_s = generateUnsignedShortType(width, height, numFrames, e);
 					String name_s = path + "\\" + e + "ms_unshort.tif";
-					saver.saveImg(name_s, img_s);				
+
+					ImagePlus i = ImageJFunctions.wrap(img_s, e+"ms");
+					IJ.saveAsTiff(i, name_s);	
 
 				} else {
 					ArrayList<Img<UnsignedShortType>> img_f = generateUnsignedShortTypeSingles(width, height, numFrames, e);	
@@ -549,7 +548,7 @@ public class GenerateData {
 						}
 						s = s+i+".tif";
 
-						saver.saveImg(s, img_f.get(i));
+						IJ.saveAs(ImageJFunctions.wrap( img_f.get(i), "ij1"), "Tiff", s);	
 						
 						if(i%1000 == 0) {
 							System.out.println(e+"ms: writing image "+i);
@@ -561,7 +560,8 @@ public class GenerateData {
 					System.out.println(e+"ms: writing stack");
 					Img<UnsignedByteType> img_b = generateUnsignedByteType(width, height, numFrames, e);
 					String name_b = path + "\\" + e + "ms_unbyte.tif";
-					saver.saveImg(name_b, img_b);			
+					
+					IJ.saveAs(ImageJFunctions.wrap(img_b, "ij1"), "Tiff", name_b);	
 				} else {
 					ArrayList<Img<UnsignedByteType>> img_f = generateUnsignedByteTypeSingles(width, height, numFrames, e);	
 					String name_f = path + "\\" + e + "ms_unbyte";
@@ -573,18 +573,20 @@ public class GenerateData {
 					String name_file = name_f + "\\";
 					int numZeros = String.valueOf(numFrames).length();
 					for(int i=0;i<img_f.size();i++) {
+						if(i%1000 == 0) {
+							System.out.println(e+"ms: writing image "+i);
+						}
+						
 						int num = String.valueOf(i).length();
 						String s = name_file+"single_byte_";
 						for(int k=0; k<numZeros-num;k++) {
 							s=s+"0";
 						}
 						s = s+i+".tif";
+
+						IJ.saveAs(ImageJFunctions.wrap( img_f.get(i), "ij1"), "Tiff", s);	
 						
-						saver.saveImg(s, img_f.get(i));
 						
-						if(i%1000 == 0) {
-							System.out.println(e+"ms: writing image "+i);
-						}
 					}
 				}
 			} else if(type.getBitsPerPixel() == 32 && type instanceof UnsignedIntType) {
@@ -592,7 +594,8 @@ public class GenerateData {
 					System.out.println(e+"ms: writing stack");
 					Img<UnsignedIntType> img_f = generateUnsignedIntType(width, height, numFrames, e);
 					String name_f = path + "\\" + e + "ms_unint.tif";
-					saver.saveImg(name_f, img_f);			
+
+					IJ.saveAs(ImageJFunctions.wrap(img_f, "ij1"), "Tiff", name_f);	
 				} else {
 					ArrayList<Img<UnsignedIntType>> img_f = generateUnsignedIntTypeSingles(width, height, numFrames, e);	
 					String name_f = path + "\\" + e + "ms_unint";
@@ -610,8 +613,8 @@ public class GenerateData {
 							s=s+"0";
 						}
 						s = s+i+".tif";
-						
-						saver.saveImg(s, img_f.get(i));
+
+						IJ.saveAs(ImageJFunctions.wrap( img_f.get(i), "ij1"), "Tiff", s);	
 						
 						if(i%1000 == 0) {
 							System.out.println(e+"ms: writing image "+i);
@@ -623,7 +626,8 @@ public class GenerateData {
 					System.out.println(e+"ms: writing stack");
 					Img<FloatType> img_f = generateFloatType(width, height, numFrames, e);
 					String name_f = path + "\\" + e + "ms_float.tif";
-					saver.saveImg(name_f, img_f);			
+
+					IJ.saveAs(ImageJFunctions.wrap(img_f, "ij1"), "Tiff", name_f);		
 				} else {
 					ArrayList<Img<FloatType>> img_f = generateFloatTypeSingles(width, height, numFrames, e);
 					String name_f = path + "\\" + e + "ms_float";
@@ -642,7 +646,7 @@ public class GenerateData {
 						}
 						s = s + i + ".tif";
 
-						saver.saveImg(s, img_f.get(i));
+						IJ.saveAs(ImageJFunctions.wrap( img_f.get(i), "ij1"), "Tiff", s);	
 						
 						if(i%1000 == 0) {
 							System.out.println(e+"ms: writing image "+i);
@@ -657,4 +661,5 @@ public class GenerateData {
 			boolean writeStacks, RealType<?> type) {
 		generateAndWriteToDisk(path, width, height, numFrames, new double[] {e}, writeStacks, type);
 	}
+
 }

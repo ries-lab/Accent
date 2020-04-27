@@ -89,4 +89,5 @@ public interface PipelineController<U extends RawImage, T extends CalibrationIma
 		
 	public boolean isReady();
 
+	public void logMessage(String message);
 }

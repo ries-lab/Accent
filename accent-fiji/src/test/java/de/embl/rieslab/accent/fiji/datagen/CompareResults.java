@@ -23,8 +23,8 @@ public class CompareResults {
 	
 	static int width = 2;
 	static int height = 1;
-	static int numFrames = 15000;
-	static double[] exps = {0.1, 300, 2000};
+	static int numFrames = 20000;
+	static double[] exps = {0.1, 10, 100, 300, 500, 1000};
 	static double[] generated = {15,20,30,50,100};
 	
 	double tolerance_avg = 0.01;
@@ -192,44 +192,46 @@ public class CompareResults {
 	//@Before
 	public static void writeToDisk() {
 		String dir = "D:\\Accent\\fiji";
-
-	/*	String dir_short = dir+"\\short";
+/*
+		String dir_short = dir+"\\short";
 		(new File(dir_short)).mkdir();
 		String dir_short_stacks = dir_short+"\\stacks";
 		(new File(dir_short_stacks)).mkdir();
 		
 		String dir_short_singles = dir_short+"\\singles";
 		(new File(dir_short_singles)).mkdir();
-		*/
+		
 		String dir_byte = dir+"\\byte";
 		(new File(dir_byte)).mkdir();
 		String dir_byte_stacks = dir_byte+"\\stacks";
 		(new File(dir_byte_stacks)).mkdir();
 		String dir_byte_singles = dir_byte+"\\singles";
 		(new File(dir_byte_singles)).mkdir();
-		/*
+		
 		String dir_int = dir+"\\int";
 		(new File(dir_int)).mkdir();
 		String dir_int_stacks = dir_int+"\\stacks";
 		(new File(dir_int_stacks)).mkdir();
 		String dir_int_singles = dir_int+"\\singles";
-		(new File(dir_int_singles)).mkdir();*/
-	
+		(new File(dir_int_singles)).mkdir();
+	*/String dir_byte = dir+"\\byte";
+	String dir_byte_stacks = dir_byte+"\\stacks";
+	String dir_byte_singles = dir_byte+"\\singles";
 		// writes data
-		for (double e : exps) {
-		/*	GenerateData.generateAndWriteToDisk(dir_short_stacks, width, height, numFrames, e, true,
+		//for (double e : exps) {
+			/*GenerateData.generateAndWriteToDisk(dir_short_stacks, width, height, numFrames, e, true,
 					new UnsignedShortType());
 			GenerateData.generateAndWriteToDisk(dir_short_singles, width, height, numFrames, e, false,
 					new UnsignedShortType());
-		*/	GenerateData.generateAndWriteToDisk(dir_byte_stacks, width, height, numFrames, e, true,
+			GenerateData.generateAndWriteToDisk(dir_byte_stacks, width, height, numFrames, exps, true,
 					new UnsignedByteType());
-			GenerateData.generateAndWriteToDisk(dir_byte_singles, width, height, numFrames, e, false,
-					new UnsignedByteType());
-		/*	GenerateData.generateAndWriteToDisk(dir_int_stacks, width, height, numFrames, exps, true,
+		*/	GenerateData.generateAndWriteToDisk(dir_byte_singles, width, height, numFrames, exps, false,
+				new UnsignedByteType());
+		/*	GenerateData.generateAndWriteToDisk(dir_int_stacks, width, height, numFrames, e, true,
 					new UnsignedIntType());
-			GenerateData.generateAndWriteToDisk(dir_int_singles, width, height, numFrames, exps, false,
-					new UnsignedIntType());*/
-		}
+			GenerateData.generateAndWriteToDisk(dir_int_singles, width, height, numFrames, e, false,
+					new UnsignedIntType());
+		*///}
 		
 		//return dir_short_stacks;
 	}

@@ -20,7 +20,8 @@ import net.imglib2.type.numeric.real.FloatType;
 
 public class ImgProcessorTest {
 	
-	// TODO tests cases resembling multiple stacks or stacks 
+	// TODO test cases resembling multiple stacks or stacks 
+	// TODO test cases where the third dimension is 2,3,4...etc...
 	
 	int width = 11;
 	int height = 21;

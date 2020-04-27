@@ -43,7 +43,7 @@ public class StackLoaderTest {
 		m.remove(0.); // removes unknown exposures
 		
 		// creates loader
-		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), m);
+		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), ij.log(), m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 
@@ -96,7 +96,7 @@ public class StackLoaderTest {
 		m.remove(0.); // removes unknown exposures
 		
 		// creates loader
-		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), m);
+		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), ij.log(), m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 
@@ -150,7 +150,7 @@ public class StackLoaderTest {
 		m.remove(0.); // removes unknown exposures
 		
 		// creates loader
-		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), m);
+		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), ij.log(), m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 
@@ -203,7 +203,7 @@ public class StackLoaderTest {
 		m.remove(0.); // removes unknown exposures
 		
 		// creates loader
-		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), m);
+		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), ij.log(), m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 

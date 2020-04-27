@@ -93,10 +93,10 @@ public class DummyMM2Controller implements PipelineController<BareImage, FloatIm
 	public ImageSaver<FloatImage> getImageSaver() {return null;}
 
 	@Override
-	public void stopAll() {
-		// TODO Auto-generated method stub
-		
+	public void stopAll() {}
+
+	@Override
+	public void logMessage(String message) {
+		System.out.println(message);
 	}
-
-
 }

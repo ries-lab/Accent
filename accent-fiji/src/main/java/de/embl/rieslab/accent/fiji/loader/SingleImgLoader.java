@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.scijava.log.LogService;
+
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.fiji.data.image.StackImg;
 import io.scif.services.DatasetIOService;
@@ -24,9 +26,9 @@ public class SingleImgLoader implements Loader<StackImg>{
 	private boolean openedAll_;
 	private double[] mapping_;
 	private DatasetIOService ioservice_;
+	private LogService logservice_;
 	
-	
-	public SingleImgLoader(DatasetIOService ioservice, Map<Double, String> folders) {
+	public SingleImgLoader(DatasetIOService ioservice, LogService logservice, Map<Double, String> folders) {
 		// sanity check
 		folders_ = folders.entrySet()
 					.stream()
@@ -34,6 +36,7 @@ public class SingleImgLoader implements Loader<StackImg>{
 					.collect(Collectors.toMap(Entry::getKey,Entry::getValue));
 		
 		ioservice_ = ioservice;
+		logservice_ = logservice;
 		
 		mapping_ = new double[folders_.size()];
 		int i = 0;
@@ -83,9 +86,18 @@ public class SingleImgLoader implements Loader<StackImg>{
 				e.printStackTrace();
 			}
 		
-			if(img != null) { // something was read
-				int temp = (int) img.dimension(2);
-				if (currIndex_ == 0 && temp == currImgs_.size()) { // first time we load an image from this folder
+			if(img != null) { // something was read		
+				// identify the third dimension: we assume there is at max three dimensions where dimSize > 1				
+				long max = 1;
+				if(img.numDimensions() > 2) { // identify the dimension with the largest depth, ignoring X,Y
+					for(int i=2;i<img.numDimensions();i++) {
+						if(img.dimension(i) > max) {
+							max = img.dimension(i);
+						}
+					}
+				}
+				
+				if (currIndex_ == 0 && max == currImgs_.size()) { // first time we load an image from this folder
 					// if the dimension equals the number of images to load,
 					// we assume that it has loaded all the images.
 					openedAll_ = true;

@@ -48,12 +48,19 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 					vars[q] = new PlaneImg(factory.create(new int[] {newImg.getWidth(), newImg.getHeight()}), newImg.getExposure());
 				}
 				
+				// if it has a third dimension with depth larger than 1
 				boolean t_axis = false;
-				if(newImg.getImage().dimension(2) > 1) {
+				if(newImg.getImage().numDimensions() > 2 
+						&& newImg.getImage().dimension(newImg.getThirdDimensionIndex()) > 1) {
 					t_axis = true;
 				}
 				
-				imgcount += newImg.getImage().dimension(2);
+				// increment image count
+				if(t_axis) {
+					imgcount += newImg.getImage().dimension(newImg.getThirdDimensionIndex());
+				} else {
+					imgcount++;
+				}
 				
 				// computes cumulative sum and square sum
 				int pixcount = 0;
@@ -74,10 +81,10 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 					FloatType t_var = r_var.get();
 
 					float f=t_avg.get(), g=t_var.get();
-					for(int z=0;z<newImg.getImage().dimension(2);z++) {
+					for(int z=0;z<newImg.getImage().dimension(newImg.getThirdDimensionIndex());z++) {
 						// moves only if has 3rd dimension 
 						if(t_axis) {
-							r.setPosition(z, 2);
+							r.setPosition(z, newImg.getThirdDimensionIndex());
 						}
 						
 						f += r.get().getRealFloat();
@@ -85,9 +92,9 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 					}
 					t_avg.set(f);
 					t_var.set(g);
-					
+										
 					// shows progress for single stack
-					if(newImg.getImage().dimension(2) > 1 && loader.getChannelLength() == imgcount 
+					if(newImg.getImage().dimension(newImg.getThirdDimensionIndex()) > 1 && loader.getChannelLength() == imgcount 
 							&& ((pixcount+1)%100 == 0  || (pixcount+1)==newImg.getHeight()*newImg.getWidth())) { // single stack
 						
 						double large_step = 80.*((double) q)/((double) loader.getNumberOfChannels()); // % of files
@@ -98,7 +105,7 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 						showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getNumberOfChannels()+", "+
 								"pixels "+(pixcount+1)+"/"+(newImg.getHeight()*newImg.getWidth()), progress);
 						
-					} else if(newImg.getImage().dimension(2) > 1 
+					} else if(newImg.getImage().dimension(newImg.getThirdDimensionIndex()) > 1 
 							&& ((pixcount+1)%100 == 0 || (pixcount+1)==newImg.getHeight()*newImg.getWidth())) { // multistacks
 						
 						double large_step = 80.*((double) q)/((double) loader.getNumberOfChannels()); // % of files
@@ -117,7 +124,7 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 				}
 				
 				// shows progress for single images
-				if(newImg.getImage().dimension(2) == 1 
+				if(newImg.getImage().dimension(newImg.getThirdDimensionIndex()) == 1 
 						&& ((imgcount+1)%100 == 0 || (imgcount+1)==loader.getChannelLength())) { // single images
 					double large_step = 80.*((double) q)/((double) loader.getNumberOfChannels()); // % of files
 					double small_step = 80.*((double) imgcount)/((double) loader.getChannelLength())/((double) loader.getNumberOfChannels());  // % frames 

@@ -220,4 +220,9 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 			stopProcessor();
 		}
 	}
+
+	@Override
+	public void logMessage(String message) {
+		studio.logs().logMessage(message);
+	}
 }

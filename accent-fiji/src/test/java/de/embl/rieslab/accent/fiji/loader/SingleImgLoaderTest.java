@@ -47,7 +47,7 @@ public class SingleImgLoaderTest {
 		m.put(2., f_dir.getPath());
 		
 		// creates loader
-		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), m);
+		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), ij.log(), m);
 		assertEquals(1, loader.getNumberOfChannels());
 		
 		assertTrue(loader.openChannel(0));
@@ -85,7 +85,7 @@ public class SingleImgLoaderTest {
 		Map<Double, String> m = AccentFijiUtils.getExposures(dir, false);
 		
 		// creates loader
-		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), m);
+		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), ij.log(), m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 
@@ -145,7 +145,7 @@ public class SingleImgLoaderTest {
 		Map<Double, String> m = AccentFijiUtils.getExposures(dir, false);
 		
 		// creates loader
-		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), m);
+		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), ij.log(), m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 
@@ -205,7 +205,7 @@ public class SingleImgLoaderTest {
 		Map<Double, String> m = AccentFijiUtils.getExposures(dir, false);
 		
 		// creates loader
-		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), m);
+		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), ij.log(), m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 
@@ -265,7 +265,7 @@ public class SingleImgLoaderTest {
 		Map<Double, String> m = AccentFijiUtils.getExposures(dir, false);
 		
 		// creates loader
-		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), m);
+		SingleImgLoader loader = new SingleImgLoader(ij.scifio().datasetIO(), ij.log(), m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 

@@ -30,7 +30,6 @@ public class FijiController extends AbstractController<StackImg, PlaneImg> {
 	public final static String LOADER_SINGLES = "load singles";
 	
 	private DatasetIOService ioservice_;
-	@SuppressWarnings("unused")
 	private LogService logService_;
 	private Map<Double, String> datasets_;
 	
@@ -95,9 +94,9 @@ public class FijiController extends AbstractController<StackImg, PlaneImg> {
 	@Override
 	public Loader<StackImg> getLoader(String parameter) {
 		if(LOADER_STACK.equals(parameter)) {
-			return new StackLoader(ioservice_, datasets_); 
+			return new StackLoader(ioservice_, logService_, datasets_); 
 		} else {
-			return new SingleImgLoader(ioservice_, datasets_); 
+			return new SingleImgLoader(ioservice_, logService_, datasets_); 
 		}
 	}
 
@@ -136,5 +135,10 @@ public class FijiController extends AbstractController<StackImg, PlaneImg> {
 		if(isProcessorRunning()) {
 			stopProcessor();
 		}
+	}
+
+	@Override
+	public void logMessage(String message) {
+		logService_.warn(message);
 	}
 }
