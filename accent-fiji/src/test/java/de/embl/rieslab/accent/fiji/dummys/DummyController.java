@@ -5,14 +5,14 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JFrame;
 
-import de.embl.rieslab.accent.common.interfaces.data.ArrayToImage;
-import de.embl.rieslab.accent.common.interfaces.data.ImageSaver;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratorPanelInterface;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessorPanelInterface;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
+import de.embl.rieslab.accent.fiji.data.image.ArrayToPlaneImg;
 import de.embl.rieslab.accent.fiji.data.image.PlaneImg;
+import de.embl.rieslab.accent.fiji.data.image.PlaneImgSaver;
 import de.embl.rieslab.accent.fiji.data.image.StackImg;
 
 public class DummyController implements PipelineController<StackImg, PlaneImg>{
@@ -21,13 +21,13 @@ public class DummyController implements PipelineController<StackImg, PlaneImg>{
 	public JFrame getMainFrame() {return null;}
 
 	@Override
-	public ArrayToImage<PlaneImg> getArrayToImageConverter() {
-		return null;
+	public ArrayToPlaneImg getArrayToImageConverter() {
+		return new ArrayToPlaneImg();
 	}
 
 	@Override
-	public ImageSaver<PlaneImg> getImageSaver() {
-		return null;
+	public PlaneImgSaver getImageSaver() {
+		return new PlaneImgSaver();
 	}
 
 	@Override
@@ -51,7 +51,9 @@ public class DummyController implements PipelineController<StackImg, PlaneImg>{
 	public void stopProcessor() {}
 
 	@Override
-	public void updateProcessorProgress(String progressString, int progress) {}
+	public void updateProcessorProgress(String progressString, int progress) {
+		System.out.println(progressString);
+	}
 
 	@Override
 	public void processorHasStopped() {}

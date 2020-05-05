@@ -20,7 +20,7 @@ import net.imglib2.type.numeric.real.FloatType;
 /**
  * Generates images according to physical numbers with low and hot pixels. Note that these methods can
  * rapidly fill the entire heap, they are just meant to provide simple datasets got the unit tests. Saving
- * the images is very slow using ImgSaver. 
+ * the images is very slow using ImgSaver so i used IJ1. 
  * 
  * needs to be refactored
  * 
@@ -172,7 +172,7 @@ public class GenerateData {
 			saver.saveImg(path+"\\var_"+exposure+"ms.tiff", var);
 		}
 	}*/
-	
+
 	public static Img<UnsignedShortType> generateUnsignedShortType(int width, int height, int numFrames,
 			double exposure) {
 
@@ -518,6 +518,7 @@ public class GenerateData {
 		return (LOWPIX_RNSQ+LOWPIX_TNSQPERSEC*exposure/1000.);
 	}
 	
+	// mess, refactor
 	public static void generateAndWriteToDisk(String path, int width, int height, int numFrames, double[] exposure, boolean writeStacks, RealType<?> type) {
 		for (double e : exposure) {
 			

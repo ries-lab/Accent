@@ -1,5 +1,8 @@
 package de.embl.rieslab.accent.mm2.processor;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
@@ -22,7 +25,7 @@ public class StacksProcessor extends CalibrationProcessor<BareImage, FloatImage>
 		int[] stackSizes = new int[loader.getNumberOfChannels()];
 		
 		double percentile = 75./(loader.getNumberOfChannels()+1);
-		
+				
 		for(int q=0; q<loader.getNumberOfChannels(); q++) {
 			
 			loader.openChannel(q);

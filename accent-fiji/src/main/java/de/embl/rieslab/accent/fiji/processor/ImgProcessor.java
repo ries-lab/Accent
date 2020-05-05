@@ -35,7 +35,7 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 			}
 			
 			int imgcount = 0;
-			int filecount = 0;
+			//int filecount = 0;
 			while(loader.hasNext(q)) {
 				
 				if(stop) {
@@ -79,21 +79,22 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 					r.setPosition(cursor.getIntPosition(1),1);
 					r_var.setPosition(cursor);
 					FloatType t_var = r_var.get();
+		
+					float f = t_avg.get(), g = t_var.get();
+					for (int z = 0; z < newImg.getImage().dimension(newImg.getThirdDimensionIndex()); z++) {
 
-					float f=t_avg.get(), g=t_var.get();
-					for(int z=0;z<newImg.getImage().dimension(newImg.getThirdDimensionIndex());z++) {
-						// moves only if has 3rd dimension 
-						if(t_axis) {
+						// moves only if has 3rd dimension
+						if (t_axis) {
 							r.setPosition(z, newImg.getThirdDimensionIndex());
 						}
-						
+
 						f += r.get().getRealFloat();
-						g += r.get().getRealFloat()*r.get().getRealFloat();
+						g += r.get().getRealFloat() * r.get().getRealFloat();
 					}
 					t_avg.set(f);
 					t_var.set(g);
 										
-					// shows progress for single stack
+					// shows progress for stack
 					if(newImg.getImage().dimension(newImg.getThirdDimensionIndex()) > 1 && loader.getChannelLength() == imgcount 
 							&& ((pixcount+1)%100 == 0  || (pixcount+1)==newImg.getHeight()*newImg.getWidth())) { // single stack
 						
@@ -105,10 +106,10 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 						int progress = (int) (large_step + small_step);
 						
 						
-						showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getNumberOfChannels()+", "+
-								"pixels "+(int)pixPerc+"%", progress);
+						showProgressOnEDT(CalibrationProcessor.PROGRESS, "Exposure "+(q+1)+"/"+loader.getNumberOfChannels()+", "+
+								"pixels "+(int)(100*pixPerc)+"%", progress);
 						
-					} else if(newImg.getImage().dimension(newImg.getThirdDimensionIndex()) > 1 
+					}/* else if(newImg.getImage().dimension(newImg.getThirdDimensionIndex()) > 1 
 							&& ((pixcount+1)%100 == 0 || (pixcount+1)==newImg.getHeight()*newImg.getWidth())) { // multistacks
 						
 						double large_step = 80.*((double) q)/((double) loader.getNumberOfChannels()); // % of files
@@ -119,11 +120,11 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 						
 						int progress = (int) (large_step+intermediate_step+small_step);
 						
-						showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getNumberOfChannels()+", "+
-								"image "+(filecount+1)+"/"+loader.getChannelLength()
-								+", pixels "+(int)pixPerc+"%", progress);
+						showProgressOnEDT(CalibrationProcessor.PROGRESS, "Exposure "+(q+1)+"/"+loader.getNumberOfChannels()+", "+
+								"substack "+(filecount+1)+"/"+loader.getChannelLength()
+								+", pixels "+(int)(100*pixPerc)+"%", progress);
 						
-					}	
+					}*/
 
 					pixcount++;
 				}
@@ -134,13 +135,14 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 					double large_step = 80.*((double) q)/((double) loader.getNumberOfChannels()); // % of files
 					double small_step = 80.*((double) imgcount)/((double) loader.getChannelLength())/((double) loader.getNumberOfChannels());  // % frames 
 					int progress = (int) (large_step + small_step);
-					showProgressOnEDT(CalibrationProcessor.PROGRESS, "Stack "+(q+1)+"/"+loader.getNumberOfChannels()+", "+
+					showProgressOnEDT(CalibrationProcessor.PROGRESS, "Exposure "+(q+1)+"/"+loader.getNumberOfChannels()+", "+
 							"frame "+(imgcount+1)+"/"+loader.getChannelLength(), progress);
 				}	
 
-				filecount++;
+				//filecount++;
 			}
-			
+
+
 			// computes mean and variance
 			Cursor<FloatType> cursor = avgs[q].getImage().localizingCursor();
 			RandomAccess<FloatType> r_var = vars[q].getImage().randomAccess();
@@ -149,18 +151,22 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 				r_var.setPosition(cursor);
 				FloatType t_var = r_var.get();
 				
-				float f = t_avg.get(), g = t_var.get();
-			
+				float f = t_avg.get();
+				float g = t_var.get();
+				
 				// divides by image count
 				f /= imgcount;
-				g = g/imgcount - f*f;
+				g = g / imgcount - f * f;
 				
 				// sets pixels
 				t_avg.set(f);
 				t_var.set(g);
 			}
-		}
-		return  new AvgVarStacks<PlaneImg>(avgs, vars);
+			
+			// console feedback
+			this.getController().logMessage(imgcount+" frames processed.");
+		}	  			
+		return new AvgVarStacks<PlaneImg>(avgs, vars);
 	}
 
 }

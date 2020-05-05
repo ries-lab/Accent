@@ -6,13 +6,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
+import de.embl.rieslab.accent.common.interfaces.data.RawImage;
+import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.fiji.data.image.PlaneImg;
+import de.embl.rieslab.accent.fiji.data.image.StackImg;
 import de.embl.rieslab.accent.fiji.datagen.GenerateData;
 import de.embl.rieslab.accent.fiji.dummys.DummyController;
 import de.embl.rieslab.accent.fiji.dummys.DummyStackLoader;
+import net.imagej.ImageJ;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
+import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
@@ -287,4 +292,85 @@ public class ImgProcessorTest {
 			}
 		}
 	}
+	
+
+	@Test
+	public void testProcessor() {
+		String dir = "AccentTemp-proc-s";	
+		
+		// creates loader
+		final int nChannels = 2;
+		final double[] exps = {0.1, 1000}; 
+		final long width = 1;
+		final long height = 1;
+		final long zDepth = 1;
+		final long cDepth = 1;
+		final long tDepth = 10;
+		
+		Loader<StackImg> loader = new Loader<StackImg>() {
+			int currentChannel = 0;
+			int currentFrame = 0;
+					
+			ImageJ ij = new ImageJ();
+			
+			private StackImg getImg(int t, int channel) {
+				Img<UnsignedShortType> img  = ArrayImgs.unsignedShorts(width, height, zDepth, cDepth, 1);
+				img.randomAccess().get().set(new UnsignedShortType(t));
+				return new StackImg(ij.dataset().create(img), exps[channel]);
+			}
+			
+			@Override
+			public StackImg getNext(int channel) {
+				return getImg(currentFrame++, channel);
+			}
+
+			@Override
+			public boolean hasNext(int channel) {
+				return currentFrame < tDepth;
+			}
+
+			@Override
+			public int getNumberOfChannels() {
+				return nChannels;
+			}
+
+			@Override
+			public boolean openChannel(int channel) {
+				currentChannel = channel;
+				currentFrame = 0;
+				
+				return true;
+			}
+
+			@Override
+			public int getChannelLength() {
+				return (int) tDepth;
+			}};
+		
+		// creates processor
+		DummyController cont = new DummyController();
+		ImgProcessor proc = new ImgProcessor(dir, cont, loader);
+		
+		// performs avg and var calculation
+		AvgVarStacks<PlaneImg> avgs_vars = proc.computeAvgAndVar();
+		
+		// grund truth
+		double realAvg = 0, realVar=0;
+		for(int i=0;i<tDepth;i++) {
+			realAvg += i;
+			realVar += i*i;
+		}
+		realAvg = realAvg/tDepth;
+		realVar = realVar/tDepth - realAvg*realAvg;
+		
+		// checks results
+		for(int i=0;i<exps.length;i++) {
+			Img<FloatType> av = avgs_vars.getAvgs()[i].getImage();
+			Img<FloatType> var = avgs_vars.getVars()[i].getImage();
+
+			assertEquals(realAvg, av.randomAccess().get().get());
+			assertEquals(realVar, var.randomAccess().get().get());
+		}
+	}
+	
 }

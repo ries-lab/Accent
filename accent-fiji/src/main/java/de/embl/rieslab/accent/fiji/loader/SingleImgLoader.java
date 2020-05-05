@@ -18,6 +18,7 @@ import de.embl.rieslab.accent.fiji.data.image.StackImg;
 import io.scif.services.DatasetIOService;
 import net.imagej.Dataset;
 
+// should be renamed, the difference in the two loaders is not single vs stack, but stack vs folders...
 public class SingleImgLoader implements Loader<StackImg>{
 
 	private Map<Double, String> folders_;
@@ -27,6 +28,8 @@ public class SingleImgLoader implements Loader<StackImg>{
 	private double[] mapping_;
 	private DatasetIOService ioservice_;
 	private LogService logservice_;
+	private Dataset currImg;
+	private long currSize_;
 	
 	public SingleImgLoader(DatasetIOService ioservice, LogService logservice, Map<Double, String> folders) {
 		// sanity check
@@ -44,7 +47,7 @@ public class SingleImgLoader implements Loader<StackImg>{
 			mapping_[i] = e.getKey();
 			i++;
 		}
-
+		currSize_ = 0;
 		currIndex_ = 0;
 		openedAll_ = false;
 		currImgs_ = new ArrayList<String>();
@@ -77,35 +80,36 @@ public class SingleImgLoader implements Loader<StackImg>{
 	}
 
 	private Dataset loadNext(int channel) {
-		Dataset img = null;
-	
 		if(hasNext(channel)) {
+			currImg = null;
 			try {
-				img = ioservice_.open(currImgs_.get(currIndex_));
+				currImg = ioservice_.open(currImgs_.get(currIndex_));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		
-			if(img != null) { // something was read		
+			if(currImg != null) { // something was read		
 				// identify the third dimension: we assume there is at max three dimensions where dimSize > 1				
 				long max = 1;
-				if(img.numDimensions() > 2) { // identify the dimension with the largest depth, ignoring X,Y
-					for(int i=2;i<img.numDimensions();i++) {
-						if(img.dimension(i) > max) {
-							max = img.dimension(i);
+				if(currImg.numDimensions() > 2) { // identify the dimension with the largest depth, ignoring X,Y
+					for(int i=2;i<currImg.numDimensions();i++) {
+						if(currImg.dimension(i) > max) {
+							max = currImg.dimension(i);
 						}
 					}
 				}
 				
-				if (currIndex_ == 0 && max == currImgs_.size()) { // first time we load an image from this folder
-					// if the dimension equals the number of images to load,
-					// we assume that it has loaded all the images.
+				if (currIndex_ == 0 && max > 1) { // first time we load an image from this folder
+					// if the dimension is not one, we assume that it has loaded all the images.
+					// This means that in the case of multi-stacks not correctly loaded, only the
+					// first stack will be considered.
 					openedAll_ = true;
+					currSize_ = max;
 				}
 				currIndex_ ++;
 			}
 		}
-		return img;
+		return currImg;
 	}
 	
 	@Override
@@ -137,7 +141,7 @@ public class SingleImgLoader implements Loader<StackImg>{
 
 	@Override
 	public int getChannelLength() {
-		return currImgs_.size();
+		return openedAll_ ? (int) currSize_ : currImgs_.size();
 	}
 
 }

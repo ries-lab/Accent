@@ -27,7 +27,7 @@ public class GenerateDataTest {
 	/**
 	 * Tests if the generated UnsignedByte images have the expected average and variance per pixel (within 1% and 6% tolerance respectively).
 	 */
-	@Test
+	//@Test
 	public void testByteAverageVariance() {
 		int width = 10;
 		int height = 20;
@@ -93,7 +93,7 @@ public class GenerateDataTest {
 	/**
 	 * Tests if the generated UnsignedShort images have the expected average and variance per pixel (within 1% and 6% tolerance respectively).
 	 */
-	@Test
+	//@Test
 	public void testShortAverageVariance() {
 		int width = 10;
 		int height = 20;
@@ -156,7 +156,7 @@ public class GenerateDataTest {
 	/**
 	 * Tests if the generated UnsignedInt images have the expected average and variance per pixel (within 1% and 6% tolerance respectively).
 	 */
-	@Test
+	//@Test
 	public void testIntAverageVariance() {
 		int width = 10;
 		int height = 20;
@@ -269,7 +269,7 @@ public class GenerateDataTest {
 		}
 	}*/
 		
-	@Test
+	//@Test
 	public void testGaussian() {
 		double[] d = GenerateData.generateGaussianDistributedValues(3.5,10,200000);
 		
@@ -284,7 +284,7 @@ public class GenerateDataTest {
 		assertEquals(10, var, 0.01*10);
 	}
 	
-	@Test
+	//@Test
 	public void testWritingToDisk() {
 		String dir = "AccentTemp";		
 		File f_dir = new File(dir);
