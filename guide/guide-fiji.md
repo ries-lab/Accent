@@ -6,7 +6,9 @@
 - ACCéNT plugin installed
 - A set of suitable acquisitions (see processing)
 
-ACCéNT can be started from the "Plugins" menu of Fiji. It has twosteps, which can be performed together in a pipeline or independently.
+ACCéNT can be started from the "Plugins" menu of Fiji. It has twon steps, which can be performed together in a pipeline or independently.
+
+Note that the plugin expects TIFF files.
 
 ## Processing
 
@@ -22,7 +24,7 @@ We tested the the pipeline with the following types:
 - unsigned short images (2 Bytes = 16 bits)
 - unsigned int images (4 Bytes = 32 bits)
 
-We recommend taking **at least 20'000 frames** with **at least 3 different exposures spanning a wide range** (e.g. 10, 300, 1000). 
+We recommend taking **at least 20'000 frames** with **at least 2 different exposures spanning a wide range** (e.g. 10, 300, 1000). 
 
 Processing does not require any parameters but the folder where the images have been saved. The processor produces multiple files:
 
