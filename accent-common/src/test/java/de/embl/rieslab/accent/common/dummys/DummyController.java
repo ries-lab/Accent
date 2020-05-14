@@ -91,12 +91,6 @@ public class DummyController implements PipelineController<DummyImage, DummyImag
 	public ArrayToImage<DummyImage> getArrayToImageConverter() {
 		return new ArrayToImage<DummyImage>() {
 			@Override
-			public DummyImage getImage(double[] pixels, int width, int height,
-					double exposure) {
-				DummyImage im = new DummyImage(8, pixels, width, height, exposure);
-				return im;
-			}
-			@Override
 			public DummyImage getImage(float[] pixels, int width, int height,
 					double exposure) {
 				DummyImage im = new DummyImage(4, pixels, width, height, exposure);

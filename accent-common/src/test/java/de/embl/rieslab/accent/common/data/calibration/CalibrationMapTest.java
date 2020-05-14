@@ -30,16 +30,16 @@ public class CalibrationMapTest {
 
 	private static Calibration generateCalibration() {
 		// Creates calibration object
-		double[] baseline = { 1.5, 2.9, 3.7, 4.1, 1.4, 5.2};
-		double[] dc_per_sec = { 5.48, 4.9, 2.45, 5.68, 4.58, 10.1 };
+		float[] baseline = { 1.5f, 2.9f, 3.7f, 4.1f, 1.4f, 5.2f};
+		float[] dc_per_sec = { 5.48f, 4.9f, 2.45f, 5.68f, 4.58f, 10.1f };
 		
-		double[] rn_sq = { 1.45, 6.26, 7.5, 4.5, 6.57, 7.321 };
-		double[] tn_sq_per_sec = { 6.35, 7.896, 100.5 ,5.78, 4.2, 86.9 };
+		float[] rn_sq = { 1.45f, 6.26f, 7.5f, 4.5f, 6.57f, 7.321f };
+		float[] tn_sq_per_sec = { 6.35f, 7.896f, 100.5f ,5.78f, 4.2f, 86.9f };
 		
-		double[] r_sq_avg = { 0, 0 ,0 ,0 ,0 ,0 };
-		double[] r_sq_var = { 0, 0 ,0 ,0,0 ,0  };
-		double[] gain = { 0, 0 ,0 ,0,0 ,0  };
-		double[] r_sq_gain = { 0, 0 ,0 ,0,0 ,0  };
+		float[] r_sq_avg = { 0f, 0f ,0f ,0f ,0f ,0f };
+		float[] r_sq_var = { 0f, 0f ,0f ,0f,0f ,0f  };
+		float[] gain = { 0f, 0f ,0f ,0f,0f ,0f  };
+		float[] r_sq_gain = { 0f, 0f ,0f ,0f,0f ,0f  };
 
 		return new Calibration(2, 3, baseline, dc_per_sec, r_sq_avg, 
 				rn_sq, tn_sq_per_sec, r_sq_var, gain, r_sq_gain);

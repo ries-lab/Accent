@@ -218,14 +218,14 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 		}
 		
 		SimpleRegression sreg;
-		double[] baseline = new double[totalLength];
-		double[] dcpt = new double[totalLength];
-		double[] rnsq = new double[totalLength];
-		double[] tnsqpt = new double[totalLength];
-		double[] gain = new double[totalLength];
-		double[] rsq_avg = new double[totalLength];
-		double[] rsq_var = new double[totalLength];
-		double[] rsq_gain = new double[totalLength];
+		float[] baseline = new float[totalLength];
+		float[] dcpt = new float[totalLength];
+		float[] rnsq = new float[totalLength];
+		float[] tnsqpt = new float[totalLength];
+		float[] gain = new float[totalLength];
+		float[] rsq_avg = new float[totalLength];
+		float[] rsq_var = new float[totalLength];
+		float[] rsq_gain = new float[totalLength];
 		
 		for (int i = 0; i < totalLength; i++) {
 			if(stop) {
@@ -235,20 +235,20 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 			// perform regressions
 			sreg = new SimpleRegression();
 			sreg.addData(avg_exp_list.get(i));
-			baseline[i] = sreg.getIntercept();
-			dcpt[i] = sreg.getSlope();
-			rsq_avg[i] = sreg.getRSquare();
+			baseline[i] = (float) sreg.getIntercept();
+			dcpt[i] = (float) sreg.getSlope();
+			rsq_avg[i] = (float) sreg.getRSquare();
 			
 			sreg = new SimpleRegression();
 			sreg.addData(var_exp_list.get(i));
-			rnsq[i] = sreg.getIntercept();
-			tnsqpt[i] = sreg.getSlope();
-			rsq_var[i] = sreg.getRSquare();
+			rnsq[i] = (float) sreg.getIntercept();
+			tnsqpt[i] = (float) sreg.getSlope();
+			rsq_var[i] = (float) sreg.getRSquare();
 
 			sreg = new SimpleRegression();
 			sreg.addData(var_avg_list.get(i));
-			gain[i] = sreg.getSlope();
-			rsq_gain[i] = sreg.getRSquare();
+			gain[i] = (float) sreg.getSlope();
+			rsq_gain[i] = (float) sreg.getRSquare();
 		}
 		
 		// sanity check on the median: replace negative gains by the median

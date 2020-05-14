@@ -2,6 +2,7 @@ package de.embl.rieslab.accent.common.data.calibration;
 
 import java.util.Arrays;
 
+
 /**
  * Represents a camera calibration, including different estimated measurements such as the baseline,
  * the dark current per second, the read-noise square, the thermal noise square per second, the gain
@@ -18,37 +19,37 @@ public class Calibration {
 	/**
 	 * Baseline: offset of the linear fit (average_pixel, exposure)
 	 */
-	private double[] baseline;
+	private float[] baseline;
 	/**
 	 * Dark current per second: slope of the fit (average_pixel, exposure) 
 	 */
-	private double[] dc_per_sec;
+	private float[] dc_per_sec;
 	/**
 	 * (average_pixel, exposure) fit coefficient of determination
 	 */
-	private double[] r_sq_avg;
+	private float[] r_sq_avg;
 
 	/**
 	 * Read-noise square: offset of the linear fit (variance_pixel, exposure)
 	 */
-	private double[] rn_sq; 
+	private float[] rn_sq; 
 	/**
 	 * Thermal noise square: slope of the fit (variance_pixel, exposure) 
 	 */
-	private double[] tn_sq_per_sec;
+	private float[] tn_sq_per_sec;
 	/**
 	 * (variance_pixel, exposure) fit coefficient of determination
 	 */
-	private double[] r_sq_var;
+	private float[] r_sq_var;
 
 	/**
 	 * Thermal noise square: slope of the fit (variance_pixel, average_pixel) 
 	 */
-	private double[] gain; 
+	private float[] gain; 
 	/**
 	 * (variance_pixel, average_pixel) fit coefficient of determination
 	 */
-	private double[] r_sq_gain; 
+	private float[] r_sq_gain; 
 
 	/**
 	 * Empty constructor used by JacksonJSON to build a Calibration object
@@ -74,8 +75,8 @@ public class Calibration {
 	 * @param gain Gain
 	 * @param r_sq_gain Variance-average fit coefficient of determination
 	 */
-	public Calibration(int width, int height, double[] baseline, double[] dc_per_sec, double[] r_sq_avg, double[] rn_sq,
-			double[] tn_sq_per_sec, double[] r_sq_var, double[] gain, double[] r_sq_gain) {
+	public Calibration(int width, int height, float[] baseline, float[] dc_per_sec, float[] r_sq_avg, float[] rn_sq,
+			float[] tn_sq_per_sec, float[] r_sq_var, float[] gain, float[] r_sq_gain) {
 		this.width = width;
 		this.height = height;
 
@@ -111,7 +112,7 @@ public class Calibration {
 	 * Returns the baseline for each pixel.
 	 * @return Baseline as a double array of length width*height
 	 */
-	public double[] getBaseline() {
+	public float[] getBaseline() {
 		return baseline;
 	}
 	
@@ -119,7 +120,7 @@ public class Calibration {
 	 * Sets the baseline for each pixel.
 	 * @param baseline Baseline for each pixel
 	 */
-	public void setBaseline(double[] baseline) {
+	public void setBaseline(float[] baseline) {
 		if(baseline == null)
 			throw new NullPointerException();
 		
@@ -132,14 +133,14 @@ public class Calibration {
 	 * Returns the dark current per second for each pixel.
 	 * @return Dark current per second as a double array of length width*height
 	 */
-	public double[] getDcPerSec() {
+	public float[] getDcPerSec() {
 		return dc_per_sec;
 	}
 	/**
 	 * Sets the dark current per second for each pixel.
 	 * @param dc_per_sec Dark current per second fo each pixel
 	 */
-	public void setDcPerSec(double[] dc_per_sec) {
+	public void setDcPerSec(float[] dc_per_sec) {
 		if(dc_per_sec == null)
 			throw new NullPointerException();
 		
@@ -153,14 +154,14 @@ public class Calibration {
 	 * Returns the (average,exposure) fit coefficient of determination for each pixel.
 	 * @return Double array of length width*height.
 	 */
-	public double[] getRSqAvg() {
+	public float[] getRSqAvg() {
 		return r_sq_avg;
 	}
 	/**
 	 * Sets the (average,exposure) fit coeff of determination for each pixel.
 	 * @param r_sq_avg 
 	 */
-	public void setRSqAvg(double[] r_sq_avg) {
+	public void setRSqAvg(float[] r_sq_avg) {
 		if(r_sq_avg == null)
 			throw new NullPointerException();
 		
@@ -171,26 +172,26 @@ public class Calibration {
 	}
 
 	
-	public double[] getRnSq() {
+	public float[] getRnSq() {
 		return rn_sq;
 	}
 	
-	public void setRnSq(double[] rn_sq) {
+	public void setRnSq(float[] rn_sq) {
 		if(rn_sq == null)
 			throw new NullPointerException();
 		
 		if(rn_sq.length != width*height)
-			throw new IllegalArgumentException("The array must be of length "+width*height+" (size = "+rn_sq.length+").");
-		
+			throw new IllegalArgumentException("The array must be of length "+width*height+" (size = "+rn_sq.length+").");		
+
 		this.rn_sq = rn_sq;
 	}
 
 	
-	public double[] getTnSqPerSec() {
+	public float[] getTnSqPerSec() {
 		return tn_sq_per_sec;
 	}
 	
-	public void setTnSqPerSec(double[] tn_sq_per_sec) {
+	public void setTnSqPerSec(float[] tn_sq_per_sec) {
 		if(tn_sq_per_sec == null)
 			throw new NullPointerException();
 		
@@ -201,11 +202,11 @@ public class Calibration {
 	}
 
 	
-	public double[] getRSqVar() {
+	public float[] getRSqVar() {
 		return r_sq_var;
 	}
 	
-	public void setRSqVar(double[] r_sq_var) {
+	public void setRSqVar(float[] r_sq_var) {
 		if(r_sq_var == null)
 			throw new NullPointerException();
 		
@@ -216,11 +217,11 @@ public class Calibration {
 	}
 
 	
-	public double[] getGain() {
+	public float[] getGain() {
 		return gain;
 	}
 	
-	public void setGain(double[] gain) {
+	public void setGain(float[] gain) {
 		if(gain == null)
 			throw new NullPointerException();
 		
@@ -229,13 +230,12 @@ public class Calibration {
 		
 		this.gain = gain;
 	}
-
 	
-	public double[] getRSqGain() {
+	public float[] getRSqGain() {
 		return r_sq_gain;
 	}
 	
-	public void setRSqGain(double[] r_sq_gain) {
+	public void setRSqGain(float[] r_sq_gain) {
 		if(r_sq_gain == null)
 			throw new NullPointerException();
 		

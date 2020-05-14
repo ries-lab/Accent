@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
-import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.fiji.data.image.PlaneImg;
 import de.embl.rieslab.accent.fiji.data.image.StackImg;

@@ -6,9 +6,8 @@ import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.numeric.real.FloatType;
 
-// not super clever to cast the double to float, although we don't expect the float to overflow here
 public class ArrayToPlaneImg implements ArrayToImage<PlaneImg>{
-
+/*
 	@Override
 	public PlaneImg getImage(double[] pixels, int width, int height, double exposure) {
 		ArrayImgFactory<FloatType> factory = new ArrayImgFactory<FloatType>(new FloatType());
@@ -23,7 +22,7 @@ public class ArrayToPlaneImg implements ArrayToImage<PlaneImg>{
 		}
 		return new PlaneImg(img, exposure);
 	}
-
+*/
 	@Override
 	public PlaneImg getImage(float[] pixels, int width, int height, double exposure) {
 		ArrayImgFactory<FloatType> factory = new ArrayImgFactory<FloatType>(new FloatType());

@@ -32,29 +32,6 @@ public class ArrayToFloatImageTest {
 				int p = y*width+x;
 				assertEquals(floats[p], f.getPixelValue(x, y), 0.0001);
 			}
-		}
-
-		// double
-		double[] doubles = new double[width*height];
-		for(int x=0;x<width;x++) {
-			for(int y=0;y<height;y++) {
-				int p = y*width+x;
-				doubles[p] = p*12.45;
-			}
-		}
-		f = conv.getImage(doubles, width, height, exposure);
-		
-		assertEquals(exposure, f.getExposure(),0.00001);
-		assertEquals(width, f.getWidth());
-		assertEquals(height, f.getHeight());
-		
-		for(int x=0;x<width;x++) {
-			for(int y=0;y<height;y++) {
-				int p = y*width+x;
-				assertEquals(doubles[p], f.getPixelValue(x, y), 0.0001);
-			}
-		}
-		
-		
+		}		
 	}
 }
