@@ -2,6 +2,8 @@ package de.embl.rieslab.accent.common.data.calibration;
 
 import java.util.Arrays;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * Represents a camera calibration, including different estimated measurements such as the baseline,
@@ -25,11 +27,6 @@ public class Calibration {
 	 */
 	private float[] dc_per_sec;
 	/**
-	 * (average_pixel, exposure) fit coefficient of determination
-	 */
-	private float[] r_sq_avg;
-
-	/**
 	 * Read-noise square: offset of the linear fit (variance_pixel, exposure)
 	 */
 	private float[] rn_sq; 
@@ -38,22 +35,31 @@ public class Calibration {
 	 */
 	private float[] tn_sq_per_sec;
 	/**
-	 * (variance_pixel, exposure) fit coefficient of determination
-	 */
-	private float[] r_sq_var;
-
-	/**
 	 * Thermal noise square: slope of the fit (variance_pixel, average_pixel) 
 	 */
 	private float[] gain; 
+	
+	
 	/**
 	 * (variance_pixel, average_pixel) fit coefficient of determination
 	 */
+	@JsonIgnore
 	private float[] r_sq_gain; 
-
+	/**
+	 * (variance_pixel, exposure) fit coefficient of determination
+	 */
+	@JsonIgnore
+	private float[] r_sq_var;
+	/**
+	 * (average_pixel, exposure) fit coefficient of determination
+	 */
+	@JsonIgnore
+	private float[] r_sq_avg;
+	
+	
 	/**
 	 * Empty constructor used by JacksonJSON to build a Calibration object
-	 */
+	 */	
 	public Calibration() {}
 
 	public Calibration(int width, int height) {
@@ -254,9 +260,7 @@ public class Calibration {
 	 */
 	public static boolean areEquals(Calibration c1, Calibration c2) {
 		return c1.getWidth()==c2.getWidth() && c1.getHeight()==c2.getHeight() && Arrays.equals(c1.getBaseline(), c2.getBaseline()) 
-				&& Arrays.equals(c1.getDcPerSec(), c2.getDcPerSec()) && Arrays.equals(c1.getRSqAvg(), c2.getRSqAvg()) 
-				&& Arrays.equals(c1.getRnSq(), c2.getRnSq()) && Arrays.equals(c1.getTnSqPerSec(), c2.getTnSqPerSec()) 
-				&& Arrays.equals(c1.getRSqVar(), c2.getRSqVar()) && Arrays.equals(c1.getGain(), c2.getGain()) 
-				&& Arrays.equals(c1.getRSqGain(), c2.getRSqGain());
+				&& Arrays.equals(c1.getDcPerSec(), c2.getDcPerSec()) && Arrays.equals(c1.getRnSq(), c2.getRnSq()) 
+				&& Arrays.equals(c1.getTnSqPerSec(), c2.getTnSqPerSec()) && Arrays.equals(c1.getGain(), c2.getGain());
 	}
 }
