@@ -43,17 +43,14 @@ public class Calibration {
 	/**
 	 * (variance_pixel, average_pixel) fit coefficient of determination
 	 */
-	@JsonIgnore
 	private float[] r_sq_gain; 
 	/**
 	 * (variance_pixel, exposure) fit coefficient of determination
 	 */
-	@JsonIgnore
 	private float[] r_sq_var;
 	/**
 	 * (average_pixel, exposure) fit coefficient of determination
 	 */
-	@JsonIgnore
 	private float[] r_sq_avg;
 	
 	
@@ -167,6 +164,7 @@ public class Calibration {
 	 * Sets the (average,exposure) fit coeff of determination for each pixel.
 	 * @param r_sq_avg 
 	 */
+	@JsonIgnore
 	public void setRSqAvg(float[] r_sq_avg) {
 		if(r_sq_avg == null)
 			throw new NullPointerException();
@@ -207,7 +205,7 @@ public class Calibration {
 		this.tn_sq_per_sec = tn_sq_per_sec;
 	}
 
-	
+	@JsonIgnore
 	public float[] getRSqVar() {
 		return r_sq_var;
 	}
@@ -237,6 +235,7 @@ public class Calibration {
 		this.gain = gain;
 	}
 	
+	@JsonIgnore
 	public float[] getRSqGain() {
 		return r_sq_gain;
 	}

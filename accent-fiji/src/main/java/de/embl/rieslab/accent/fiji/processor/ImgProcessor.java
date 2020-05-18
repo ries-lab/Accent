@@ -100,7 +100,7 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 						
 						double large_step = 80.*((double) q)/((double) loader.getNumberOfChannels()); // % of files
 						
-						double pixPerc = ((double) pixcount)/((double) newImg.getHeight()*newImg.getWidth());
+						double pixPerc = ((double) pixcount+1)/((double) newImg.getHeight()*newImg.getWidth());
 						double small_step = 80.*pixPerc/((double) loader.getNumberOfChannels()); // % pixels 
 						
 						int progress = (int) (large_step + small_step);
@@ -164,7 +164,7 @@ public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 			}
 			
 			// console feedback
-			this.getController().logMessage(imgcount+" frames processed.");
+			// this.getController().logMessage(imgcount+" frames processed.");
 		}	  			
 		return new AvgVarStacks<PlaneImg>(avgs, vars);
 	}

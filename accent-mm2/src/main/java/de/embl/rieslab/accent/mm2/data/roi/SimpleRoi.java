@@ -72,10 +72,10 @@ public class SimpleRoi {
 			height = -height;
 			y0 = y0-height;
 		}
-		
 	}
+	
 	/**
-	 * Returns the sanity status of the Roi. A roi is unsane if the x0 and y0 are out of bounds or the w/h 0.
+	 * Returns the sanity status of the Roi. A roi is not sane if the x0 and y0 are out of bounds or the w/h 0.
 	 * @return True if the roi is sane, false otherwise.
 	 */
 	public boolean isSane() {
