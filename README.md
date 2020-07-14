@@ -4,8 +4,7 @@
 
 - [Micro-Manager 2.0.0-gamma](https://micro-manager.org/wiki/Download_Micro-Manager_Latest_Release): acquisition and analysis.
 - [Fiji](https://imagej.net/Fiji/Downloads): TIFF-only analysis.
-
-A Micro-Manager 1.4 script is available to perform the acquisition.
+- A [Micro-Manager 1.4 script](accent-mm1) is available to perform the acquisition.
 
 ## How to install ACCéNT?
 
