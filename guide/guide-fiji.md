@@ -8,7 +8,7 @@
 
 ACCéNT can be started from the "Plugins" menu of Fiji. It has twon steps, which can be performed together in a pipeline or independently.
 
-Note that the plugin expects TIFF files.
+Note that the plugin expects **TIFF files**.
 
 ## Processing
 
