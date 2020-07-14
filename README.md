@@ -9,8 +9,6 @@ A Micro-Manager 1.4 script is available to perform the acquisition.
 
 ## How to install ACCéNT?
 
-
-
 ### Micro-Manager 2.0.0-gamma
 
 1. [Download](https://github.com/ries-lab/Accent/releases) the pre-compiled plugin and place it in your Micro-Manager installation folder under "mmplugins".
@@ -45,4 +43,4 @@ This repository contains guides for the Micro-Manager and Fiji plugins:
 
 - [Micro-manager 2 guide](guide/guide-mm2.md)
 - [Fiji guide](guide/guide-fiji)
-- Loading the camera map in [SMAP](https://github.com/jries/SMAP) **(soon)**
+- Loading the camera map in [SMAP](https://github.com/jries/SMAP) (soon)
