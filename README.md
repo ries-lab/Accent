@@ -1,4 +1,4 @@
-# ![accent-logo-blue-32](accent-fiji\src\main\resources\images\accent-logo-blue-32.png) - ACCéNT
+# ![accent-logo-blue-32](accent-fiji/src/main/resources/images/accent-logo-blue-32.png) - ACCéNT
 
 (s)CMOS camera calibration tool without shining light on your camera. ACCéNT is compatible with:
 
