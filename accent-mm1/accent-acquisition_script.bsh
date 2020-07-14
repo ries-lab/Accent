@@ -1,17 +1,17 @@
 // START: PARAMETERS
-	// file locations
-		path = "D://accent//acq//"; // Path to save the tif stacks 
-		// (NB: whether they are saved as stacks or single images is set in the MDA menu of Micro-Manager)
+// file locations
+path = "D://accent//acq//"; // Path to save the tif stacks 
+// (NB: whether they are saved as stacks or single images is set in the MDA menu of Micro-Manager)
 		
-		acqName = "accent_mm1_"; // Name of the acquisition
+acqName = "accent_mm1_"; // Name of the acquisition
 
-	// acquisition settings
-		int[] exposures = {1,10,200,600}; // Exposure times in ms
-		numFrames = 20000; // number of frames
+// acquisition settings
+int[] exposures = {1,10,200,600}; // Exposure times in ms
+numFrames = 20000; // number of frames
 		
-		mmc.setROI(128,128,256,256); // ROI on camera. Uncomment to use preset ROI in MicroManager
-		// NB: Command mmc.setROI not supported with all cameras. 
-		//In case, comment out and preset ROI via GUI in MicroManager
+mmc.setROI(128,128,256,256); // ROI on camera. Uncomment to use preset ROI in MicroManager
+// NB: Command mmc.setROI not supported with all cameras. 
+//In case, comment out and preset ROI via GUI in MicroManager
 // END: PARAMETERS
 
 // NB: If all acquisitions are created in a "Pos0" folder, you will have to rename them and copy them in the same
@@ -40,14 +40,14 @@ acqName = acqName+"x"+r.x+"_y"+r.y+"_w"+r.width+"_h"+r.height+"_";
 
 // open acquisitions for all exposure times
 for (int j=0; j<exposures.length; j++){
-		gui.openAcquisition(acqName + exposures[j]  + "ms", path, numFrames, channels, numSlices, j, show_acq, save_acq);
-} // for j
+	gui.openAcquisition(acqName + exposures[j]  + "ms", path, numFrames, channels, numSlices, j, show_acq, save_acq);
+} 
 
 for (int n=0; n<numFrames; n++){
 	for (int j=0; j<exposures.length; j++){
-      mmc.setExposure(exposures[j]);
-      gui.snapAndAddImage(acqName + exposures[j] + "ms", n, 0, 0, 0);
-      gui.message("Frame: " + (n+1) + " of " + numFrames + ", Exposure: " + exposures[j] + " ms");
+		mmc.setExposure(exposures[j]);
+		gui.snapAndAddImage(acqName + exposures[j] + "ms", n, 0, 0, 0);
+		gui.message("Frame: " + (n+1) + " of " + numFrames + ", Exposure: " + exposures[j] + " ms");
 	}
 }
 
