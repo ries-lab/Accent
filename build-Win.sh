@@ -18,6 +18,5 @@ if [ $# -eq 1 ]
 		cp "accent-mm2\target\accent-mm2-1.0-beta.jar" "$MM2_PLUGINS_HOME\accent-mm2-1.0-beta.jar"
 		
 	else
-		mvn -f accent-common/ clean install -Dmaven.test.skip=true
-		mvn -f accent-fiji/ clean install -Dmaven.test.skip=true
+		mvn -pl -"accent-mm2" install -Dmaven.test.skip=true
 fi
