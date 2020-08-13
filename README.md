@@ -12,6 +12,8 @@
 
 1. [Download](https://github.com/ries-lab/Accent/releases) the pre-compiled plugin and place it in your Micro-Manager installation folder under "mmplugins".
 
+Or
+
 2. Requires [maven](https://maven.apache.org/). Compile the plugin yourself using the build script (Windows or macOS):
 
    ```bash
@@ -22,11 +24,11 @@
 
 ### Fiji
 
-1. (soon in the Fiji update site)
+1. [Download](https://github.com/ries-lab/Accent/releases) the pre-compiled plugin and place it in your Fiji installation folder under "plugins".
 
-2. [Download](https://github.com/ries-lab/Accent/releases) the pre-compiled plugin and place it in your Fiji installation folder under "plugins".
+Or
 
-3. Requires  [maven](https://maven.apache.org/). Compile the plugin yourself using the build script (Windows or macOS) : 
+2. Requires  [maven](https://maven.apache.org/). Compile the plugin yourself using the build script (Windows or macOS) : 
 
    ```bash
    $ ./build-Win.sh
