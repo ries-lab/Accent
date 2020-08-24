@@ -17,7 +17,7 @@ import org.micromanager.data.internal.DefaultCoords;
 import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
 import de.embl.rieslab.accent.mm2.interfaces.AcquisitionController;
-import de.embl.rieslab.accent.common.data.roi.SimpleRoiWriter;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoiIO;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 
 public class AlternatedAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
@@ -166,7 +166,7 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 					settings.roi_.width, settings.roi_.height);
 			
 			// write roi to disk
-			SimpleRoiWriter.write(new File(settings.folder_+"/roi.roi"), settings.roi_);
+			SimpleRoiIO.write(new File(settings.folder_+"/roi.roi"), settings.roi_);
 		} else {
 			studio.getCMMCore().clearROI();
 		}
