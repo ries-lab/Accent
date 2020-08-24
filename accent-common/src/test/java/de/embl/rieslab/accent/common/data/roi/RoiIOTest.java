@@ -1,22 +1,23 @@
-package de.embl.rieslab.accent.mm2.data.roi;
+package de.embl.rieslab.accent.common.data.roi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import de.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
-import de.embl.rieslab.accent.mm2.data.roi.SimpleRoiWriter;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoiWriter;
 
 public class RoiIOTest {
 

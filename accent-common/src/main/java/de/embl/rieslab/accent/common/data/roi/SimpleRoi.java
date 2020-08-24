@@ -1,5 +1,5 @@
 
-package de.embl.rieslab.accent.mm2.data.roi;
+package de.embl.rieslab.accent.common.data.roi;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

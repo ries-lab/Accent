@@ -16,8 +16,8 @@ import org.micromanager.data.internal.DefaultCoords;
 
 import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
-import de.embl.rieslab.accent.mm2.data.roi.SimpleRoiWriter;
 import de.embl.rieslab.accent.mm2.interfaces.AcquisitionController;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoiWriter;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 
 public class AlternatedAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {

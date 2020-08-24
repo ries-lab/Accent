@@ -1,4 +1,4 @@
-package de.embl.rieslab.accent.mm2.data.roi;
+package de.embl.rieslab.accent.common.data.roi;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import de.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 
 public class RoiTest {
 

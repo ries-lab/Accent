@@ -26,12 +26,12 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.mm2.MM2Controller;
 import de.embl.rieslab.accent.mm2.acquisition.AcquisitionSettings;
 import de.embl.rieslab.accent.mm2.acquisition.MM2AcquisitionController;
-import de.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.mm2.interfaces.AcquisitionPanelInterface;
 
 public class AcqPanel extends JPanel implements AcquisitionPanelInterface {

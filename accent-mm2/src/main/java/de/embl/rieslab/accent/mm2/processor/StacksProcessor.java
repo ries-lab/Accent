@@ -1,8 +1,5 @@
 package de.embl.rieslab.accent.mm2.processor;
 
-import java.io.FileWriter;
-import java.io.IOException;
-
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;

@@ -1,6 +1,6 @@
 package de.embl.rieslab.accent.mm2.acquisition;
 
-import de.embl.rieslab.accent.mm2.data.roi.SimpleRoi;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 
 /**
  * Settings used for acquiring data.
