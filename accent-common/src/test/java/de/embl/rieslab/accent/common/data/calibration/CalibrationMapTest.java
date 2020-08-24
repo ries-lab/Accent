@@ -41,7 +41,7 @@ public class CalibrationMapTest {
 		float[] gain = { 0f, 0f ,0f ,0f,0f ,0f  };
 		float[] r_sq_gain = { 0f, 0f ,0f ,0f,0f ,0f  };
 
-		return new Calibration(2, 3, baseline, dc_per_sec, r_sq_avg, 
+		return new Calibration(1, 1, 2, 3, baseline, dc_per_sec, r_sq_avg, 
 				rn_sq, tn_sq_per_sec, r_sq_var, gain, r_sq_gain);
 	}
 }

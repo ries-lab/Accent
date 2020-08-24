@@ -26,17 +26,11 @@ public class CalibrationIOTest {
 	
 	@Test
 	public void testIO() {
-		String dir = "/temp_test_calib/";
-		File f_dir = new File(dir);
-		if(!f_dir.exists()) {
-			f_dir.mkdir();
-		}
-				
-		File cal = new File(dir+"temp_calib"+CalibrationIO.CALIB_EXT);
+		File cal = new File("temp_calib."+CalibrationIO.CALIB_EXT);
 			
 		// write calibration
 		Calibration c1 = generateCalibration();
-		CalibrationIO.write(cal, c1);
+		assertTrue(CalibrationIO.write(cal, c1));
 		assertTrue(cal.exists());
 		
 		// read calibration
@@ -46,7 +40,6 @@ public class CalibrationIOTest {
 		
 		// delete temp
 		assertTrue(cal.delete());
-		assertTrue(f_dir.delete());
 	}
 	
 	@Test 
@@ -100,7 +93,7 @@ public class CalibrationIOTest {
 		float[] gain = { 30.1f, 14.1f, 24.1f, 34.1f };
 		float[] r_sq_gain = { 50.1f, 15.1f, 25.1f, 35.1f };
 
-		return new Calibration(2, 2, baseline, dc_per_sec, r_sq_avg, 
+		return new Calibration(1, 1, 2, 2, baseline, dc_per_sec, r_sq_avg, 
 				rn_sq, tn_sq_per_sec, r_sq_var, gain, r_sq_gain);
 	}
 }

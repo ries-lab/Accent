@@ -55,7 +55,7 @@ public class CalibrationIO {
 	/**
 	 * Writes a calibration to a file.
 	 * 
-	 * @param fileToWriteTo FIle to which the calibration is written.
+	 * @param fileToWriteTo File to which the calibration is written.
 	 * @param calibration Calibration to write.
 	 * @return True if the write was successful, false otherwise.
 	 */
@@ -65,7 +65,6 @@ public class CalibrationIO {
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		
 		try {
-			// should write a GlobalConfigurationWrapper, not a GlobalConfiguration
 			objectMapper.writeValue(new FileOutputStream(fileToWriteTo), calibration); 
 			return true;
 			

@@ -15,7 +15,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class Calibration {
 
+	/**
+	 * Roi x anchor.
+	 */
+	private int x0;
+	/**
+	 * Roi y anchor.
+	 */
+	private int y0;
+	/**
+	 * Roi width.
+	 */
 	private int width;
+	/**
+	 * Roi height.
+	 */
 	private int height;
 	
 	/**
@@ -65,7 +79,7 @@ public class Calibration {
 	}
 	
 	/**
-	 * Constructor.
+	 * Constructor used for testing.
 	 * 
 	 * @param width Width of the calibrated roi
 	 * @param height Height of the calibrated roi
@@ -78,8 +92,10 @@ public class Calibration {
 	 * @param gain Gain
 	 * @param r_sq_gain Variance-average fit coefficient of determination
 	 */
-	public Calibration(int width, int height, float[] baseline, float[] dc_per_sec, float[] r_sq_avg, float[] rn_sq,
+	public Calibration(int x0, int y0, int width, int height, float[] baseline, float[] dc_per_sec, float[] r_sq_avg, float[] rn_sq,
 			float[] tn_sq_per_sec, float[] r_sq_var, float[] gain, float[] r_sq_gain) {
+		this.x0 = x0;
+		this.y0 = y0;
 		this.width = width;
 		this.height = height;
 
@@ -95,6 +111,22 @@ public class Calibration {
 		setRSqGain(r_sq_gain);
 	}
 
+	/**
+	 * Returns roi x anchor.
+	 * @return
+	 */
+	public int getX0() {
+		return x0;
+	}
+	
+	/**
+	 * Returns roi y anchor.
+	 * @return
+	 */
+	public int getY0() {
+		return y0;
+	}
+	
 	/**
 	 * Returns calibration roi width in pixels.
 	 * @return Width in pixels.
@@ -258,7 +290,7 @@ public class Calibration {
 	 * @return True if all members of c1 are equal to those of c2, false otherwise.
 	 */
 	public static boolean areEquals(Calibration c1, Calibration c2) {
-		return c1.getWidth()==c2.getWidth() && c1.getHeight()==c2.getHeight() && Arrays.equals(c1.getBaseline(), c2.getBaseline()) 
+		return c1.x0 == c2.x0 && c1.y0 == c2.y0 && c1.getWidth()==c2.getWidth() && c1.getHeight()==c2.getHeight() && Arrays.equals(c1.getBaseline(), c2.getBaseline()) 
 				&& Arrays.equals(c1.getDcPerSec(), c2.getDcPerSec()) && Arrays.equals(c1.getRnSq(), c2.getRnSq()) 
 				&& Arrays.equals(c1.getTnSqPerSec(), c2.getTnSqPerSec()) && Arrays.equals(c1.getGain(), c2.getGain());
 	}
