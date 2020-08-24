@@ -14,7 +14,7 @@
 
 Or
 
-2. Requires [maven](https://maven.apache.org/). Compile the plugin yourself using the build script (Windows or macOS):
+2. Requires [maven](https://maven.apache.org/). Compile the plugin yourself using the build script (Windows):
 
    ```bash
    $ ./build-Win.sh "C:/Path/To/Micro-Manager2-gamma"
@@ -28,7 +28,7 @@ Or
 
 Or
 
-2. Requires  [maven](https://maven.apache.org/). Compile the plugin yourself using the build script (Windows or macOS) : 
+2. Requires  [maven](https://maven.apache.org/). Compile the plugin yourself using the build script (Windows) : 
 
    ```bash
    $ ./build-Win.sh
