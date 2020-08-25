@@ -51,10 +51,13 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 	private final static String STOP = "Stop";
 	private JLabel lblPath;
 	private JTextField textFieldPath;
+	private JTextField tfX0;
+	private JTextField tfY0;
+	private JTextField tfW;
+	private JTextField tfH;
 	private JButton button;
 	private JLabel lblNewLabel;
 	
-
 	/**
 	 * Create the panel.
 	 * @param dataservice 
@@ -81,14 +84,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		add(lblLeaveTheExposure, gbc_lblLeaveTheExposure);*/
 		
 		//JScrollPane scrollPane = new JScrollPane();
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		//scrollPane.setMaximumSize(new Dimension(280, 100));
-		gbc_scrollPane.gridheight = 2;
-		gbc_scrollPane.gridwidth = 3;
-		gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
-		gbc_scrollPane.fill = GridBagConstraints.HORIZONTAL;
-		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 0;
+
 		//add(scrollPane, gbc_scrollPane);
 
 
@@ -114,62 +110,142 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		});
 		table.getColumnModel().getColumn(0).setPreferredWidth(200);
 		table.getColumnModel().getColumn(1).setPreferredWidth(80);
-		add(table, gbc_scrollPane);		
+		
+		GridBagConstraints gbcMain = new GridBagConstraints();
+		//scrollPane.setMaximumSize(new Dimension(280, 100));
+		gbcMain.gridheight = 2;
+		gbcMain.gridwidth = 3;
+		gbcMain.insets = new Insets(0, 0, 5, 0);
+		gbcMain.fill = GridBagConstraints.HORIZONTAL;
+		gbcMain.gridx = 0;
+		gbcMain.gridy = 0;
+		gbcMain.weighty = 0.5;
+		add(table, gbcMain);		
 		
 		lblPath = new JLabel("Path:");
-		GridBagConstraints gbc_lblPath = new GridBagConstraints();
-		gbc_lblPath.anchor = GridBagConstraints.EAST;
-		gbc_lblPath.insets = new Insets(0, 0, 5, 5);
-		gbc_lblPath.gridx = 0;
-		gbc_lblPath.gridy = 3;
-		add(lblPath, gbc_lblPath);
+		gbcMain.gridheight = 1;
+		gbcMain.gridwidth = 1;
+		gbcMain.insets = new Insets(0, 0, 5, 5);
+		gbcMain.gridx = 0;
+		gbcMain.gridy = 3;
+		gbcMain.weightx = 0;
+		add(lblPath, gbcMain);
 		
 		textFieldPath = new JTextField();
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.insets = new Insets(0, 0, 5, 5);
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 3;
-		add(textFieldPath, gbc_textField);
+		gbcMain.insets = new Insets(0, 0, 0, 0);
+		gbcMain.anchor = GridBagConstraints.CENTER;
+		gbcMain.fill = GridBagConstraints.HORIZONTAL;
+		gbcMain.gridx = 1;
+		gbcMain.gridy = 3;
+		gbcMain.weightx = 0.5;
+		add(textFieldPath, gbcMain);
 		textFieldPath.setColumns(10);
 		
 		button = new JButton("...");
-		GridBagConstraints gbc_button = new GridBagConstraints();
-		gbc_button.insets = new Insets(0, 0, 5, 0);
-		gbc_button.gridx = 2;
-		gbc_button.gridy = 3;
-		add(button, gbc_button);
+		gbcMain.insets = new Insets(0, 0, 0, 0);
+		gbcMain.fill = GridBagConstraints.HORIZONTAL;
+		gbcMain.gridx = 2;
+		gbcMain.gridy = 3;
+		gbcMain.weightx = 0;
+		add(button, gbcMain);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {    	
 				selectFolder();
 			}
 		});
 		
+		JPanel roipane = new JPanel(new GridBagLayout());
+		JLabel x0 = new JLabel("X0:");
+		GridBagConstraints gbc_roi = new GridBagConstraints();
+		gbc_roi.insets = new Insets(0, 0, 5, 0);
+		gbc_roi.fill = GridBagConstraints.NONE;
+		gbc_roi.gridx = 0;
+		gbc_roi.gridy = 0;
+		gbc_roi.gridwidth = 1;
+		roipane.add(x0, gbc_roi);
+		
+		tfX0 = new JTextField(" ");
+		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
+		gbc_roi.gridx = 1;
+		gbc_roi.gridwidth = 2;
+		gbc_roi.weightx = 0.5;
+		roipane.add(tfX0, gbc_roi);
+		
+		JLabel y0 = new JLabel("Y0:");
+		gbc_roi.fill = GridBagConstraints.NONE;
+		gbc_roi.gridx = 3;
+		gbc_roi.gridwidth = 1;
+		gbc_roi.weightx = 0;
+		roipane.add(y0, gbc_roi);
+
+		tfY0 = new JTextField(" ");
+		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
+		gbc_roi.gridx = 4;
+		gbc_roi.gridwidth = 2;
+		gbc_roi.weightx = 0.5;
+		roipane.add(tfY0, gbc_roi);
+
+		JLabel w = new JLabel("W:");
+		gbc_roi.fill = GridBagConstraints.NONE;
+		gbc_roi.gridx = 6;
+		gbc_roi.gridwidth = 1;
+		gbc_roi.weightx = 0;
+		roipane.add(w, gbc_roi);
+
+		tfW = new JTextField(" ");
+		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
+		gbc_roi.gridx = 7;
+		gbc_roi.gridwidth = 2;
+		gbc_roi.weightx = 0.5;
+		roipane.add(tfW, gbc_roi);
+
+		JLabel h = new JLabel("H:");
+		gbc_roi.fill = GridBagConstraints.NONE;
+		gbc_roi.gridx = 9;
+		gbc_roi.gridwidth = 1;
+		gbc_roi.weightx = 0;
+		roipane.add(h, gbc_roi);
+
+		tfH = new JTextField(" ");
+		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
+		gbc_roi.gridx = 10;
+		gbc_roi.gridwidth = 2;
+		gbc_roi.weightx = 0.5;
+		roipane.add(tfH, gbc_roi);
+		
+		gbcMain.insets = new Insets(0, 0, 0, 0);
+		gbcMain.fill = GridBagConstraints.HORIZONTAL;
+		gbcMain.gridwidth = 3;
+		gbcMain.gridx = 0;
+		gbcMain.gridy = 4;
+		add(roipane, gbcMain);
+		
 		lblNewLabel = new JLabel(" ");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel.gridx = 1;
-		gbc_lblNewLabel.gridy = 4;
-		add(lblNewLabel, gbc_lblNewLabel);
+		gbcMain.gridwidth = 1;
+		gbcMain.insets = new Insets(0, 0, 5, 5);
+		gbcMain.gridx = 1;
+		gbcMain.gridy = 5;
+		add(lblNewLabel, gbcMain);
 		
 		btnProcess = new JToggleButton(START);
-		GridBagConstraints gbc_btnProcess = new GridBagConstraints();
-		gbc_btnProcess.fill = GridBagConstraints.VERTICAL;
-		gbc_btnProcess.gridheight = 2;
-		gbc_btnProcess.insets = new Insets(5, 0, 0, 0);
-		gbc_btnProcess.gridx = 2;
-		gbc_btnProcess.gridy = 4;
-		add(btnProcess, gbc_btnProcess);
+		gbcMain.fill = GridBagConstraints.VERTICAL;
+		gbcMain.gridheight = 2;
+		gbcMain.insets = new Insets(5, 0, 5, 0);
+		gbcMain.gridx = 2;
+		gbcMain.gridy = 5;
+		gbcMain.weighty = 0.3;
+		add(btnProcess, gbcMain);
 		
 		progressBar = new JProgressBar();
-		GridBagConstraints gbc_progressBar = new GridBagConstraints();
-		gbc_progressBar.insets = new Insets(0, 5, 5, 5);
-		gbc_progressBar.gridwidth = 2;
-		gbc_progressBar.fill = GridBagConstraints.HORIZONTAL;
-		gbc_progressBar.gridx = 0;
-		gbc_progressBar.gridy = 5;
-		add(progressBar, gbc_progressBar);
+		gbcMain.insets = new Insets(0, 5, 5, 0);
+		gbcMain.gridwidth = 2;
+		gbcMain.fill = GridBagConstraints.HORIZONTAL;
+		gbcMain.gridx = 0;
+		gbcMain.gridy = 6;
+		gbcMain.weighty = 0;
+		add(progressBar, gbcMain);
+		
 		btnProcess.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
@@ -352,4 +428,14 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		
 		return vals;
 	}
+	
+	public static void main(String[] args) {
+		JFrame frame = new JFrame();
+		frame.add(new TableProcPanel(null));
+		
+		frame.pack();
+		frame.setVisible(true);
+	}
+	
 }
+

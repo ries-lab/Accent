@@ -12,6 +12,7 @@ import java.io.File;
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -34,6 +35,10 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 	private JButton folderButton;
 	private JLabel procFeedbackLabel;
 	private JToggleButton processButton;
+	private JTextField tfX0;
+	private JTextField tfY0;
+	private JTextField tfW;
+	private JTextField tfH;
 	
 	private final static String START = "Process";
 	private final static String STOP = "Stop";
@@ -48,59 +53,121 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 		this.controller = controller;
 		
 		this.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Process raw data", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		GridBagConstraints gbc_ProcessPanel = new GridBagConstraints();
-		gbc_ProcessPanel.insets = new Insets(0, 0, 5, 5);
-		gbc_ProcessPanel.fill = GridBagConstraints.BOTH;
-		gbc_ProcessPanel.gridx = 0;
-		gbc_ProcessPanel.gridy = 1;
-		GridBagLayout gbl_ProcessPanel = new GridBagLayout();
-		gbl_ProcessPanel.columnWidths = new int[]{0, 0, 0, 0, 0};
-		gbl_ProcessPanel.rowHeights = new int[]{0, 0, 0, 0};
-		gbl_ProcessPanel.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_ProcessPanel.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		this.setLayout(gbl_ProcessPanel);  
+		this.setLayout(new GridBagLayout());  
 		
 		JLabel folderLabel = new JLabel("Folder:");
-		GridBagConstraints gbc_folderLabel = new GridBagConstraints();
-		gbc_folderLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_folderLabel.anchor = GridBagConstraints.EAST;
-		gbc_folderLabel.gridx = 0;
-		gbc_folderLabel.gridy = 0;
-		this.add(folderLabel, gbc_folderLabel);
+		GridBagConstraints gbcMain = new GridBagConstraints();
+		gbcMain.fill = GridBagConstraints.HORIZONTAL;
+		gbcMain.gridx = 0;
+		gbcMain.gridy = 0;
+		gbcMain.weightx = 0;
+		this.add(folderLabel, gbcMain);
 		
-		folderField = new JTextField();
-		GridBagConstraints gbc_folderField = new GridBagConstraints();
-		gbc_folderField.gridwidth = 2;
-		gbc_folderField.insets = new Insets(0, 0, 5, 5);
-		gbc_folderField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_folderField.gridx = 1;
-		gbc_folderField.gridy = 0;
-		this.add(folderField, gbc_folderField);
-		folderField.setColumns(10);
-		
-		folderField.setBackground(Color.WHITE);
+		folderField = new JTextField(" ");		
+		gbcMain.gridx = 1;
+		gbcMain.weightx = 1;
+		this.add(folderField, gbcMain);
 		
 		folderButton = new JButton("...");
 		folderButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {    	
 				showPathSelectionWindow();
 			}
-		});
-		GridBagConstraints gbc_folderButton = new GridBagConstraints();
-		gbc_folderButton.insets = new Insets(0, 0, 5, 0);
-		gbc_folderButton.gridx = 3;
-		gbc_folderButton.gridy = 0;
-		this.add(folderButton, gbc_folderButton);
+		});		
+		gbcMain.gridx = 2;
+		gbcMain.weightx = 0;
+		this.add(folderButton, gbcMain);
+		
+		
+		JPanel roipane = new JPanel(new GridBagLayout());
+		JLabel x0 = new JLabel("X0:");
+		GridBagConstraints gbc_roi = new GridBagConstraints();
+		gbc_roi.insets = new Insets(0, 0, 5, 0);
+		gbc_roi.fill = GridBagConstraints.NONE;
+		gbc_roi.gridx = 0;
+		gbc_roi.gridy = 0;
+		gbc_roi.gridwidth = 1;
+		roipane.add(x0, gbc_roi);
+		
+		tfX0 = new JTextField(" ");
+		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
+		gbc_roi.gridx = 1;
+		gbc_roi.gridwidth = 2;
+		gbc_roi.weightx = 0.5;
+		roipane.add(tfX0, gbc_roi);
+		
+		JLabel y0 = new JLabel("Y0:");
+		gbc_roi.fill = GridBagConstraints.NONE;
+		gbc_roi.gridx = 3;
+		gbc_roi.gridwidth = 1;
+		gbc_roi.weightx = 0;
+		roipane.add(y0, gbc_roi);
+
+		tfY0 = new JTextField(" ");
+		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
+		gbc_roi.gridx = 4;
+		gbc_roi.gridwidth = 2;
+		gbc_roi.weightx = 0.5;
+		roipane.add(tfY0, gbc_roi);
+
+		JLabel w = new JLabel("W:");
+		gbc_roi.fill = GridBagConstraints.NONE;
+		gbc_roi.gridx = 6;
+		gbc_roi.gridwidth = 1;
+		gbc_roi.weightx = 0;
+		roipane.add(w, gbc_roi);
+
+		tfW = new JTextField(" ");
+		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
+		gbc_roi.gridx = 7;
+		gbc_roi.gridwidth = 2;
+		gbc_roi.weightx = 0.5;
+		roipane.add(tfW, gbc_roi);
+
+		JLabel h = new JLabel("H:");
+		gbc_roi.fill = GridBagConstraints.NONE;
+		gbc_roi.gridx = 9;
+		gbc_roi.gridwidth = 1;
+		gbc_roi.weightx = 0;
+		roipane.add(h, gbc_roi);
+
+		tfH = new JTextField(" ");
+		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
+		gbc_roi.gridx = 10;
+		gbc_roi.gridwidth = 2;
+		gbc_roi.weightx = 0.5;
+		roipane.add(tfH, gbc_roi);
+		
+		gbcMain.insets = new Insets(0, 0, 0, 0);
+		gbcMain.fill = GridBagConstraints.HORIZONTAL;
+		gbcMain.gridwidth = 3;
+		gbcMain.gridx = 0;
+		gbcMain.gridy = 1;
+		add(roipane, gbcMain);
 		
 		procFeedbackLabel = new JLabel("    ");
 		procFeedbackLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-		GridBagConstraints gbc_procFeedbackLabel = new GridBagConstraints();
-		gbc_procFeedbackLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_procFeedbackLabel.gridx = 2;
-		gbc_procFeedbackLabel.gridy = 1;
-		this.add(procFeedbackLabel, gbc_procFeedbackLabel);
+		gbcMain.gridwidth = 1;
+		gbcMain.insets = new Insets(0, 0, 5, 5);
+		gbcMain.gridy = 2;
+		this.add(procFeedbackLabel, gbcMain);
 		
-		processButton = new JToggleButton(START);
+		processButton = new JToggleButton(START);		
+		processButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		gbcMain.fill = GridBagConstraints.VERTICAL;
+		gbcMain.gridheight = 2;
+		gbcMain.gridx = 2;
+		gbcMain.gridy = 2;
+		this.add(processButton, gbcMain);
+		
+		procProgressBar = new JProgressBar();
+		gbcMain.fill = GridBagConstraints.HORIZONTAL;
+		gbcMain.gridheight = 1;
+		gbcMain.gridwidth = 2;
+		gbcMain.gridx = 0;
+		gbcMain.gridy = 3;
+		this.add(procProgressBar, gbcMain);
+		
 		processButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
@@ -114,22 +181,6 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 				}
 			}
 		});
-		
-		processButton.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_processButton = new GridBagConstraints();
-		gbc_processButton.fill = GridBagConstraints.VERTICAL;
-		gbc_processButton.gridheight = 2;
-		gbc_processButton.gridx = 3;
-		gbc_processButton.gridy = 1;
-		this.add(processButton, gbc_processButton);
-		
-		procProgressBar = new JProgressBar();
-		GridBagConstraints gbc_procProgressBar = new GridBagConstraints();
-		gbc_procProgressBar.fill = GridBagConstraints.HORIZONTAL;
-		gbc_procProgressBar.insets = new Insets(0, 0, 0, 5);
-		gbc_procProgressBar.gridx = 2;
-		gbc_procProgressBar.gridy = 2;
-		this.add(procProgressBar, gbc_procProgressBar);
 	}
 	
 	protected void stopProcessing() {
@@ -208,6 +259,14 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 	@Override
 	public void setDataPath(String path) {
 		folderField.setText(path);
+	}
+	
+	public static void main(String[] args) {
+		JFrame frame = new JFrame();
+		frame.add(new ProcPanel(null));
+		
+		frame.pack();
+		frame.setVisible(true);
 	}
 
 }
