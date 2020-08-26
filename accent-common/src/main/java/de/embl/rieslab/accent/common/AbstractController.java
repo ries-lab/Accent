@@ -134,9 +134,10 @@ public abstract class AbstractController<U extends RawImage, T extends Calibrati
 		}
 	}
 	
-	public void setProcessorPanelPath(String path) {
+	public void setProcessorPanelPath(String path, SimpleRoi roi) {
 		if(procPanel != null) {
 			procPanel.setDataPath(path);
+			procPanel.setRoi(roi);
 		}
 	}
 	

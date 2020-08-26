@@ -65,7 +65,7 @@ public class DummyMM2Controller implements PipelineController<BareImage, FloatIm
 	public boolean isProcessorRunning() {return false;}
 
 	@Override
-	public void setProcessorPanelPath(String path) {}
+	public void setProcessorPanelPath(String path, SimpleRoi roi) {}
 
 	@Override
 	public boolean startGenerator(String path, double[] exposures) {return false;}

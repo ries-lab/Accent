@@ -347,15 +347,9 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 					File roi_f = new File(path+"/"+CalibrationProcessor.DEFAULT_ROI);
 					if(roi_f.exists() && SimpleRoiIO.read(roi_f) != null) {
 						SimpleRoi roi = SimpleRoiIO.read(roi_f);
-						tfX0.setText(String.valueOf(roi.x0));
-						tfY0.setText(String.valueOf(roi.y0));
-						tfW.setText(String.valueOf(roi.width));
-						tfH.setText(String.valueOf(roi.height));
+						setRoi(roi);
 					} else {
-						tfX0.setText("0");
-						tfY0.setText("0");
-						tfW.setText("0");
-						tfH.setText("0");
+						setRoi(new SimpleRoi(0,0,0,0));
 					}
 				} else {
 					Dialogs.showErrorMessage("No dataset found.");
@@ -476,6 +470,16 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		
 		frame.pack();
 		frame.setVisible(true);
+	}
+	
+	@Override
+	public void setRoi(SimpleRoi roi) {
+		if(roi != null) {
+			tfX0.setText(String.valueOf(roi.x0));
+			tfY0.setText(String.valueOf(roi.y0));
+			tfW.setText(String.valueOf(roi.width));
+			tfH.setText(String.valueOf(roi.height));
+		}
 	}
 	
 }

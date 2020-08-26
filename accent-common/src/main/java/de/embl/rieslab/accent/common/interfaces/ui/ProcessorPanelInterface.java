@@ -1,5 +1,7 @@
 package de.embl.rieslab.accent.common.interfaces.ui;
 
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
+
 /**
  * Interface for a processor UI panel.
  * @author Joran Deschamps
@@ -12,6 +14,9 @@ public interface ProcessorPanelInterface {
 	 * @param path
 	 */
 	public void setDataPath(String path);
+	
+	public void setRoi(SimpleRoi roi);
+	
 	/**
 	 * Updates the progress status of the processing.
 	 * @param progress String describing the current status

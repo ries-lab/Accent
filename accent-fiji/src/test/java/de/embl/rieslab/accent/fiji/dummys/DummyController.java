@@ -69,7 +69,7 @@ public class DummyController implements PipelineController<StackImg, PlaneImg>{
 	public boolean isProcessorRunning() {return false;}
 
 	@Override
-	public void setProcessorPanelPath(String path) {}
+	public void setProcessorPanelPath(String path, SimpleRoi roi) {}
 
 	@Override
 	public boolean startGenerator(String path, double[] exposures) {return false;}

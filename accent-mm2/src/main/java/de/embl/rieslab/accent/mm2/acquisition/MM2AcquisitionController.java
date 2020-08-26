@@ -65,14 +65,14 @@ public class MM2AcquisitionController implements AcquisitionController {
 	public void acquisitionHasStopped() {
 		acqPanel.acqHasStopped();
 		
-		controller.setProcessorPanelPath(acqSettings.folder_);
+		controller.setProcessorPanelPath(acqSettings.folder_, acqSettings.roi_);
 	}
 
 	@Override
 	public void acquisitionHasEnded() {
 		acqDone = true;
 		acqPanel.acqHasEnded();
-		controller.setProcessorPanelPath(acqSettings.folder_);
+		controller.setProcessorPanelPath(acqSettings.folder_, acqSettings.roi_);
 		System.out.println("Acquisition running time (s): "+acq.getExecutionTime());
 	}	
 

@@ -74,7 +74,7 @@ public interface PipelineController<U extends RawImage, T extends CalibrationIma
 
 	public boolean isProcessorRunning();
 	
-	public void setProcessorPanelPath(String path);
+	public void setProcessorPanelPath(String path, SimpleRoi roi);
 	
 	//////// map generation
 	public boolean startGenerator(String path, double[] exposures);
