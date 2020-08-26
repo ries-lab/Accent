@@ -5,6 +5,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JFrame;
 
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.data.ArrayToImage;
 import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
 import de.embl.rieslab.accent.common.interfaces.data.ImageSaver;
@@ -49,7 +50,7 @@ public interface PipelineController<U extends RawImage, T extends CalibrationIma
 	 * @param loader
 	 * @return
 	 */
-	public CalibrationProcessor<U,T> getProcessor(String path, Loader<U> loader);
+	public CalibrationProcessor<U,T> getProcessor(String path, SimpleRoi roi, Loader<U> loader);
 	
 	/**
 	 * Checks if the processor is ready.
@@ -57,9 +58,9 @@ public interface PipelineController<U extends RawImage, T extends CalibrationIma
 	 */
 	public boolean isProcessorReady();
 	
-	public boolean startProcessor(String path);
+	public boolean startProcessor(String path, SimpleRoi roi);
 	
-	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<U>> queues);
+	public boolean startProcessor(String path, SimpleRoi roi, ArrayList<ArrayBlockingQueue<U>> queues);
 
 	public void stopProcessor();
 	

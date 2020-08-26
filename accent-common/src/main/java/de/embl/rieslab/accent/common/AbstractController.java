@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.generator.AvgVarMapsGenerator;
 import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
 import de.embl.rieslab.accent.common.interfaces.data.RawImage;
@@ -27,7 +28,7 @@ public abstract class AbstractController<U extends RawImage, T extends Calibrati
 	protected Generator generator;
 	
 	// Processor		
-	public boolean startProcessor(String path) {
+	public boolean startProcessor(String path, SimpleRoi roi) {
 
 		if(isReady() && path != null) {
 			if(!(new File(path).exists())) {
@@ -38,7 +39,7 @@ public abstract class AbstractController<U extends RawImage, T extends Calibrati
 				}
 			}
 	
-			processor = getProcessor(path, getLoader(DEFAULT_LOADER));
+			processor = getProcessor(path, roi, getLoader(DEFAULT_LOADER));
 			if (isProcessorReady()) {
 				processor.startProcess();
 				return true;

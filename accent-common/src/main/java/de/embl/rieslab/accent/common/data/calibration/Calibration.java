@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
+
 
 /**
  * Represents a camera calibration, including different estimated measurements such as the baseline,
@@ -73,9 +75,18 @@ public class Calibration {
 	 */	
 	public Calibration() {}
 
-	public Calibration(int width, int height) {
+	public Calibration(int x0, int y0, int width, int height) {
+		this.x0 = x0;
+		this.y0 = y0;
 		this.width = width;
 		this.height = height;
+	}
+	
+	public Calibration(SimpleRoi roi) {
+		this.x0 = roi.x0;
+		this.y0 = roi.y0;
+		this.width = roi.width;
+		this.height = roi.height;
 	}
 	
 	/**

@@ -73,6 +73,24 @@ public class SimpleRoi {
 			y0 = y0-height;
 		}
 	}
+
+	public SimpleRoi(int x, int y, int w, int h) {
+		if(w <= 0 || h <= 0)
+			throw new IllegalArgumentException("Roi width/height cannot be 0 or less.");
+		
+		x0 = x;
+		y0 = y;
+		width = w;
+		height = h;
+		
+		// sanity check on the roi
+		sane = true;
+		
+		if(x0 < 0 || y0 < 0 || w == 0 || h == 0) {
+			sane = false;
+		}
+	}
+	
 	
 	/**
 	 * Returns the sanity status of the Roi. A roi is not sane if the x0 and y0 are out of bounds or the w/h 0.

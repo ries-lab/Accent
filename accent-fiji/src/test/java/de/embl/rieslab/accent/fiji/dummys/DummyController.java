@@ -5,6 +5,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JFrame;
 
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.GeneratorPanelInterface;
@@ -36,16 +37,16 @@ public class DummyController implements PipelineController<StackImg, PlaneImg>{
 	}
 
 	@Override
-	public CalibrationProcessor<StackImg, PlaneImg> getProcessor(String path, Loader<StackImg> loader) {return null;}
+	public CalibrationProcessor<StackImg, PlaneImg> getProcessor(String path, SimpleRoi roi, Loader<StackImg> loader) {return null;}
 
 	@Override
 	public boolean isProcessorReady() {return false;}
 
 	@Override
-	public boolean startProcessor(String path) {return false;}
+	public boolean startProcessor(String path, SimpleRoi roi) {return false;}
 
 	@Override
-	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<StackImg>> queues) {return false;}
+	public boolean startProcessor(String path, SimpleRoi roi, ArrayList<ArrayBlockingQueue<StackImg>> queues) {return false;}
 
 	@Override
 	public void stopProcessor() {}

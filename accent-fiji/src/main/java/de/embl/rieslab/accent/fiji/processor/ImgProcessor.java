@@ -1,6 +1,7 @@
 package de.embl.rieslab.accent.fiji.processor;
 
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
@@ -14,8 +15,8 @@ import net.imglib2.type.numeric.real.FloatType;
 
 public class ImgProcessor extends CalibrationProcessor<StackImg, PlaneImg>{
 
-	public ImgProcessor(String folder, PipelineController<StackImg, PlaneImg> controller, Loader<StackImg> loader) {
-		super(folder, controller, loader);
+	public ImgProcessor(String folder, SimpleRoi roi, PipelineController<StackImg, PlaneImg> controller, Loader<StackImg> loader) {
+		super(folder, roi, controller, loader);
 	}
 
 	@Override

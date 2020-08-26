@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 import de.embl.rieslab.accent.mm2.dummys.DummyMM2Controller;
 import de.embl.rieslab.accent.mm2.dummys.DummyMM2Loader;
@@ -24,7 +25,7 @@ public class StacksProcessorTest {
 		String dir = "temp_proc";
 		
 		// computes avg and var
-		StacksProcessor proc = new StacksProcessor(dir, cont, load);
+		StacksProcessor proc = new StacksProcessor(dir, new SimpleRoi(0,0,width,height), cont, load);
 		AvgVarStacks<FloatImage> a = proc.computeAvgAndVar();
 
 		assertEquals(exps.length, a.getAvgs().length);
@@ -58,7 +59,7 @@ public class StacksProcessorTest {
 		String dir = "temp_proc";
 		
 		// computes avg and var
-		StacksProcessor proc = new StacksProcessor(dir, cont, load);
+		StacksProcessor proc = new StacksProcessor(dir, new SimpleRoi(0,0,width,height), cont, load);
 		AvgVarStacks<FloatImage> a = proc.computeAvgAndVar();
 
 		assertEquals(exps.length, a.getAvgs().length);
@@ -92,7 +93,7 @@ public class StacksProcessorTest {
 		String dir = "temp_proc";
 		
 		// computes avg and var
-		StacksProcessor proc = new StacksProcessor(dir, cont, load);
+		StacksProcessor proc = new StacksProcessor(dir, new SimpleRoi(0,0,width,height), cont, load);
 		AvgVarStacks<FloatImage> a = proc.computeAvgAndVar();
 
 		assertEquals(exps.length, a.getAvgs().length);

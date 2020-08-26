@@ -1,14 +1,15 @@
 package de.embl.rieslab.accent.common.dummys;
 
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 
 public class DummyProcessor extends CalibrationProcessor<DummyImage, DummyImage> {
 
-	public DummyProcessor(String folder, PipelineController<DummyImage, DummyImage> controller, DummyLoader loader) {
-		super(folder, controller, loader);
+	public DummyProcessor(String folder, SimpleRoi roi, PipelineController<DummyImage, DummyImage> controller, DummyLoader loader) {
+		super(folder, roi, controller, loader);
 	}
 
 	@Override

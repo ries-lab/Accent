@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import org.scijava.log.LogService;
 
 import de.embl.rieslab.accent.common.AbstractController;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import de.embl.rieslab.accent.common.utils.Dialogs;
@@ -44,7 +45,7 @@ public class FijiController extends AbstractController<StackImg, PlaneImg> {
 	}
 
 	@Override
-	public boolean startProcessor(String path) {
+	public boolean startProcessor(String path, SimpleRoi roi) {
 		if(path == null)
 			throw new NullPointerException("Path can't be null.");
 		
@@ -75,7 +76,7 @@ public class FijiController extends AbstractController<StackImg, PlaneImg> {
 	
 				// start proc
 				if(datasets_.size() >= 2) {
-					processor = getProcessor(path, getLoader(loadStacks_ ? LOADER_STACK:LOADER_SINGLES));
+					processor = getProcessor(path, roi, getLoader(loadStacks_ ? LOADER_STACK:LOADER_SINGLES));
 					processor.startProcess();
 					return true;
 				} else {
@@ -101,8 +102,8 @@ public class FijiController extends AbstractController<StackImg, PlaneImg> {
 	}
 
 	@Override
-	public CalibrationProcessor<StackImg, PlaneImg> getProcessor(String path, Loader<StackImg> loader) {
-		return new ImgProcessor(path, this, loader);
+	public CalibrationProcessor<StackImg, PlaneImg> getProcessor(String path, SimpleRoi roi, Loader<StackImg> loader) {
+		return new ImgProcessor(path, roi, this, loader);
 	}
 
 	@Override
@@ -115,7 +116,7 @@ public class FijiController extends AbstractController<StackImg, PlaneImg> {
 	}
 
 	@Override
-	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<StackImg>> queues) {
+	public boolean startProcessor(String path, SimpleRoi roi, ArrayList<ArrayBlockingQueue<StackImg>> queues) {
 		// do nothing
 		return false;
 	}

@@ -25,7 +25,7 @@ public class SimpleRoiIO {
 	 * 
 	 * @param fileToWriteTo File to which the roi should be written
 	 * @param roi Roi to write
-	 * @return True fi the write was successful, false otherwise
+	 * @return True if the write was successful, false otherwise
 	 */
 	public static boolean write(File fileToWriteTo, SimpleRoi roi) {
 

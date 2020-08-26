@@ -11,8 +11,12 @@ import javax.swing.table.DefaultTableModel;
 
 import org.joml.Math;
 
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoiIO;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessorPanelInterface;
+import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
+import de.embl.rieslab.accent.common.utils.AccentUtils;
 import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.fiji.data.image.PlaneImg;
 import de.embl.rieslab.accent.fiji.data.image.StackImg;
@@ -26,6 +30,7 @@ import javax.swing.JFrame;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -337,6 +342,21 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 					}
 					//((JFrame) cont).repaint();
 					((JFrame) cont).pack();
+					
+					// checks if a SimpleRoi is present
+					File roi_f = new File(path+"/"+CalibrationProcessor.DEFAULT_ROI);
+					if(roi_f.exists() && SimpleRoiIO.read(roi_f) != null) {
+						SimpleRoi roi = SimpleRoiIO.read(roi_f);
+						tfX0.setText(String.valueOf(roi.x0));
+						tfY0.setText(String.valueOf(roi.y0));
+						tfW.setText(String.valueOf(roi.width));
+						tfH.setText(String.valueOf(roi.height));
+					} else {
+						tfX0.setText("0");
+						tfY0.setText("0");
+						tfW.setText("0");
+						tfH.setText("0");
+					}
 				} else {
 					Dialogs.showErrorMessage("No dataset found.");
 				}
@@ -353,9 +373,11 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 
 	protected void startProcessing() {
 		if(!controller.isProcessorRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
-			String s  = textFieldPath.getText();
+			String path  = textFieldPath.getText();
+			SimpleRoi roi = getRoi();
+
 			// HashMap<String, Double> list = extractDatasets();
-			boolean b = controller.startProcessor(s);
+			boolean b = controller.startProcessor(path, roi);
 			if(!b) {
 				btnProcess.setText(START);
 				btnProcess.setSelected(false);
@@ -427,6 +449,25 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 		}
 		
 		return vals;
+	}
+	
+	private SimpleRoi getRoi() {
+		String x0 = tfX0.getText();
+		String y0 = tfY0.getText();
+		String w = tfW.getText();
+		String h = tfH.getText();
+		
+		if(AccentUtils.isInteger(x0) &&
+				AccentUtils.isInteger(y0) &&
+				AccentUtils.isInteger(w) &&
+				AccentUtils.isInteger(h)) {
+			return new SimpleRoi(Integer.parseInt(x0),
+					Integer.parseInt(y0),
+					Integer.parseInt(w),
+					Integer.parseInt(h));
+		} else {
+			return new SimpleRoi(0,0,0,0);
+		}
 	}
 	
 	public static void main(String[] args) {

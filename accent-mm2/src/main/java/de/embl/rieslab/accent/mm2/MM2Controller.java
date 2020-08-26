@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import org.micromanager.Studio;
 
 import de.embl.rieslab.accent.common.AbstractController;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.data.ArrayToImage;
 import de.embl.rieslab.accent.common.interfaces.data.ImageSaver;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
@@ -57,7 +58,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 	
 	//////// Processing
 	@Override
-	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<BareImage>> queues) {
+	public boolean startProcessor(String path, SimpleRoi roi, ArrayList<ArrayBlockingQueue<BareImage>> queues) {
 
 		if(path != null &&
 				(isAcqPathKnown(path) || new File(path).exists()) && queues != null) {
@@ -65,7 +66,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 			this.queues = queues;
 			
 			if(queues.size() >= 2) {
-				processor = getProcessor(path, getLoader(QUEUES_LOADER));
+				processor = getProcessor(path, roi, getLoader(QUEUES_LOADER));
 				
 				if(processor != null) {
 					processor.startProcess();
@@ -82,7 +83,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 	}
 	
 	@Override
-	public boolean startProcessor(String path) {	
+	public boolean startProcessor(String path, SimpleRoi roi) {	
 		if(isReady() && path != null &&
 				(isAcqPathKnown(path) || new File(path).exists())) {
 
@@ -98,7 +99,7 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 				processorHasStopped();
 				return false;
 			} else if(directoriesToLoad != null && directoriesToLoad.length > 1) {
-				processor = getProcessor(path, getLoader(DEFAULT_LOADER));
+				processor = getProcessor(path, roi, getLoader(DEFAULT_LOADER));
 				processor.startProcess();
 				return true;
 			}
@@ -175,11 +176,11 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 	}
 
 	@Override
-	public CalibrationProcessor<BareImage,FloatImage> getProcessor(String path, Loader<BareImage> loader) {
+	public CalibrationProcessor<BareImage,FloatImage> getProcessor(String path, SimpleRoi roi, Loader<BareImage> loader) {
 		if(loader instanceof QueuesLoader) {
-			return new QueuesProcessor(path, this, (QueuesLoader) loader, acqController);
+			return new QueuesProcessor(path, roi, this, (QueuesLoader) loader, acqController);
 		} else if (loader instanceof MMStacksLoader) {
-			return new StacksProcessor(path, this, (MMStacksLoader) loader);
+			return new StacksProcessor(path, roi, this, (MMStacksLoader) loader);
 		}
 		return null;
 	}

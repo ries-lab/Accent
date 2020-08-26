@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.fiji.data.image.PlaneImg;
 import de.embl.rieslab.accent.fiji.data.image.StackImg;
@@ -42,7 +43,7 @@ public class ImgProcessorTest {
 		
 		// creates processor
 		DummyController cont = new DummyController();
-		ImgProcessor proc = new ImgProcessor(dir, cont, loader);
+		ImgProcessor proc = new ImgProcessor(dir, new SimpleRoi(0,0,width,height), cont, loader);
 		
 		// performs avg and var calculation
 		AvgVarStacks<PlaneImg> avgs_vars = proc.computeAvgAndVar();
@@ -107,7 +108,7 @@ public class ImgProcessorTest {
 		
 		// creates processor
 		DummyController cont = new DummyController();
-		ImgProcessor proc = new ImgProcessor(dir, cont, loader);
+		ImgProcessor proc = new ImgProcessor(dir, new SimpleRoi(0,0,width,height), cont, loader);
 		
 		// performs avg and var calculation
 		AvgVarStacks<PlaneImg> avgs_vars = proc.computeAvgAndVar();
@@ -172,7 +173,7 @@ public class ImgProcessorTest {
 		
 		// creates processor
 		DummyController cont = new DummyController();
-		ImgProcessor proc = new ImgProcessor(dir, cont, loader);
+		ImgProcessor proc = new ImgProcessor(dir, new SimpleRoi(0,0,width,height), cont, loader);
 		
 		// performs avg and var calculation
 		AvgVarStacks<PlaneImg> avgs_vars = proc.computeAvgAndVar();
@@ -237,7 +238,7 @@ public class ImgProcessorTest {
 		
 		// creates processor
 		DummyController cont = new DummyController();
-		ImgProcessor proc = new ImgProcessor(dir, cont, loader);
+		ImgProcessor proc = new ImgProcessor(dir, new SimpleRoi(0,0,width,height), cont, loader);
 		
 		// performs avg and var calculation
 		AvgVarStacks<PlaneImg> avgs_vars = proc.computeAvgAndVar();
@@ -348,7 +349,7 @@ public class ImgProcessorTest {
 		
 		// creates processor
 		DummyController cont = new DummyController();
-		ImgProcessor proc = new ImgProcessor(dir, cont, loader);
+		ImgProcessor proc = new ImgProcessor(dir, new SimpleRoi(0,0,(int)width,(int)height), cont, loader);
 		
 		// performs avg and var calculation
 		AvgVarStacks<PlaneImg> avgs_vars = proc.computeAvgAndVar();

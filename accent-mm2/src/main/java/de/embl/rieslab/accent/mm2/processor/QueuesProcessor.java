@@ -1,6 +1,7 @@
 package de.embl.rieslab.accent.mm2.processor;
 
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
@@ -13,8 +14,8 @@ public class QueuesProcessor extends CalibrationProcessor<BareImage, FloatImage>
 	
 	private AcquisitionController acqcontroller;
 	
-	public QueuesProcessor(String folder, PipelineController<BareImage, FloatImage> controller, QueuesLoader loader, AcquisitionController acqcontroller) {
-		super(folder, controller, loader);
+	public QueuesProcessor(String folder, SimpleRoi roi, PipelineController<BareImage, FloatImage> controller, QueuesLoader loader, AcquisitionController acqcontroller) {
+		super(folder, roi, controller, loader);
 		this.acqcontroller = acqcontroller;
 	}
 

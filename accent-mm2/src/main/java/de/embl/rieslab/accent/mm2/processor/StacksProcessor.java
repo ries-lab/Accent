@@ -1,6 +1,7 @@
 package de.embl.rieslab.accent.mm2.processor;
 
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
@@ -9,8 +10,8 @@ import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 
 public class StacksProcessor extends CalibrationProcessor<BareImage, FloatImage> {
 
-	public StacksProcessor(String folder, PipelineController<BareImage, FloatImage> controller, Loader<BareImage> loader) {
-		super(folder, controller, loader);
+	public StacksProcessor(String folder, SimpleRoi roi, PipelineController<BareImage, FloatImage> controller, Loader<BareImage> loader) {
+		super(folder, roi, controller, loader);
 	}
 
 	@Override

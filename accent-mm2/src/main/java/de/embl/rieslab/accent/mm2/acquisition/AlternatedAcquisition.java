@@ -18,6 +18,7 @@ import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
 import de.embl.rieslab.accent.mm2.interfaces.AcquisitionController;
 import de.embl.rieslab.accent.common.data.roi.SimpleRoiIO;
+import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
 import de.embl.rieslab.accent.common.utils.AccentUtils;
 
 public class AlternatedAcquisition extends SwingWorker<Integer, Integer> implements Acquisition {
@@ -93,7 +94,18 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		if(studio.getCMMCore().isSequenceRunning()){
 			studio.getCMMCore().stopSequenceAcquisition();
 		}
-				
+		
+		// sets Roi
+		if (settings.roi_ != null && settings.roi_.isSane()) {
+			studio.getCMMCore().clearROI();
+			studio.getCMMCore().setROI(settings.roi_.x0, settings.roi_.y0, settings.roi_.width, settings.roi_.height);
+
+			// write roi to disk
+			SimpleRoiIO.write(new File(settings.folder_ + "/" + CalibrationProcessor.DEFAULT_ROI), settings.roi_);
+		} else {
+			studio.getCMMCore().clearROI();
+		}
+		
 		startTime = System.currentTimeMillis();
 		
 		// pre-run
@@ -157,18 +169,6 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 			closeDatastores(stores);
 			publish(STOP);
 			return 0;
-		}
-			
-		// sets Roi
-		if(settings.roi_ != null) {
-			studio.getCMMCore().clearROI();
-			studio.getCMMCore().setROI(settings.roi_.x0, settings.roi_.y0, 
-					settings.roi_.width, settings.roi_.height);
-			
-			// write roi to disk
-			SimpleRoiIO.write(new File(settings.folder_+"/roi.roi"), settings.roi_);
-		} else {
-			studio.getCMMCore().clearROI();
 		}
 
 		// prepares coordinates

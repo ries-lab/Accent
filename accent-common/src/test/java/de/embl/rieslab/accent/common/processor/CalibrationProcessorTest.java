@@ -11,6 +11,7 @@ import java.io.File;
 
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.dummys.DummyController;
 import de.embl.rieslab.accent.common.dummys.DummyImage;
 import de.embl.rieslab.accent.common.dummys.DummyLoader;
@@ -21,31 +22,30 @@ public class CalibrationProcessorTest {
 	@Test
 	public void testConstructor() {
 		assertThrows(IllegalArgumentException.class, () -> {
-			new DummyProcessor("", new DummyController(), new DummyLoader(1));
+			new DummyProcessor("", new SimpleRoi(0,0,1,1), new DummyController(), new DummyLoader(1));
 		});
 		assertThrows(NullPointerException.class, () -> {
-			new DummyProcessor(null, new DummyController(), new DummyLoader(2));
+			new DummyProcessor(null, new SimpleRoi(0,0,1,1), new DummyController(), new DummyLoader(2));
 		});
 		assertThrows(NullPointerException.class, () -> {
-			new DummyProcessor("", null, new DummyLoader(2));
+			new DummyProcessor("", new SimpleRoi(0,0,1,1), null, new DummyLoader(2));
 		});
 		assertThrows(NullPointerException.class, () -> {
-			new DummyProcessor("", new DummyController(), null);
+			new DummyProcessor("", new SimpleRoi(0,0,1,1), new DummyController(), null);
 		});
 	}
 	
 	@Test
 	public void testLinearRegressions() {
-		DummyProcessor proc = new DummyProcessor("", new DummyController(), new DummyLoader(3));
+		int width = 1;
+		int height = 1;
+		DummyProcessor proc = new DummyProcessor("", new SimpleRoi(0,0,width,height), new DummyController(), new DummyLoader(3));
 				
 		int Ne = 3;
 		double[] exposure = new double[Ne];
 		for(int i =0; i< Ne; i++)
 			exposure[i] = 10+500*i;
 			
-		int width = 1;
-		int height = 1;
-		
 		// ground truth
 		double baseline = 3.5;
 		double dc_per_sec = 1.8; 
@@ -103,7 +103,8 @@ public class CalibrationProcessorTest {
 
 		DummyLoader load =  new DummyLoader(3);
 		DummyController cont =  new DummyController();
-		DummyProcessor proc = new DummyProcessor(f_dir.getAbsolutePath(), cont, load);
+		DummyProcessor proc = new DummyProcessor(f_dir.getAbsolutePath(), new SimpleRoi(0, 0, load.width, load.height),
+				cont, load);
 		
 		assertFalse(proc.isRunning());
 		proc.startProcess();

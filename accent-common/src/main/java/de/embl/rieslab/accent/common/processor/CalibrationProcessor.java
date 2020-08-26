@@ -10,6 +10,7 @@ import org.apache.commons.math3.stat.regression.SimpleRegression;
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIO;
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.data.CalibrationImage;
 import de.embl.rieslab.accent.common.interfaces.data.RawImage;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
@@ -25,6 +26,7 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 	private Calibration results;
 	private String calibPath;
 	private final String folder;
+	private final SimpleRoi roi;
 
 	private long startTime, stopTime;
 	
@@ -42,7 +44,9 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 	public final static String RSQVAR = "R_sq_var.tiff";
 	public final static String RSQGAIN = "R_sq_gain.tiff";
 	
-	public CalibrationProcessor(String folder, PipelineController<U,T> controller, Loader<U> loader) {
+	public final static String DEFAULT_ROI = "roi.roi";
+	
+	public CalibrationProcessor(String folder, SimpleRoi roi, PipelineController<U,T> controller, Loader<U> loader) {
 		if(folder == null || controller == null || loader == null)		
 			throw new NullPointerException();
 		
@@ -52,6 +56,7 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 		this.folder = folder;
 		this.controller = controller;
 		this.loader = loader;
+		this.roi = roi;
 		
 		startTime = 0;
 		stopTime = 0;
@@ -260,7 +265,10 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 		}
 		
 */
-		Calibration results = new Calibration(width, height);
+		// roi comes from the GUI textfields, either automatically filled by
+		// a roi saved to the disk or by the users. We always take the width and height 
+		// from the images themselves
+		Calibration results  = new Calibration(roi.x0, roi.y0, width, height);
 		
 		// saves results in the calibration
 		results.setBaseline(baseline);

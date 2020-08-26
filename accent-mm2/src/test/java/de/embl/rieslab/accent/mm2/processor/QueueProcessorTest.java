@@ -8,6 +8,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import org.junit.Test;
 
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
 import de.embl.rieslab.accent.mm2.data.image.FloatImage;
 import de.embl.rieslab.accent.mm2.dummys.DummyAcquisitionController;
@@ -45,7 +46,7 @@ public class QueueProcessorTest {
 		QueuesLoader queue_loader = new QueuesLoader(queue_arr);
 		
 		// computes avg and var
-		QueuesProcessor proc = new QueuesProcessor(dir, cont, queue_loader, acq);
+		QueuesProcessor proc = new QueuesProcessor(dir, new SimpleRoi(0,0,width,height), cont, queue_loader, acq);
 		AvgVarStacks<FloatImage> a = proc.computeAvgAndVar();
 
 		assertEquals(exps.length, a.getAvgs().length);
@@ -95,7 +96,7 @@ public class QueueProcessorTest {
 		QueuesLoader queue_loader = new QueuesLoader(queue_arr);
 		
 		// computes avg and var
-		QueuesProcessor proc = new QueuesProcessor(dir, cont, queue_loader, acq);
+		QueuesProcessor proc = new QueuesProcessor(dir, new SimpleRoi(0,0,width,height), cont, queue_loader, acq);
 		AvgVarStacks<FloatImage> a = proc.computeAvgAndVar();
 
 		assertEquals(exps.length, a.getAvgs().length);
@@ -145,7 +146,7 @@ public class QueueProcessorTest {
 		QueuesLoader queue_loader = new QueuesLoader(queue_arr);
 		
 		// computes avg and var
-		QueuesProcessor proc = new QueuesProcessor(dir, cont, queue_loader, acq);
+		QueuesProcessor proc = new QueuesProcessor(dir, new SimpleRoi(0,0,width,height), cont, queue_loader, acq);
 		AvgVarStacks<FloatImage> a = proc.computeAvgAndVar();
 
 		assertEquals(exps.length, a.getAvgs().length);

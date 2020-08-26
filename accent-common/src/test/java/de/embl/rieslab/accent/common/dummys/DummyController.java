@@ -6,6 +6,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.JFrame;
 
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.interfaces.data.ArrayToImage;
 import de.embl.rieslab.accent.common.interfaces.data.ImageSaver;
 import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
@@ -33,16 +34,16 @@ public class DummyController implements PipelineController<DummyImage, DummyImag
 	public Loader<DummyImage> getLoader(String parameter) {return null;}
 
 	@Override
-	public CalibrationProcessor<DummyImage, DummyImage> getProcessor(String path, Loader<DummyImage> loader) {return null;}
+	public CalibrationProcessor<DummyImage, DummyImage> getProcessor(String path, SimpleRoi roi, Loader<DummyImage> loader) {return null;}
 
 	@Override
 	public boolean isProcessorReady() {return false;}
 
 	@Override
-	public boolean startProcessor(String path) {return true;}
+	public boolean startProcessor(String path, SimpleRoi roi) {return true;}
 
 	@Override
-	public boolean startProcessor(String path, ArrayList<ArrayBlockingQueue<DummyImage>> queues) {return true;}
+	public boolean startProcessor(String path, SimpleRoi roi, ArrayList<ArrayBlockingQueue<DummyImage>> queues) {return true;}
 
 	@Override
 	public void stopProcessor() {}

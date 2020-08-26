@@ -32,7 +32,7 @@ public class MM2AcquisitionController implements AcquisitionController {
 			acq.start();
 			
 			if(acqSettings.parallelProcessing) {
-				boolean b = controller.startProcessor(settings.folder_, acq.getQueues());
+				boolean b = controller.startProcessor(settings.folder_, settings.roi_, acq.getQueues());
 				if(!b) {
 					System.out.println("Processor failed to start");
 				}

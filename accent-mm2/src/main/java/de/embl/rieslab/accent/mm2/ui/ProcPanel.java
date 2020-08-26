@@ -21,8 +21,12 @@ import javax.swing.JToggleButton;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
+import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
+import de.embl.rieslab.accent.common.data.roi.SimpleRoiIO;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
 import de.embl.rieslab.accent.common.interfaces.ui.ProcessorPanelInterface;
+import de.embl.rieslab.accent.common.processor.CalibrationProcessor;
+import de.embl.rieslab.accent.common.utils.AccentUtils;
 import de.embl.rieslab.accent.common.utils.Dialogs;
 import de.embl.rieslab.accent.mm2.data.image.BareImage;
 import de.embl.rieslab.accent.mm2.data.image.FloatImage;
@@ -197,7 +201,8 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 		if(!controller.isProcessorRunning()) { // avoid trigger from setSelected(true) in processingHasStarted()
 			String path = folderField.getText();
 			if(!path.isEmpty()) {
-				boolean b = controller.startProcessor(path);
+				SimpleRoi roi = getRoi();
+				boolean b = controller.startProcessor(path, roi);
 				if(b) {
 					processButton.setText(STOP);
 					selectProcessToggle(true);
@@ -220,6 +225,21 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File folder = fc.getSelectedFile();
 			folderField.setText(folder.getAbsolutePath());
+			
+			// checks if a SimpleRoi is present
+			File roi_f = new File(folder.getAbsolutePath()+"/"+CalibrationProcessor.DEFAULT_ROI);
+			if(roi_f.exists() && SimpleRoiIO.read(roi_f) != null) {
+				SimpleRoi roi = SimpleRoiIO.read(roi_f);
+				tfX0.setText(String.valueOf(roi.x0));
+				tfY0.setText(String.valueOf(roi.y0));
+				tfW.setText(String.valueOf(roi.width));
+				tfH.setText(String.valueOf(roi.height));
+			} else {
+				tfX0.setText("0");
+				tfY0.setText("0");
+				tfW.setText("0");
+				tfH.setText("0");
+			}
 		}
 	}
 
@@ -259,6 +279,25 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 	@Override
 	public void setDataPath(String path) {
 		folderField.setText(path);
+	}
+	
+	private SimpleRoi getRoi() {
+		String x0 = tfX0.getText();
+		String y0 = tfY0.getText();
+		String w = tfW.getText();
+		String h = tfH.getText();
+		
+		if(AccentUtils.isInteger(x0) &&
+				AccentUtils.isInteger(y0) &&
+				AccentUtils.isInteger(w) &&
+				AccentUtils.isInteger(h)) {
+			return new SimpleRoi(Integer.parseInt(x0),
+					Integer.parseInt(y0),
+					Integer.parseInt(w),
+					Integer.parseInt(h));
+		} else {
+			return new SimpleRoi(0,0,0,0);
+		}
 	}
 	
 	public static void main(String[] args) {

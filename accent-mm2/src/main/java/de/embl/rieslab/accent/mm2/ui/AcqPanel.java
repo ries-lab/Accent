@@ -350,6 +350,8 @@ public class AcqPanel extends JPanel implements AcquisitionPanelInterface {
 		
 		if(roi != null) {
 			settings.roi_ = roi;
+		} else {
+			settings.roi_ = new SimpleRoi(0,0,0,0);
 		}
 		
 		settings.preRunTime_ = preRunTime;
