@@ -83,6 +83,11 @@ public class AcqOptionFrame extends JFrame {
 			y0Field.setText(String.valueOf(roi.y0));
 			widthField.setText(String.valueOf(roi.width));
 			heightField.setText(String.valueOf(roi.height));
+		} else {
+			x0Field.setText("0");
+			y0Field.setText("0");
+			widthField.setText(String.valueOf(this.width));
+			heightField.setText(String.valueOf(this.height));
 		}
 	}
 	
