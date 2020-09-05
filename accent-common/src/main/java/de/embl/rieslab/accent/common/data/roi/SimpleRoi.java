@@ -75,7 +75,7 @@ public class SimpleRoi {
 	}
 
 	public SimpleRoi(int x, int y, int w, int h) {
-		if(w <= 0 || h <= 0)
+		if(w < 0 || h < 0)
 			throw new IllegalArgumentException("Roi width/height cannot be 0 or less.");
 		
 		x0 = x;

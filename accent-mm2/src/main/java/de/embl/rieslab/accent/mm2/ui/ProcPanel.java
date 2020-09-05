@@ -276,19 +276,27 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 	}
 	
 	private SimpleRoi getRoi() {
-		String x0 = tfX0.getText();
-		String y0 = tfY0.getText();
-		String w = tfW.getText();
-		String h = tfH.getText();
+		String s_x0 = tfX0.getText();
+		String s_y0 = tfY0.getText();
+		String s_w = tfW.getText();
+		String s_h = tfH.getText();
 		
-		if(AccentUtils.isInteger(x0) &&
-				AccentUtils.isInteger(y0) &&
-				AccentUtils.isInteger(w) &&
-				AccentUtils.isInteger(h)) {
-			return new SimpleRoi(Integer.parseInt(x0),
-					Integer.parseInt(y0),
-					Integer.parseInt(w),
-					Integer.parseInt(h));
+		// if negative w,h then ultimately the calibration will consider 
+		// the roi width/height from the images themselves
+		if(AccentUtils.isInteger(s_x0) &&
+				AccentUtils.isInteger(s_y0) &&
+				AccentUtils.isInteger(s_w) &&
+				AccentUtils.isInteger(s_h)) {
+			int w  = Integer.parseInt(s_w);
+			int h  = Integer.parseInt(s_h);
+			
+			if(w > 0 && h > 0) { // prevents exception throwing in SimpleRoi
+				SimpleRoi roi = new SimpleRoi(Integer.parseInt(s_x0),
+						Integer.parseInt(s_y0), w, h);
+				return roi;
+			} else {
+				return new SimpleRoi(0,0,0,0);
+			}
 		} else {
 			return new SimpleRoi(0,0,0,0);
 		}
