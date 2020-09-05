@@ -138,13 +138,17 @@ public class MM2Controller extends AbstractController<BareImage, FloatImage> {
 	private String[] getExposureFolders(String path) {
 		ArrayList<String> fullpaths = new ArrayList<String>();
 		File[] files = new File(path).listFiles();
-		for (File file : files) {
-			if (file.isDirectory() && file.getName().substring(file.getName().length() - 2).equals("ms")) {
-				fullpaths.add(file.getAbsolutePath());
+		if(files != null) {
+			for (File file : files) {
+				if (file.isDirectory() && file.getName().substring(file.getName().length() - 2).equals("ms")) {
+					fullpaths.add(file.getAbsolutePath());
+				}
 			}
-		}
 
-		return fullpaths.toArray(new String[0]);
+			return fullpaths.toArray(new String[0]);
+		} else {
+			return null;
+		}
 	}
 
 	private boolean isAcqPathKnown(String path) {

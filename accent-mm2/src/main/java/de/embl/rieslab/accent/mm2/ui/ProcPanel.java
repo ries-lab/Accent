@@ -86,7 +86,7 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 		JPanel roipane = new JPanel(new GridBagLayout());
 		JLabel x0 = new JLabel("X0:");
 		GridBagConstraints gbc_roi = new GridBagConstraints();
-		gbc_roi.insets = new Insets(0, 0, 5, 0);
+		gbc_roi.insets = new Insets(0, 2, 5, 2);
 		gbc_roi.fill = GridBagConstraints.NONE;
 		gbc_roi.gridx = 0;
 		gbc_roi.gridy = 0;

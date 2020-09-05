@@ -99,8 +99,12 @@ public class AlternatedAcquisition extends SwingWorker<Integer, Integer> impleme
 		if (settings.roi_ != null && settings.roi_.isSane()) {
 			studio.getCMMCore().clearROI();
 			studio.getCMMCore().setROI(settings.roi_.x0, settings.roi_.y0, settings.roi_.width, settings.roi_.height);
-
+	
 			// write roi to disk
+			File folder = new File(settings.folder_);
+			if(!folder.exists()) {
+				folder.mkdirs();
+			}
 			SimpleRoiIO.write(new File(settings.folder_ + "/" + CalibrationProcessor.DEFAULT_ROI), settings.roi_);
 		} else {
 			studio.getCMMCore().clearROI();
