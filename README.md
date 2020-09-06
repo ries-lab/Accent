@@ -10,11 +10,11 @@
 
 ### Micro-Manager 2.0.0-gamma
 
-1. [Download](https://github.com/ries-lab/Accent/releases) the pre-compiled plugin and place it in your Micro-Manager installation folder under "mmplugins".
+1. [Download](https://github.com/ries-lab/Accent/releases) the pre-compiled plugin and place it in your Micro-Manager 2 installation folder under "mmplugins".
 
 Or
 
-2. Requires [maven](https://maven.apache.org/). Compile the plugin yourself using the build script (Windows):
+2. Requires few steps, [see guide for Windows](guide/win-installation.md). Compile the plugin yourself using the build script (Windows):
 
    ```bash
    $ ./build-Win.sh "C:/Path/To/Micro-Manager2-gamma"
@@ -28,7 +28,7 @@ Or
 
 Or
 
-2. Requires  [maven](https://maven.apache.org/). Compile the plugin yourself using the build script (Windows) : 
+2. Requires few steps, [see guide for Windows](guide/win-installation.md). Compile the plugin yourself using the build script (Windows) : 
 
    ```bash
    $ ./build-Win.sh
@@ -44,4 +44,5 @@ This repository contains guides for the Micro-Manager and Fiji plugins:
 
 - [Micro-manager 2 guide](guide/guide-mm2.md)
 - [Fiji guide](guide/guide-fiji)
+- [Installation guide (Windows)](guide/win-installation.md). 
 - Loading the camera map in [SMAP](https://github.com/jries/SMAP) (soon)
