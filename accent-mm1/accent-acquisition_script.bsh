@@ -15,7 +15,7 @@ mmc.setROI(128,128,256,256); // ROI on camera. Uncomment to use preset ROI in Mi
 // END: PARAMETERS
 
 // NB: If all acquisitions are created in a "Pos0" folder, you will have to rename them and copy them in the same
-// folder to use them with the Fiji or MM2 folder. 
+// folder to use them with the Fiji or MM2 plugin. 
 
 import org.micromanager.api.AcquisitionOptions;
 import ij.*;
