@@ -3,12 +3,18 @@
 ### Prerequisite
 
 - Micro-Manager 2.0.0-gamma
+
 - Camera compatible with Micro-Manager
+
 - ACCéNT plugin installed
 
-
+  
 
 ACCéNT can be started from the "Plugins" menu of Micro-Manager, under the "Acquisition Tools" section. It has three steps, which can be performed together in a pipeline or independently.
+
+![MM2](MM2.png)
+
+
 
 ## Acquisitions
 
