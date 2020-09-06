@@ -8,7 +8,7 @@
 
 ACCéNT can be started from the "Plugins" menu of Fiji. It has twon steps, which can be performed together in a pipeline or independently.
 
-![Fiji](Fiji.png)
+![Fiji](Fiji.PNG)
 
 Note that the plugin expects **TIFF files**.
 

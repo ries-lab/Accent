@@ -12,7 +12,7 @@
 
 ACCéNT can be started from the "Plugins" menu of Micro-Manager, under the "Acquisition Tools" section. It has three steps, which can be performed together in a pipeline or independently.
 
-![MM2](MM2.png)
+![MM2](MM2.PNG)
 
 
 
