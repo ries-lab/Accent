@@ -43,6 +43,6 @@ Or
 This repository contains guides for the Micro-Manager and Fiji plugins:
 
 - [Micro-manager 2 guide](guide/guide-mm2.md)
-- [Fiji guide](guide/guide-fiji)
+- [Fiji guide](guide/guide-fiji.md)
 - [Installation guide (Windows)](guide/win-installation.md). 
 - Loading the camera map in [SMAP](https://github.com/jries/SMAP) (soon)
