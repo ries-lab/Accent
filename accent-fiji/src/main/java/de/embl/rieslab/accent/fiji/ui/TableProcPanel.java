@@ -9,8 +9,6 @@ import javax.swing.JToggleButton;
 import java.awt.GridBagConstraints;
 import javax.swing.table.DefaultTableModel;
 
-import org.joml.Math;
-
 import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
 import de.embl.rieslab.accent.common.data.roi.SimpleRoiIO;
 import de.embl.rieslab.accent.common.interfaces.pipeline.PipelineController;
