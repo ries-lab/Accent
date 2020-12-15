@@ -41,8 +41,6 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 	private JToggleButton processButton;
 	private JTextField tfX0;
 	private JTextField tfY0;
-	private JTextField tfW;
-	private JTextField tfH;
 	
 	private final static String START = "Process";
 	private final static String STOP = "Stop";
@@ -84,63 +82,43 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 		
 		
 		JPanel roipane = new JPanel(new GridBagLayout());
-		JLabel x0 = new JLabel("X0:");
 		GridBagConstraints gbc_roi = new GridBagConstraints();
-		gbc_roi.insets = new Insets(0, 2, 5, 2);
-		gbc_roi.fill = GridBagConstraints.NONE;
+		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
 		gbc_roi.gridx = 0;
 		gbc_roi.gridy = 0;
+		gbc_roi.weightx = 0.6;
+		gbc_roi.gridwidth = 2;
+		roipane.add(new JLabel(""), gbc_roi);
+		
+		JLabel x0 = new JLabel("X0:");
+		gbc_roi.insets = new Insets(0, 2, 5, 2);
+		gbc_roi.fill = GridBagConstraints.NONE;
+		gbc_roi.gridx = 2;
+		gbc_roi.gridy = 0;
 		gbc_roi.gridwidth = 1;
+		gbc_roi.weightx = 0.1;
 		roipane.add(x0, gbc_roi);
 		
 		tfX0 = new JTextField(" ");
 		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
-		gbc_roi.gridx = 1;
-		gbc_roi.gridwidth = 2;
+		gbc_roi.gridx = 3;
+		gbc_roi.gridwidth = 1;
 		gbc_roi.weightx = 0.5;
 		roipane.add(tfX0, gbc_roi);
 		
 		JLabel y0 = new JLabel("Y0:");
 		gbc_roi.fill = GridBagConstraints.NONE;
-		gbc_roi.gridx = 3;
+		gbc_roi.gridx = 5;
 		gbc_roi.gridwidth = 1;
-		gbc_roi.weightx = 0;
+		gbc_roi.weightx = 0.1;
 		roipane.add(y0, gbc_roi);
 
 		tfY0 = new JTextField(" ");
 		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
-		gbc_roi.gridx = 4;
+		gbc_roi.gridx = 6;
 		gbc_roi.gridwidth = 2;
 		gbc_roi.weightx = 0.5;
 		roipane.add(tfY0, gbc_roi);
-
-		JLabel w = new JLabel("W:");
-		gbc_roi.fill = GridBagConstraints.NONE;
-		gbc_roi.gridx = 6;
-		gbc_roi.gridwidth = 1;
-		gbc_roi.weightx = 0;
-		roipane.add(w, gbc_roi);
-
-		tfW = new JTextField(" ");
-		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
-		gbc_roi.gridx = 7;
-		gbc_roi.gridwidth = 2;
-		gbc_roi.weightx = 0.5;
-		roipane.add(tfW, gbc_roi);
-
-		JLabel h = new JLabel("H:");
-		gbc_roi.fill = GridBagConstraints.NONE;
-		gbc_roi.gridx = 9;
-		gbc_roi.gridwidth = 1;
-		gbc_roi.weightx = 0;
-		roipane.add(h, gbc_roi);
-
-		tfH = new JTextField(" ");
-		gbc_roi.fill = GridBagConstraints.HORIZONTAL;
-		gbc_roi.gridx = 10;
-		gbc_roi.gridwidth = 2;
-		gbc_roi.weightx = 0.5;
-		roipane.add(tfH, gbc_roi);
 		
 		gbcMain.insets = new Insets(0, 0, 0, 0);
 		gbcMain.fill = GridBagConstraints.HORIZONTAL;
@@ -278,27 +256,15 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 	private SimpleRoi getRoi() {
 		String s_x0 = tfX0.getText();
 		String s_y0 = tfY0.getText();
-		String s_w = tfW.getText();
-		String s_h = tfH.getText();
-		
-		// if negative w,h then ultimately the calibration will consider 
+
+		// if negative w,h then ultimately the calibration will consider
 		// the roi width/height from the images themselves
-		if(AccentUtils.isInteger(s_x0) &&
-				AccentUtils.isInteger(s_y0) &&
-				AccentUtils.isInteger(s_w) &&
-				AccentUtils.isInteger(s_h)) {
-			int w  = Integer.parseInt(s_w);
-			int h  = Integer.parseInt(s_h);
-			
-			if(w > 0 && h > 0) { // prevents exception throwing in SimpleRoi
-				SimpleRoi roi = new SimpleRoi(Integer.parseInt(s_x0),
-						Integer.parseInt(s_y0), w, h);
-				return roi;
-			} else {
-				return new SimpleRoi(0,0,0,0);
-			}
+		if (AccentUtils.isInteger(s_x0) && AccentUtils.isInteger(s_y0)) {
+
+			SimpleRoi roi = new SimpleRoi(Integer.parseInt(s_x0), Integer.parseInt(s_y0), 0, 0);
+			return roi;
 		} else {
-			return new SimpleRoi(0,0,0,0);
+			return new SimpleRoi(0, 0, 0, 0);
 		}
 	}
 	
@@ -315,8 +281,6 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 		if(roi != null) {
 			tfX0.setText(String.valueOf(roi.x0));
 			tfY0.setText(String.valueOf(roi.y0));
-			tfW.setText(String.valueOf(roi.width));
-			tfH.setText(String.valueOf(roi.height));
 		}
 	}
 

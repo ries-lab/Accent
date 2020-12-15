@@ -28,7 +28,7 @@ We tested the the pipeline with the following types:
 
 We recommend taking **at least 15'000 frames** with **at least 2 different exposures spanning a wide range** (e.g. 10, 300, 1000).
 
-Processing requires few parameters: the folder where the images have been saved and the roi. If the images where acquired with the Micro-Manager 2 plugin, the Fiji plugin will automatically load the roi.roi file created during acquisition. If it doesn't find the roi file, then manual input is necessary. Note that the width and height are actually not used since they are extracted from the images themselves. The processor produces multiple files:
+Processing requires few parameters: the folder where the images have been saved and the roi. If the images where acquired with the Micro-Manager 2 plugin, the Fiji plugin will automatically load the roi.roi file created during acquisition. If it doesn't find the roi file, then manual input of the x and y positions is necessary. The processor produces multiple files:
 
 - Average and variance images for all processed exposures.
 - The maps for the gain, baseline, dark current per second, the square read-noise, the square thermal noise per second and the coefficient of determination for the gain, average and variance fits.

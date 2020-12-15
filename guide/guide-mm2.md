@@ -63,7 +63,7 @@ Once all the parameters have been set, the different exposures can be acquired b
 
 ## Processing
 
-The processing can be run in parallel to the acquisition or separately. It does not require any parameters but the folder where the images have been saved and the roi. The roi.roi file created at the start of an acquisition is automatically loaded. However, if the file was lost, users can set the roi manually. The processor produces multiple files:
+The processing can be run in parallel to the acquisition or separately. It does not require any parameters but the folder where the images have been saved and the roi. The roi.roi file created at the start of an acquisition is automatically loaded. However, if the file was lost, users can set the roi X and Yd manually. The processor produces multiple files:
 
 - Average and variance images for all processed exposures.
 - The maps for the gain, baseline, dark current per second, the square read-noise, the square thermal noise per second and the coefficient of determination for the gain, average and variance fits.
@@ -77,9 +77,8 @@ The processing can be run in parallel to the acquisition or separately. It does 
 
 - **Folder naming convention**: the acquisition folders must contain the **exposure time followed by "ms" at the end of their name**.
 
-- **Roi width and height**: they are purely indicative and are in effect not used. Roi width and height are extracted from the calibration images themselves.
-
   
+
 
 ## Generation
 
