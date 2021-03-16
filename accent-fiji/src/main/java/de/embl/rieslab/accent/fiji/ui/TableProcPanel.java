@@ -320,7 +320,7 @@ public class TableProcPanel extends JPanel implements ProcessorPanelInterface  {
 					((JFrame) cont).pack();
 					
 					// checks if a SimpleRoi is present
-					File roi_f = new File(path+"/"+CalibrationProcessor.DEFAULT_ROI);
+					File roi_f = new File(path+File.separator+CalibrationProcessor.DEFAULT_ROI);
 					if(roi_f.exists() && SimpleRoiIO.read(roi_f) != null) {
 						SimpleRoi roi = SimpleRoiIO.read(roi_f);
 						setRoi(roi);

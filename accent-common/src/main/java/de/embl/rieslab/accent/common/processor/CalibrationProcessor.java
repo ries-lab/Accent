@@ -118,11 +118,11 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 		for(int q=0;q<loader.getNumberOfChannels();q++) {
 			if(avgs[q] != null && vars[q]!=null) {
 				if(Double.compare(avgs[q].getExposure(), (int)avgs[q].getExposure()) == 0) {
-					controller.getImageSaver().saveAsTiff(avgs[q], folder + "/Avg_" + (int) avgs[q].getExposure() + "ms.tiff"); // cast to avoid .0 decimal in the name
-					controller.getImageSaver().saveAsTiff(vars[q], folder + "/Var_" + (int) vars[q].getExposure() + "ms.tiff");
+					controller.getImageSaver().saveAsTiff(avgs[q], folder+File.separator+"Avg_" + (int) avgs[q].getExposure() + "ms.tiff"); // cast to avoid .0 decimal in the name
+					controller.getImageSaver().saveAsTiff(vars[q], folder+File.separator+"Var_" + (int) vars[q].getExposure() + "ms.tiff");
 				} else {
-					controller.getImageSaver().saveAsTiff(avgs[q], folder + "/Avg_" + avgs[q].getExposure() + "ms.tiff");
-					controller.getImageSaver().saveAsTiff(vars[q], folder + "/Var_" + vars[q].getExposure() + "ms.tiff");
+					controller.getImageSaver().saveAsTiff(avgs[q], folder +File.separator+ "Avg_" + avgs[q].getExposure() + "ms.tiff");
+					controller.getImageSaver().saveAsTiff(vars[q], folder +File.separator+ "Var_" + vars[q].getExposure() + "ms.tiff");
 				}
 			}
 		}
@@ -285,7 +285,7 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 
 	protected String writeCalibrationToFile() {
 		// Writes configuration to disk
-		String calibPath = folder+"/results."+CalibrationIO.CALIB_EXT;
+		String calibPath = folder+File.separator+"results."+CalibrationIO.CALIB_EXT;
 		CalibrationIO.write(new File(calibPath), results);
 		return calibPath;
 	}
@@ -306,28 +306,28 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 	 */
 	protected void writeCalibrationToImages(String folder, Calibration results) {
 		T baseline = controller.getArrayToImageConverter().getImage(results.getBaseline(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(baseline,folder+"/"+BASELINE);
+		getController().getImageSaver().saveAsTiff(baseline,folder+File.separator+BASELINE);
 		
 		T dc_per_sec = controller.getArrayToImageConverter().getImage(results.getDcPerSec(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(dc_per_sec,folder+"/"+DCPERSEC);
+		getController().getImageSaver().saveAsTiff(dc_per_sec,folder+File.separator+DCPERSEC);
 		
 		T gain = controller.getArrayToImageConverter().getImage(results.getGain(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(gain,folder+"/"+GAIN);
+		getController().getImageSaver().saveAsTiff(gain,folder+File.separator+GAIN);
 		
 		T rn_sq = controller.getArrayToImageConverter().getImage(results.getRnSq(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(rn_sq,folder+"/"+RNSQ);
+		getController().getImageSaver().saveAsTiff(rn_sq,folder+File.separator+RNSQ);
 		
 		T tn_sq_per_sec = controller.getArrayToImageConverter().getImage(results.getTnSqPerSec(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(tn_sq_per_sec,folder+"/"+TNSQPERSEC);
+		getController().getImageSaver().saveAsTiff(tn_sq_per_sec,folder+File.separator+TNSQPERSEC);
 		
 		T r_sq_avg = controller.getArrayToImageConverter().getImage(results.getRSqAvg(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(r_sq_avg,folder+"/"+RSQAVG);
+		getController().getImageSaver().saveAsTiff(r_sq_avg,folder+File.separator+RSQAVG);
 		
 		T r_sq_var = controller.getArrayToImageConverter().getImage(results.getRSqVar(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(r_sq_var,folder+"/"+RSQVAR);
+		getController().getImageSaver().saveAsTiff(r_sq_var,folder+File.separator+RSQVAR);
 		
 		T r_sq_gain = controller.getArrayToImageConverter().getImage(results.getRSqGain(), results.getWidth(), results.getHeight(), 0);
-		getController().getImageSaver().saveAsTiff(r_sq_gain,folder+"/"+RSQGAIN);
+		getController().getImageSaver().saveAsTiff(r_sq_gain,folder+File.separator+RSQGAIN);
 	}
 
 	/**

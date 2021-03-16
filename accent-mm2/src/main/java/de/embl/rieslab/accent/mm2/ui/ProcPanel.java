@@ -205,7 +205,7 @@ public class ProcPanel extends JPanel implements ProcessorPanelInterface {
 			folderField.setText(folder.getAbsolutePath());
 			
 			// checks if a SimpleRoi is present
-			File roi_f = new File(folder.getAbsolutePath()+"/"+CalibrationProcessor.DEFAULT_ROI);
+			File roi_f = new File(folder.getAbsolutePath()+File.separator+CalibrationProcessor.DEFAULT_ROI);
 			if(roi_f.exists() && SimpleRoiIO.read(roi_f) != null) {
 				SimpleRoi roi = SimpleRoiIO.read(roi_f);
 				setRoi(roi);
