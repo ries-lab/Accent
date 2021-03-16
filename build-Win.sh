@@ -15,7 +15,7 @@ if [ $# -eq 1 ]
 		mvn clean install -Dmaven.test.skip=true
 		
 		# finally copy the jar to MM
-		cp "accent-mm2\target\accent-mm2-1.0-beta.jar" "$MM2_PLUGINS_HOME\accent-mm2-1.0-beta.jar"
+		cp "accent-mm2\target\accent-mm2-1.0.jar" "$MM2_PLUGINS_HOME\accent-mm2-1.0.jar"
 		
 	else
 		mvn -pl -"accent-mm2" install -Dmaven.test.skip=true

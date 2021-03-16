@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>de.embl.accent</groupId>
 		<artifactId>accent-parent</artifactId>
-		<version>1.0-beta</version>
+		<version>1.0</version>
 	</parent>
 
 	<artifactId>accent-common</artifactId>
@@ -29,8 +29,6 @@
 				    <!-- Makes sure Maven runs with default java 1.8 -->
 					<source>1.8</source>
 					<target>1.8</target>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>true</downloadJavadocs>
 				</configuration>
 			</plugin>
 		</plugins>

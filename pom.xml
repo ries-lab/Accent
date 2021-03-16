@@ -6,7 +6,7 @@
 
 	<groupId>de.embl.accent</groupId>
 	<artifactId>accent-parent</artifactId>
-	<version>1.0-beta</version>
+	<version>1.0</version>
 	<packaging>pom</packaging>
 
 
