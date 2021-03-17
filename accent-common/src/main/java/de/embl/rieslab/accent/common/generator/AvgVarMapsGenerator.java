@@ -77,11 +77,11 @@ public class AvgVarMapsGenerator<U extends RawImage, T extends CalibrationImage>
 			T var_im = imconverter.getImage(CalibrationMap.generateVarMap(calib, exp), calib.getWidth(), calib.getHeight(), exp);
 
 			if(Double.compare(exp, (int) exp) == 0){
-				imsaver.saveAsTiff(avg_im, path+"\\"+"generated_Avg_"+((int) exp)+"ms.tiff");
-				imsaver.saveAsTiff(var_im, path+"\\"+"generated_Var_"+((int) exp)+"ms.tiff");
+				imsaver.saveAsTiff(avg_im, path+File.separator+"generated_Avg_"+((int) exp)+"ms.tiff");
+				imsaver.saveAsTiff(var_im, path+File.separator+"generated_Var_"+((int) exp)+"ms.tiff");
 			} else {
-				imsaver.saveAsTiff(avg_im, path+"\\"+"generated_Avg_"+exp+"ms.tiff");
-				imsaver.saveAsTiff(var_im, path+"\\"+"generated_Var_"+exp+"ms.tiff");
+				imsaver.saveAsTiff(avg_im, path+File.separator+"generated_Avg_"+exp+"ms.tiff");
+				imsaver.saveAsTiff(var_im, path+File.separator+"generated_Var_"+exp+"ms.tiff");
 			}
 			
 		}
@@ -96,7 +96,7 @@ public class AvgVarMapsGenerator<U extends RawImage, T extends CalibrationImage>
 				running_ = false;
 				controller.updateGeneratorProgress("Done.");
 			} else {
-				controller.updateGeneratorProgress("Exposure: "+i+"/"+exposures.length);
+				controller.updateGeneratorProgress("Exposure: "+i+File.separator+exposures.length);
 			}
 		}
 	}
