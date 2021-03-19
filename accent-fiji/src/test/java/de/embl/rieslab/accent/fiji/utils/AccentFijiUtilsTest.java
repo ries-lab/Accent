@@ -1,16 +1,15 @@
 package de.embl.rieslab.accent.fiji.utils;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-
 import de.embl.rieslab.accent.fiji.datagen.GenerateData;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AccentFijiUtilsTest {
 
@@ -40,9 +39,9 @@ public class AccentFijiUtilsTest {
 		for(int i=0;i<exps.length+2;i++) {
 			String s;
 			if(i<2) {
-				s = f_dir.getAbsolutePath()+"\\temp"+i+"\\";
+				s = f_dir.getAbsolutePath()+File.separator+"temp"+i+File.separator;
 			} else {
-				s = f_dir.getAbsolutePath()+"\\temp"+exps[i-2]+"ms_hj2i86u\\";
+				s = f_dir.getAbsolutePath()+File.separator+"temp"+exps[i-2]+"ms_hj2i86u"+File.separator;
 			}
 			
 			fs[i] = new File(s);

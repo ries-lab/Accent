@@ -118,6 +118,7 @@ public abstract class CalibrationProcessor<U extends RawImage, T extends Calibra
 		for(int q=0;q<loader.getNumberOfChannels();q++) {
 			if(avgs[q] != null && vars[q]!=null) {
 				if(Double.compare(avgs[q].getExposure(), (int)avgs[q].getExposure()) == 0) {
+					String avg_name = folder +File.separator+ "Avg_" + avgs[q].getExposure() + "ms.tiff";
 					controller.getImageSaver().saveAsTiff(avgs[q], folder+File.separator+"Avg_" + (int) avgs[q].getExposure() + "ms.tiff"); // cast to avoid .0 decimal in the name
 					controller.getImageSaver().saveAsTiff(vars[q], folder+File.separator+"Var_" + (int) vars[q].getExposure() + "ms.tiff");
 				} else {

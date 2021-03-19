@@ -5,14 +5,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>de.embl.accent</groupId>
-		<artifactId>accent-parent</artifactId>
-		<version>1.0</version>
-	</parent>
-
+	<groupId>de.embl.rieslab</groupId>
 	<artifactId>accent-common</artifactId>
 	<name>accent-common</name>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -57,12 +53,17 @@
 			<version>3.6.1</version>
      		<scope>provided</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
 		<dependency>
-		    <groupId>org.junit.jupiter</groupId>
-		    <artifactId>junit-jupiter-api</artifactId>
-		    <version>5.5.2</version>
-		    <scope>test</scope>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

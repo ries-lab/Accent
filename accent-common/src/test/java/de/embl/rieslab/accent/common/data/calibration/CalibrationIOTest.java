@@ -1,14 +1,11 @@
 package de.embl.rieslab.accent.common.data.calibration;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.Test;
 
 import java.io.File;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 public class CalibrationIOTest {
 
@@ -42,42 +39,68 @@ public class CalibrationIOTest {
 		assertTrue(cal.delete());
 	}
 	
-	@Test 
-	public void testWrongSizeException() {
+	@Test(expected = IllegalArgumentException.class)
+	public void testBaselineWrongSizeException() {
 		float[] d = { 1, 2, 3 };
 		Calibration c = generateCalibration();
-		
-		assertThrows(IllegalArgumentException.class, () -> {
-			c.setBaseline(d);
-		});
-		
-		assertThrows(IllegalArgumentException.class, () -> {
-			c.setDcPerSec(d);
-		});
-		
-		assertThrows(IllegalArgumentException.class, () -> {
-			c.setGain(d);
-		});
-		
-		assertThrows(IllegalArgumentException.class, () -> {
-			c.setRnSq(d);
-		});
-		
-		assertThrows(IllegalArgumentException.class, () -> {
-			c.setRSqAvg(d);
-		});
-		
-		assertThrows(IllegalArgumentException.class, () -> {
-			c.setRSqVar(d);
-		});
-		
-		assertThrows(IllegalArgumentException.class, () -> {
-			c.setRSqGain(d);
-		});
-		
-		assertThrows(IllegalArgumentException.class, () -> {
-			c.setTnSqPerSec(d);
-		});
+
+		c.setBaseline(d);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDcPerSecWrongSizeException() {
+		float[] d = { 1, 2, 3 };
+		Calibration c = generateCalibration();
+
+		c.setDcPerSec(d);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGainWrongSizeException() {
+		float[] d = { 1, 2, 3 };
+		Calibration c = generateCalibration();
+
+		c.setGain(d);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRnSqWrongSizeException() {
+		float[] d = { 1, 2, 3 };
+		Calibration c = generateCalibration();
+
+		c.setRnSq(d);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRSqAvgWrongSizeException() {
+		float[] d = { 1, 2, 3 };
+		Calibration c = generateCalibration();
+
+		c.setRSqAvg(d);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRSqVarWrongSizeException() {
+		float[] d = { 1, 2, 3 };
+		Calibration c = generateCalibration();
+
+		c.setRSqVar(d);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRSqGainWrongSizeException() {
+		float[] d = { 1, 2, 3 };
+		Calibration c = generateCalibration();
+
+		c.setRSqGain(d);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testTnSqPerSecWrongSizeException() {
+		float[] d = { 1, 2, 3 };
+		Calibration c = generateCalibration();
+
+		c.setTnSqPerSec(d);
 		
 	}
 	

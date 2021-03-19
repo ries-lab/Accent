@@ -1,10 +1,8 @@
 package de.embl.rieslab.accent.common.utils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.Test;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 public class AccentUtilsTest {
 
@@ -76,8 +74,8 @@ public class AccentUtilsTest {
 		// double dot
 		assertEquals(4,AccentUtils.extractExposureMs("1556..4ms618"), 0.0001);
 		assertEquals(0,AccentUtils.extractExposureMs("sdsfsdf_4.1..0msfds265fd"), 0.0001);
-	}	
-	
+	}
+
 	@Test
 	public void testHasExposure() {
 		assertTrue(AccentUtils.hasExposureMs("sdsfsdf_10ms"));

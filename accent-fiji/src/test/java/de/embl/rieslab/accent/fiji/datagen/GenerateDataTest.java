@@ -1,16 +1,11 @@
 package de.embl.rieslab.accent.fiji.datagen;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.junit.jupiter.api.Test;
 
 import de.embl.rieslab.accent.fiji.utils.AccentFijiUtils;
 import net.imglib2.Cursor;
@@ -21,6 +16,9 @@ import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.FloatType;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class GenerateDataTest {
 	

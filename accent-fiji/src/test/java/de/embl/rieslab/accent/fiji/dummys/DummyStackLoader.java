@@ -4,7 +4,6 @@ import de.embl.rieslab.accent.common.interfaces.pipeline.Loader;
 import de.embl.rieslab.accent.fiji.data.image.StackImg;
 import de.embl.rieslab.accent.fiji.datagen.GenerateData;
 import net.imagej.DatasetService;
-import net.imagej.ImageJ;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
@@ -22,7 +21,7 @@ public class DummyStackLoader implements Loader<StackImg> {
 	private StackImg currImg;
 	private DatasetService datasetService;
 	
-	public DummyStackLoader(int width, int height, int numFrames, double[] exposures, RealType<?> type) {
+	public DummyStackLoader(DatasetService service, int width, int height, int numFrames, double[] exposures, RealType<?> type) {
 		this.width = width;
 		this.height = height;
 		this.numFrames = numFrames;
@@ -33,9 +32,7 @@ public class DummyStackLoader implements Loader<StackImg> {
 		for(int i=0;i<exposures.length;i++) {
 			loaded[i] = false;
 		}
-		
-		ImageJ ij = new ImageJ();
-		datasetService = ij.dataset();
+		datasetService = service;
 	}
 	
 	@Override

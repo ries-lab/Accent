@@ -1,18 +1,14 @@
 package de.embl.rieslab.accent.common.generator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.io.File;
 
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
 import de.embl.rieslab.accent.common.data.calibration.CalibrationIOTest;
 import de.embl.rieslab.accent.common.dummys.DummyController;
 import de.embl.rieslab.accent.common.dummys.DummyImage;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class AvgVarMapsGeneratorTest {
 
@@ -55,11 +51,11 @@ public class AvgVarMapsGeneratorTest {
 		for(int i=0;i<expo.length;i++) {
 			File s_var, s_avg;
 			if(i%2==0) {
-				s_avg = new File(dir+"\\generated_Avg_"+((int)expo[i])+"ms.tiff");
-				s_var = new File(dir+"\\generated_Var_"+((int)expo[i])+"ms.tiff");
+				s_avg = new File(dir+File.separator+"generated_Avg_"+((int)expo[i])+"ms.tiff");
+				s_var = new File(dir+File.separator+"generated_Var_"+((int)expo[i])+"ms.tiff");
 			} else {
-				s_avg = new File(dir+"\\generated_Avg_"+expo[i]+"ms.tiff");
-				s_var = new File(dir+"\\generated_Var_"+expo[i]+"ms.tiff");
+				s_avg = new File(dir+File.separator+"generated_Avg_"+expo[i]+"ms.tiff");
+				s_var = new File(dir+File.separator+"generated_Var_"+expo[i]+"ms.tiff");
 			}
 			
 			assertTrue(s_avg.exists());
@@ -70,8 +66,8 @@ public class AvgVarMapsGeneratorTest {
 		}
 		assertTrue(f_dir.delete());
 	}
-	
-	@Test
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testIllegalArgumentsGenerations() {
 		DummyController cont = new DummyController();
 		Calibration cal = CalibrationIOTest.generateCalibration();
@@ -86,15 +82,13 @@ public class AvgVarMapsGeneratorTest {
 			f_dir.mkdir();
 		}
 
-		assertThrows(IllegalArgumentException.class, () -> {
-			gen.generate(f_dir.getAbsolutePath(), cal, expo);
-		});
+		gen.generate(f_dir.getAbsolutePath(), cal, expo);
 		
 		assertTrue(f_dir.delete());
 	}
 
-	@Test
-	public void testNullGenerations() {
+	@Test(expected = NullPointerException.class)
+	public void testNullPathGenerations() {
 		DummyController cont = new DummyController();
 		Calibration cal = CalibrationIOTest.generateCalibration();
 		AvgVarMapsGenerator<DummyImage, DummyImage> gen = new AvgVarMapsGenerator<DummyImage, DummyImage>(cont);
@@ -111,27 +105,51 @@ public class AvgVarMapsGeneratorTest {
 		}
 				
 		// tests null generation
-		assertThrows(NullPointerException.class, () -> {
-			gen.generate(null, cal, expo);
-		});
-		assertThrows(NullPointerException.class, () -> {
-			gen.generate(f_dir.getAbsolutePath(), null, expo);
-		});
-		assertThrows(NullPointerException.class, () -> {
-			gen.generate(f_dir.getAbsolutePath(), cal, null);
-		});
-		assertTrue(f_dir.delete());
+		gen.generate(null, cal, expo);
 	}
 
-	@Test
-	public void testPathsGeneration() {
+	@Test(expected = NullPointerException.class)
+	public void testNullCalibrationGenerations() {
+		DummyController cont = new DummyController();
+		Calibration cal = CalibrationIOTest.generateCalibration();
+		AvgVarMapsGenerator<DummyImage, DummyImage> gen = new AvgVarMapsGenerator<DummyImage, DummyImage>(cont);
 
+		double[] expo = new double[10];
+		for(int i=0;i<expo.length;i++)
+			expo[i] = i*10;
+
+		// creates temp folder
+		String dir = "temp_test";
+		File f_dir = new File(dir);
+		if(!f_dir.exists()) {
+			f_dir.mkdir();
+		}
+
+		gen.generate(f_dir.getAbsolutePath(), null, expo);
 	}
-	
-	@Test
+
+	@Test(expected = NullPointerException.class)
+	public void testNullExposureGenerations() {
+		DummyController cont = new DummyController();
+		Calibration cal = CalibrationIOTest.generateCalibration();
+		AvgVarMapsGenerator<DummyImage, DummyImage> gen = new AvgVarMapsGenerator<DummyImage, DummyImage>(cont);
+
+		double[] expo = new double[10];
+		for(int i=0;i<expo.length;i++)
+			expo[i] = i*10;
+
+		// creates temp folder
+		String dir = "temp_test";
+		File f_dir = new File(dir);
+		if(!f_dir.exists()) {
+			f_dir.mkdir();
+		}
+
+		gen.generate(f_dir.getAbsolutePath(), cal, null);
+	}
+
+	@Test(expected = NullPointerException.class)
 	public void testNullConstructor() {
-		assertThrows(NullPointerException.class, () -> {
-			new AvgVarMapsGenerator<DummyImage, DummyImage>(null);
-		});
+		new AvgVarMapsGenerator<DummyImage, DummyImage>(null);
 	}
 }

@@ -1,22 +1,24 @@
 package de.embl.rieslab.accent.fiji.loader;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.junit.jupiter.api.Test;
-
 import de.embl.rieslab.accent.fiji.data.image.StackImg;
 import de.embl.rieslab.accent.fiji.datagen.GenerateData;
 import de.embl.rieslab.accent.fiji.utils.AccentFijiUtils;
-import net.imagej.ImageJ;
+import io.scif.SCIFIO;
+import io.scif.services.DatasetIOService;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.FloatType;
+import org.junit.Before;
+import org.junit.Test;
+import org.scijava.log.LogService;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class StackLoaderTest {
 
@@ -25,10 +27,19 @@ public class StackLoaderTest {
 	int numFrames = 100;
 	double[] exps = {0.1, 2.0};
 
+	private DatasetIOService ioService;
+	private LogService logService;
+
+	@Before
+	public void init(){
+		SCIFIO scifio = new SCIFIO();
+		ioService = scifio.datasetIO();
+		logService = scifio.log();
+	}
+
 	@Test
 	public void testUnsignedShortLoader() {
-		final ImageJ ij = new ImageJ();
-		String dir = "AccentTemp-stack-s";		
+		String dir = "AccentTemp-stack-s";
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();
@@ -43,7 +54,7 @@ public class StackLoaderTest {
 		m.remove(0.); // removes unknown exposures
 		
 		// creates loader
-		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), ij.log(), m);
+		StackLoader loader = new StackLoader(ioService, logService, m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 
@@ -80,7 +91,6 @@ public class StackLoaderTest {
 
 	@Test
 	public void testUnsignedByteLoader() {
-		final ImageJ ij = new ImageJ();
 		String dir = "AccentTemp-stack-b";		
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
@@ -96,7 +106,7 @@ public class StackLoaderTest {
 		m.remove(0.); // removes unknown exposures
 		
 		// creates loader
-		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), ij.log(), m);
+		StackLoader loader = new StackLoader(ioService, logService, m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 
@@ -112,7 +122,6 @@ public class StackLoaderTest {
 				}
 			}
 			assertTrue(foundExposure);
-
 			assertEquals(3, img.getImage().numDimensions());
 			assertEquals(width, img.getImage().dimension(0));
 			assertEquals(height, img.getImage().dimension(1));
@@ -134,8 +143,7 @@ public class StackLoaderTest {
 
 	@Test
 	public void testUnsignedIntLoader() {
-		final ImageJ ij = new ImageJ();
-		String dir = "AccentTemp-stack-i";		
+		String dir = "AccentTemp-stack-i";
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
 			f_dir.mkdir();
@@ -150,7 +158,7 @@ public class StackLoaderTest {
 		m.remove(0.); // removes unknown exposures
 		
 		// creates loader
-		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), ij.log(), m);
+		StackLoader loader = new StackLoader(ioService, logService, m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 
@@ -187,7 +195,6 @@ public class StackLoaderTest {
 
 	@Test
 	public void testFloatLoader() {
-		final ImageJ ij = new ImageJ();
 		String dir = "AccentTemp-stack-f";		
 		File f_dir = new File(dir);
 		if(!f_dir.exists()) {
@@ -203,7 +210,7 @@ public class StackLoaderTest {
 		m.remove(0.); // removes unknown exposures
 		
 		// creates loader
-		StackLoader loader = new StackLoader(ij.scifio().datasetIO(), ij.log(), m);
+		StackLoader loader = new StackLoader(ioService, logService, m);
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// loads each file 

@@ -526,20 +526,20 @@ public class GenerateData {
 				if(writeStacks) {			
 					System.out.println(e+"ms: writing stack");
 					Img<UnsignedShortType> img_s = generateUnsignedShortType(width, height, numFrames, e);
-					String name_s = path + "\\" + e + "ms_unshort.tif";
+					String name_s = path + File.separator + e + "ms_unshort.tif";
 
 					ImagePlus i = ImageJFunctions.wrap(img_s, e+"ms");
 					IJ.saveAsTiff(i, name_s);	
 
 				} else {
 					ArrayList<Img<UnsignedShortType>> img_f = generateUnsignedShortTypeSingles(width, height, numFrames, e);	
-					String name_f = path + "\\" + e + "ms_unshort";
+					String name_f = path + File.separator + e + "ms_unshort";
 					File f = new File(name_f);
 					if(!f.exists()) {
 						f.mkdir();
 					}
 
-					String name_file = name_f + "\\";
+					String name_file = name_f + File.separator;
 					int numZeros = String.valueOf(numFrames).length();
 					for(int i=0;i<img_f.size();i++) {
 						int num = String.valueOf(i).length();
@@ -560,18 +560,18 @@ public class GenerateData {
 				if(writeStacks) {
 					System.out.println(e+"ms: writing stack");
 					Img<UnsignedByteType> img_b = generateUnsignedByteType(width, height, numFrames, e);
-					String name_b = path + "\\" + e + "ms_unbyte.tif";
+					String name_b = path + File.separator + e + "ms_unbyte.tif";
 					
 					IJ.saveAs(ImageJFunctions.wrap(img_b, "ij1"), "Tiff", name_b);	
 				} else {
 					ArrayList<Img<UnsignedByteType>> img_f = generateUnsignedByteTypeSingles(width, height, numFrames, e);	
-					String name_f = path + "\\" + e + "ms_unbyte";
+					String name_f = path + File.separator + e + "ms_unbyte";
 					File f = new File(name_f);
 					if(!f.exists()) {
 						f.mkdir();
 					}
 
-					String name_file = name_f + "\\";
+					String name_file = name_f + File.separator;
 					int numZeros = String.valueOf(numFrames).length();
 					for(int i=0;i<img_f.size();i++) {
 						if(i%1000 == 0) {
@@ -594,18 +594,18 @@ public class GenerateData {
 				if(writeStacks) {
 					System.out.println(e+"ms: writing stack");
 					Img<UnsignedIntType> img_f = generateUnsignedIntType(width, height, numFrames, e);
-					String name_f = path + "\\" + e + "ms_unint.tif";
+					String name_f = path + File.separator + e + "ms_unint.tif";
 
 					IJ.saveAs(ImageJFunctions.wrap(img_f, "ij1"), "Tiff", name_f);	
 				} else {
 					ArrayList<Img<UnsignedIntType>> img_f = generateUnsignedIntTypeSingles(width, height, numFrames, e);	
-					String name_f = path + "\\" + e + "ms_unint";
+					String name_f = path + File.separator + e + "ms_unint";
 					File f = new File(name_f);
 					if(!f.exists()) {
 						f.mkdir();
 					}
 
-					String name_file = name_f + "\\";
+					String name_file = name_f + File.separator;
 					int numZeros = String.valueOf(numFrames).length();
 					for(int i=0;i<img_f.size();i++) {
 						int num = String.valueOf(i).length();
@@ -626,18 +626,18 @@ public class GenerateData {
 				if (writeStacks) {
 					System.out.println(e+"ms: writing stack");
 					Img<FloatType> img_f = generateFloatType(width, height, numFrames, e);
-					String name_f = path + "\\" + e + "ms_float.tif";
+					String name_f = path + File.separator + e + "ms_float.tif";
 
 					IJ.saveAs(ImageJFunctions.wrap(img_f, "ij1"), "Tiff", name_f);		
 				} else {
 					ArrayList<Img<FloatType>> img_f = generateFloatTypeSingles(width, height, numFrames, e);
-					String name_f = path + "\\" + e + "ms_float";
+					String name_f = path + File.separator + e + "ms_float";
 					File f = new File(name_f);
 					if (!f.exists()) {
 						f.mkdir();
 					}
 
-					String name_file = name_f + "\\";
+					String name_file = name_f + File.separator;
 					int numZeros = String.valueOf(numFrames).length();
 					for (int i = 0; i < img_f.size(); i++) {
 						int num = String.valueOf(i).length();

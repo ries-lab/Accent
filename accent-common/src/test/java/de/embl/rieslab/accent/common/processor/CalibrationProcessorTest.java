@@ -1,12 +1,5 @@
 package de.embl.rieslab.accent.common.processor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 
 import de.embl.rieslab.accent.common.data.calibration.Calibration;
@@ -16,23 +9,33 @@ import de.embl.rieslab.accent.common.dummys.DummyController;
 import de.embl.rieslab.accent.common.dummys.DummyImage;
 import de.embl.rieslab.accent.common.dummys.DummyLoader;
 import de.embl.rieslab.accent.common.dummys.DummyProcessor;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class CalibrationProcessorTest {
 
-	@Test
-	public void testConstructor() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			new DummyProcessor("", new SimpleRoi(0,0,1,1), new DummyController(), new DummyLoader(1));
-		});
-		assertThrows(NullPointerException.class, () -> {
-			new DummyProcessor(null, new SimpleRoi(0,0,1,1), new DummyController(), new DummyLoader(2));
-		});
-		assertThrows(NullPointerException.class, () -> {
-			new DummyProcessor("", new SimpleRoi(0,0,1,1), null, new DummyLoader(2));
-		});
-		assertThrows(NullPointerException.class, () -> {
-			new DummyProcessor("", new SimpleRoi(0,0,1,1), new DummyController(), null);
-		});
+	@Test(expected = IllegalArgumentException.class)
+	public void testEmptyFolderConstructor() {
+		new DummyProcessor("", new SimpleRoi(0, 0, 1, 1), new DummyController(), new DummyLoader(1));
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testNullConstructor() {
+		new DummyProcessor(null, new SimpleRoi(0, 0, 1, 1), new DummyController(), new DummyLoader(2));
+
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testNulllControllerConstructor() {
+		new DummyProcessor("", new SimpleRoi(0, 0, 1, 1), null, new DummyLoader(2));
+
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testNulLoaderConstructor() {
+		new DummyProcessor("", new SimpleRoi(0, 0, 1, 1), new DummyController(), null);
+
 	}
 	
 	@Test
@@ -122,11 +125,11 @@ public class CalibrationProcessorTest {
 		for(int i=0;i<load.exposures.length;i++) {
 			File s_var, s_avg;
 			if(i%2==0) {
-				s_avg = new File(dir+"\\Avg_"+((int)load.exposures[i])+"ms.tiff");
-				s_var = new File(dir+"\\Var_"+((int)load.exposures[i])+"ms.tiff");
+				s_avg = new File(dir+File.separator+"Avg_"+((int)load.exposures[i])+"ms.tiff");
+				s_var = new File(dir+File.separator+"Var_"+((int)load.exposures[i])+"ms.tiff");
 			} else {
-				s_avg = new File(dir+"\\Avg_"+load.exposures[i]+"ms.tiff");
-				s_var = new File(dir+"\\Var_"+load.exposures[i]+"ms.tiff");
+				s_avg = new File(dir+File.separator+"Avg_"+load.exposures[i]+"ms.tiff");
+				s_var = new File(dir+File.separator+"Var_"+load.exposures[i]+"ms.tiff");
 			}
 
 			assertTrue(s_avg.exists());
@@ -137,33 +140,33 @@ public class CalibrationProcessorTest {
 		}
 		
 		// checks saved calibration
-		File calib = new File(dir+"\\results."+CalibrationIO.CALIB_EXT);
+		File calib = new File(dir+File.separator+"results."+CalibrationIO.CALIB_EXT);
 		assertTrue(calib.exists());
 		assertTrue(calib.delete());
 		
 		// checks calibration images
-		File f = new File(dir+"\\Baseline.tiff");
+		File f = new File(dir+File.separator+"Baseline.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"\\DC_per_sec.tiff");
+		f = new File(dir+File.separator+"DC_per_sec.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"\\Gain.tiff");
+		f = new File(dir+File.separator+"Gain.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"\\RN_sq.tiff");
+		f = new File(dir+File.separator+"RN_sq.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"\\TN_sq_per_sec.tiff");
+		f = new File(dir+File.separator+"TN_sq_per_sec.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"\\R_sq_avg.tiff");
+		f = new File(dir+File.separator+"R_sq_avg.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"\\R_sq_var.tiff");
+		f = new File(dir+File.separator+"R_sq_var.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
-		f = new File(dir+"\\R_sq_gain.tiff");
+		f = new File(dir+File.separator+"R_sq_gain.tiff");
 		assertTrue(f.exists());
 		assertTrue(f.delete());
 		

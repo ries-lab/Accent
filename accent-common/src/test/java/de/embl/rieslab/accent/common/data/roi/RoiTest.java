@@ -1,14 +1,9 @@
 package de.embl.rieslab.accent.common.data.roi;
 
 
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
-
-import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
+import static org.junit.Assert.*;
 
 public class RoiTest {
 

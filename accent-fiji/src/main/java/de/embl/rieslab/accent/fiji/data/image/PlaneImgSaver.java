@@ -9,6 +9,7 @@ public class PlaneImgSaver implements ImageSaver<PlaneImg>{
 	public boolean saveAsTiff(PlaneImg image, String filePath) {
 		ImgSaver saver = new ImgSaver();
 		saver.saveImg(filePath, image.getImage());
+
 		return true;
 	}
 

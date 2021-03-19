@@ -1,9 +1,10 @@
 package de.embl.rieslab.accent.fiji.processor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.jupiter.api.Test;
+import net.imagej.DatasetService;
+import org.junit.Before;
 
 import de.embl.rieslab.accent.common.data.image.AvgVarStacks;
 import de.embl.rieslab.accent.common.data.roi.SimpleRoi;
@@ -13,7 +14,6 @@ import de.embl.rieslab.accent.fiji.data.image.StackImg;
 import de.embl.rieslab.accent.fiji.datagen.GenerateData;
 import de.embl.rieslab.accent.fiji.dummys.DummyController;
 import de.embl.rieslab.accent.fiji.dummys.DummyStackLoader;
-import net.imagej.ImageJ;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
@@ -22,9 +22,11 @@ import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.FloatType;
+import org.junit.Test;
+import org.scijava.Context;
 
 public class ImgProcessorTest {
-	
+
 	// TODO test cases resembling multiple stacks or stacks 
 	// TODO test cases where the third dimension is 2,3,4...etc...
 	
@@ -32,13 +34,21 @@ public class ImgProcessorTest {
 	int height = 21;
 	int numFrames = 15000;
 	double[] exps = {0.1, 2.0, 3.5};
-	
+
+	private DatasetService service;
+
+	@Before
+	public void init(){
+		Context ctx = new Context(DatasetService.class);
+		service = ctx.service(DatasetService.class);
+	}
+
 	@Test
 	public void testProcUnsignedByteStackLoader() {
-		String dir = "AccentTemp-proc-s";	
+		String dir = "AccentTemp-proc-s";
 		
 		// creates loader
-		DummyStackLoader loader = new DummyStackLoader(width, height, numFrames, exps, new UnsignedByteType());
+		DummyStackLoader loader = new DummyStackLoader(service, width, height, numFrames, exps, new UnsignedByteType());
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// creates processor
@@ -97,13 +107,13 @@ public class ImgProcessorTest {
 			}
 		}
 	}
-	
+
 	@Test
 	public void testProcUnsignedShortStackLoader() {
-		String dir = "AccentTemp-proc-s";	
+		String dir = "AccentTemp-proc-s";
 		
 		// creates loader
-		DummyStackLoader loader = new DummyStackLoader(width, height, numFrames, exps, new UnsignedShortType());
+		DummyStackLoader loader = new DummyStackLoader(service, width, height, numFrames, exps, new UnsignedShortType());
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// creates processor
@@ -168,7 +178,7 @@ public class ImgProcessorTest {
 		String dir = "AccentTemp-proc-s";	
 		
 		// creates loader
-		DummyStackLoader loader = new DummyStackLoader(width, height, numFrames, exps, new FloatType());
+		DummyStackLoader loader = new DummyStackLoader(service, width, height, numFrames, exps, new FloatType());
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// creates processor
@@ -233,7 +243,7 @@ public class ImgProcessorTest {
 		String dir = "AccentTemp-proc-s";	
 		
 		// creates loader
-		DummyStackLoader loader = new DummyStackLoader(width, height, numFrames, exps, new UnsignedIntType());
+		DummyStackLoader loader = new DummyStackLoader(service, width, height, numFrames, exps, new UnsignedIntType());
 		assertEquals(exps.length, loader.getNumberOfChannels());
 		
 		// creates processor
@@ -310,13 +320,11 @@ public class ImgProcessorTest {
 		Loader<StackImg> loader = new Loader<StackImg>() {
 			int currentChannel = 0;
 			int currentFrame = 0;
-					
-			ImageJ ij = new ImageJ();
-			
+
 			private StackImg getImg(int t, int channel) {
 				Img<UnsignedShortType> img  = ArrayImgs.unsignedShorts(width, height, zDepth, cDepth, 1);
 				img.randomAccess().get().set(new UnsignedShortType(t));
-				return new StackImg(ij.dataset().create(img), exps[channel]);
+				return new StackImg(service.create(img), exps[channel]);
 			}
 			
 			@Override
@@ -368,8 +376,8 @@ public class ImgProcessorTest {
 			Img<FloatType> av = avgs_vars.getAvgs()[i].getImage();
 			Img<FloatType> var = avgs_vars.getVars()[i].getImage();
 
-			assertEquals(realAvg, av.randomAccess().get().get());
-			assertEquals(realVar, var.randomAccess().get().get());
+			assertEquals(realAvg, av.randomAccess().get().get(), 0.0010);
+			assertEquals(realVar, var.randomAccess().get().get(), 0.0001);
 		}
 	}
 	
