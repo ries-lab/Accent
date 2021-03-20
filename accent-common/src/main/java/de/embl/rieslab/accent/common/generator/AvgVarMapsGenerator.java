@@ -96,7 +96,7 @@ public class AvgVarMapsGenerator<U extends RawImage, T extends CalibrationImage>
 				running_ = false;
 				controller.updateGeneratorProgress("Done.");
 			} else {
-				controller.updateGeneratorProgress("Exposure: "+i+File.separator+exposures.length);
+				controller.updateGeneratorProgress("Exposure: "+i+"/"+exposures.length);
 			}
 		}
 	}

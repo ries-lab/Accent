@@ -5,8 +5,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
+	<groupId>de.embl.rieslab</groupId>
 	<artifactId>accent-mm2</artifactId>
-	<name>Accent-MM2</name>
+	<name>accent-mm2</name>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 	
