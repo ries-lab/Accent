@@ -13,10 +13,10 @@ if [ $# -eq 1 ]
 		mvn install:install-file -Dfile="$MM2_HOME\plugins\Micro-Manager\MMCoreJ.jar" -DgroupId=org.micromanager  -DartifactId=MMCoreJ -Dversion=2.0.0-SNAPSHOT -Dpackaging=jar
 		
 		cd accent-common
-		mvn clean install -DSkipTests
+		mvn clean install -DskipTests
 		
 		cd ../accent-mm2
-		mvn clean package shade:shade install -DSkipTests 
+		mvn clean package shade:shade install -DskipTests 
 
 		# finally copy the jar to MM
 		cp "accent-mm2\target\accent-mm2-1.0.jar" "$MM2_PLUGINS_HOME\accent-mm2-1.0.jar"
