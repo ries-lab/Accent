@@ -9,9 +9,9 @@ acqName = "accent_mm1_"; // Name of the acquisition
 int[] exposures = {1,10,200,600}; // Exposure times in ms
 numFrames = 20000; // number of frames
 		
-mmc.setROI(128,128,256,256); // ROI on camera. Uncomment to use preset ROI in MicroManager
-// NB: Command mmc.setROI not supported with all cameras. 
-//In case, comment out and preset ROI via GUI in MicroManager
+mmc.setROI(128,128,256,256); // ROI on camera: (x0, y0, width, hight). Uncomment to use preset ROI in Micro-Manager
+// NB: Command mmc.setROI is not supported with all cameras. 
+// In case of error, comment out and preset ROI via GUI in MicroManager
 // END: PARAMETERS
 
 // NB: If all acquisitions are created in a "Pos0" folder, you will have to rename them and copy them in the same
