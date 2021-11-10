@@ -19,7 +19,7 @@ if [ $# -eq 1 ]
 		mvn clean package shade:shade install -DskipTests 
 
 		# finally copy the jar to MM
-		cp "accent-mm2\target\accent-mm2-1.0.jar" "$MM2_PLUGINS_HOME\accent-mm2-1.0.jar"
+		cp "target\accent-mm2-1.0.jar" "$MM2_PLUGINS_HOME\accent-mm2-1.0.jar"
 
 		cd ..
 		
