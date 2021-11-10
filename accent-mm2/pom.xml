@@ -45,9 +45,10 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>de.embl.accent</groupId>
+			<groupId>de.embl.rieslab</groupId>
 			<artifactId>accent-common</artifactId>
 			<version>1.0</version>
+     		<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.scijava</groupId>
@@ -67,7 +68,6 @@
 			<version>2.0.0-SNAPSHOT</version>
      		<scope>provided</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.micromanager</groupId>
 			<artifactId>MMAcqEngine</artifactId>

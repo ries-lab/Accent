@@ -27,8 +27,6 @@ if [ $# -eq 1 ]
 		cd accent-common
 		mvn clean install -DskipTests
 
-		echo "done compiling accent-common"
-
 		cd ../accent-fiji
 		mvn clean package shade:shade install -DskipTests
 
