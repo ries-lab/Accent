@@ -5,6 +5,11 @@ Robin Diekmann, Joran Deschamps, Yiming Li, Aline Tschanz, Maurice Kahnwald, Ulf
 
 In particular, it includes the steps to use Accent results when fitting SMLM data with [SMAP](https://github.com/jries/SMAP).
 
+1. [Introduction](https://github.com/ries-lab/Accent/blob/main/guide/Complete_step_by_step.md#introduction)
+2. [Micro-Manager 2 calibration](https://github.com/ries-lab/Accent/blob/main/guide/Complete_step_by_step.md#micro-manager-2-calibration)
+3. [Micro-Manager 1.4 + Fiji calibration](https://github.com/ries-lab/Accent/blob/main/guide/Complete_step_by_step.md#micro-manager-14-and-fiji-calibration)
+4. [Single molecule localization using SMAP](https://github.com/ries-lab/Accent/blob/main/guide/Complete_step_by_step.md#single-molecule-localization-using-smap)
+
 ## Introduction
 
 The complete ACCeNT workflow for camera characterization and SMLM
