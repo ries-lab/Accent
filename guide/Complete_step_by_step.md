@@ -1,4 +1,11 @@
-**Introduction**
+# Complete step by step guide
+
+This guide is adapted from the supplementary of the original paper:
+Robin Diekmann, Joran Deschamps, Yiming Li, Aline Tschanz, Maurice Kahnwald, Ulf Matti, Jonas Ries, "Photon-free (s)CMOS camera characterization for artifact reduction in high- and super-resolution microscopy", bioRxiv 2021.04.16.440125. [doi: 2021.04.16.440125](https://doi.org/10.1101/2021.04.16.440125)
+
+In particular, it includes the steps to use Accent results when fitting SMLM data with [SMAP](https://github.com/jries/SMAP).
+
+## Introduction
 
 The complete ACCeNT workflow for camera characterization and SMLM
 fitting can be performed in two different ways:
@@ -51,7 +58,7 @@ manufacturer.
 
 The software of ACCeNT is licensed under GNU GPL v3.0.
 
-**Micro-Manager 2 calibration**
+## Micro-Manager 2 calibration
 
 1.  Installation
 
@@ -140,7 +147,7 @@ The software of ACCeNT is licensed under GNU GPL v3.0.
 
 The calibration file (results.calb) can then be used with SMAP.
 
-**Micro-Manager 1.4 and Fiji calibration**
+## Micro-Manager 1.4 and Fiji calibration
 
 In this pipeline, we make use of Micro-Manager 1.4 to generate the data.
 In principle the Fiji plugin can be used regardless of the way the raw
@@ -318,7 +325,7 @@ c.  Place the downloaded accent-fiji-1.0.jar in the "plugins" folder of
         counts corresponding to (-0.042 counts) / (2.16 counts/electron)
         = -0.019 electrons.
 
-**Single-molecule localization using SMAP**
+## Single-molecule localization using SMAP
 
 1.  Install SMAP from: https://github.com/jries/SMAP. The version from
     time of publication is available at:
