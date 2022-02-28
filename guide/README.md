@@ -8,3 +8,4 @@ Note that the Micro-manager 2 plugin is based on ImageJ1 and should provide supe
 - [Fiji](guide-fiji.md) user guide
 - Micro-Manager 1.4 script: the images can be analyzed later on using the Micro-Manager 2 plugin.
 - [Windows installation guide](win-installation.md)
+- [Complete step by step guide, including SMLM fitting with SMAP](Complete_step_by_step.md)
