@@ -45,4 +45,13 @@ This repository contains guides for the Micro-Manager and Fiji plugins:
 - [Micro-manager 2 guide](guide/guide-mm2.md)
 - [Fiji guide](guide/guide-fiji.md)
 - [Installation guide (Windows)](guide/win-installation.md). 
-- Loading the camera map in [SMAP](https://github.com/jries/SMAP) (soon)
+- [Step by step guide with SMAP](guide/SMAP_step_by_step.md)
+
+Additionally, results from Accent can be used to fit SMLM data using SMAP:
+- [SMAP repository](https://github.com/jries/SMAP)
+
+## Cite us
+
+Robin Diekmann, Joran Deschamps, Yiming Li, Aline Tschanz, Maurice Kahnwald, Ulf Matti, Jonas Ries, "Photon-free (s)CMOS camera characterization for artifact reduction in high- and super-resolution microscopy", bioRxiv 2021.04.16.440125. [doi: 2021.04.16.440125](https://doi.org/10.1101/2021.04.16.440125)
+
+
