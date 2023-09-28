@@ -36,6 +36,7 @@ Or
 
    Finally, place the compiled .jar (generated in accent-fiji/target/) in the "plugins" folder of Fiji.
 
+⚠️ If you get errors while loading large tiffs, make sure to export your large tiff with "Save as > OME-tiff"
 
 
 ## Resources
